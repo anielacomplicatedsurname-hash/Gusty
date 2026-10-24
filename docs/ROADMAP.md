@@ -26,4 +26,5 @@
 - Tablet uses the desktop header navigation (no separate side rail).
 - Logo and symbols are traced from the images in the PDF; original vector artwork, if it exists, would be sharper at very large sizes.
 - Fonts are free matches for unnamed suggestions; display and accent fonts cover Latin scripts only.
+- Render builds with `npx pnpm@10.28.0` (pinned to `packageManager` in package.json): update both together.
 - Render plan is set to `free` (sleeps when idle) until the founder decides to upgrade.
