@@ -7,8 +7,10 @@ services:
     region: frankfurt # EU, to sit close to the Supabase EU project (GDPR)
     plan: free # sleeps when idle; switch to "starter" (~$7/month) before real users arrive
     branch: main
-    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
-    startCommand: pnpm start
+    # Runs the exact pnpm version from package.json via npx, so the build needs no global
+    # install (corepack can be blocked on Render) and can't hit a pnpm version mismatch.
+    buildCommand: npx -y pnpm@10.28.0 install --frozen-lockfile && npm run build
+    startCommand: npm start
     healthCheckPath: /api/health
     autoDeployTrigger: commit
     envVars:
