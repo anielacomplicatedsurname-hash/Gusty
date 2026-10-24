@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "title": "Gusty — Good ideas deserve to move",
+    "titleTemplate": "%s · Gusty",
+    "description": "Gusty helps you turn an idea into a real project, one small step at a time — with the funding, people and tools to make it happen."
+  },
+  "common": {
+    "skipToContent": "Skip to content",
+    "home": "Gusty home",
+    "previewBadge": "Preview build"
+  },
+  "nav": {
+    "label": "Main",
+    "explore": "Explore",
+    "projects": "My Projects",
+    "connections": "Connections"
+  },
+  "home": {
+    "overline": "Big possibilities. Small steps.",
+    "headline": "Good ideas deserve to move.",
+    "lead": "Tell Gusty about your idea. Gusty helps you understand it, shape it and take the next small step towards the funding, people and tools that make it happen.",
+    "ideaLabel": "What's your idea?",
+    "ideaHint": "Write it however it comes to you. A few words is enough.",
+    "ideaSubmit": "Start with my idea",
+    "ideaNotYet": "This is a preview. Saving ideas and Gusty's replies arrive in the next build, so nothing you type here is stored yet.",
+    "howTitle": "How it works",
+    "steps": [
+      { "title": "Describe it", "body": "In your own words, as messy as you like." },
+      { "title": "See it understood", "body": "Gusty reflects your idea back clearly. You stay in control and can change anything." },
+      { "title": "Take a small step", "body": "Up to three next steps, with the most useful one first. Never a wall of tasks." }
+    ],
+    "closing": "Less searching. More happening."
+  },
+  "comingNext": {
+    "label": "Coming next",
+    "back": "Back to home",
+    "explore": {
+      "title": "Explore",
+      "body": "Funding, people, opportunities, events and organisations that fit your project. We're building this carefully, with real, verified sources, so it isn't switched on yet."
+    },
+    "projects": {
+      "title": "My Projects",
+      "body": "Your ideas and projects will live here, saved automatically so you can pick up exactly where you left off. This arrives in the next build."
+    },
+    "connections": {
+      "title": "Connections",
+      "body": "Collaborators, communities and networks that can help your project grow. This comes after Explore."
+    }
+  },
+  "footer": {
+    "tagline": "People, ideas, places for a brighter tomorrow."
+  },
+  "notFound": {
+    "title": "This page wandered off.",
+    "body": "Let's get you back somewhere useful."
+  }
+}
