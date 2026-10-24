@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/*
+ * Gusty design tokens. Source of truth for colour, type, spacing, radius and motion.
+ * Palette comes from the founder's brand directive (docs/BRAND_AND_DESIGN.md).
+ * Accent colours are backgrounds only: text on them is always Ink.
+ * Contrast pairs are checked in tests/unit/contrast.test.ts.
+ */
+:root {
+  /* Palette */
+  --ink: #111111;
+  --paper: #f7f6f0;
+  --oat: #e8e6da;
+  --sage: #b8c3ab;
+  --signal: #e4e6ab;
+  --sky: #deebf0;
+  --water: #93b5be;
+  --lilac: #e8dff4;
+  --stone: #777671; /* decorative and large text only (4.2:1 on paper) */
+  --stone-strong: #5f5e59; /* secondary body text (6.0:1 on paper) */
+  --white: #ffffff;
+
+  /* Semantic roles. Components use these, never raw palette names. */
+  --surface: var(--paper);
+  --surface-raised: var(--white);
+  --surface-muted: var(--oat);
+  --text: var(--ink);
+  --text-muted: var(--stone-strong);
+  --border: #d9d7cb;
+  --focus: var(--ink);
+  --highlight: var(--signal); /* the recommended next step */
+  --info: var(--sky);
+  --ai: var(--lilac); /* AI suggestions */
+  --confirmed: var(--sage);
+
+  /* Layout */
+  --bottom-nav-height: 4.25rem;
+  --header-height: 4rem;
+  --content-max: 72rem;
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --duration: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration: 0ms;
+  }
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-oat: var(--oat);
+  --color-sage: var(--sage);
+  --color-signal: var(--signal);
+  --color-sky: var(--sky);
+  --color-water: var(--water);
+  --color-lilac: var(--lilac);
+  --color-stone: var(--stone);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-muted: var(--surface-muted);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-highlight: var(--highlight);
+  --color-info: var(--info);
+  --color-ai: var(--ai);
+  --color-confirmed: var(--confirmed);
+
+  --font-sans: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-hand), "Comic Sans MS", cursive;
+
+  --radius-card: 1.25rem;
+  --radius-pill: 999px;
+}
+
+html {
+  background: var(--surface);
+  color: var(--text);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.55;
+}
+
+/* Visible, consistent keyboard focus everywhere (WCAG 2.2 focus appearance). */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+@layer components {
+  /* Display hand: headlines and key brand moments only. Caveat Brush, bolded and slanted
+     slightly to match the founder's lettering. Not for body copy, forms or navigation. */
+  .type-display {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    line-height: 0.95;
+    letter-spacing: 0.005em;
+    -webkit-text-stroke: 0.035em currentColor;
+    transform: skewX(-5deg);
+    display: inline-block;
+  }
+
+  /* Small accent copy in the hand style: overlines, short brand messages. */
+  .type-accent-hand {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    -webkit-text-stroke: 0.02em currentColor;
+  }
+
+  /* Spaced uppercase labels in the UI sans. */
+  .type-label {
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 3rem;
+    padding: 0 1.5rem;
+    border-radius: var(--radius-pill);
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 500;
+    transition: transform var(--duration) var(--ease);
+  }
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+  .btn-primary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0 1.5rem;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    font-weight: 500;
+  }
+}

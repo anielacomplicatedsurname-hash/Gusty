@@ -1,0 +1,20 @@
+# Render Blueprint. In Render: New → Blueprint → pick this GitHub repo.
+# Secrets are never stored here: values marked `sync: false` are entered in the Render dashboard.
+services:
+  - type: web
+    name: gusty-web
+    runtime: node
+    region: frankfurt # EU, to sit close to the Supabase EU project (GDPR)
+    plan: free # sleeps when idle; switch to "starter" (~$7/month) before real users arrive
+    branch: main
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    startCommand: pnpm start
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false # e.g. https://gusty-web.onrender.com, later the real domain
