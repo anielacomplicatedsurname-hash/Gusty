@@ -1,3 +1,5 @@
+import { resolveSiteUrl } from "./site-url";
+
 /**
  * Brand configuration. The white-label seam: another organisation's deployment swaps
  * this object (and the assets it points to) without touching components.
@@ -5,7 +7,7 @@
  */
 export const brand = {
   name: "Gusty",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  siteUrl: resolveSiteUrl(),
   themeColor: "#111111",
   backgroundColor: "#f7f6f0",
   logo: {
