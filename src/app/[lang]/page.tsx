@@ -18,7 +18,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="mx-auto grid max-w-(--content-max) gap-10 px-4 pb-16 pt-10 sm:px-6 md:grid-cols-[1.15fr_0.85fr] md:items-center md:pt-20">
+      <section className="mx-auto grid max-w-(--content-max) gap-10 px-4 pb-16 pt-10 sm:px-6 md:pt-16 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:pt-20">
         <div>
           <p className="type-accent-hand text-lg">{t.home.overline}</p>
           <HandUnderline className="mt-1" />
@@ -41,14 +41,14 @@ export default async function HomePage() {
               aria-describedby="idea-hint idea-not-yet"
               className="mt-3 w-full resize-y rounded-xl border border-stone bg-paper p-3 text-base leading-relaxed placeholder:text-stone"
             />
-            <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-3 flex flex-col gap-3">
               <p id="idea-not-yet" className="flex items-start gap-2 text-sm text-text-muted">
                 <span className="mt-0.5 whitespace-nowrap rounded-full bg-sky px-2 py-0.5 text-xs font-medium text-ink">
                   {t.common.previewBadge}
                 </span>
                 <span>{t.home.ideaNotYet}</span>
               </p>
-              <button type="submit" className="btn-primary shrink-0" disabled>
+              <button type="submit" className="btn-primary sm:self-end" disabled>
                 {t.home.ideaSubmit}
                 <span aria-hidden="true">→</span>
               </button>
@@ -56,7 +56,7 @@ export default async function HomePage() {
           </form>
         </div>
 
-        <div className="relative hidden md:block" aria-hidden="true">
+        <div className="relative hidden lg:block" aria-hidden="true">
           <Logo variant="hey" height={300} alt="" priority />
           <span className="absolute -bottom-6 right-6 text-ink/90">
             <BrandSymbol name="leaf-cluster" size={64} />
