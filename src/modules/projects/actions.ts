@@ -129,3 +129,26 @@ export async function renameProject(projectId: string, rawTitle: string): Promis
     .maybeSingle();
   return { ok: !error && !!data };
 }
+
+/** Deletes one project and everything in it (reading, directions, steps). Owner only, via RLS. */
+export async function deleteProject(formData: FormData) {
+  const lang = localeFrom(formData);
+  const projectId = String(formData.get("projectId") ?? "");
+  const supabase = await createSupabaseServerClient();
+  if (supabase && isProjectId(projectId)) {
+    await supabase.from("projects").delete().eq("id", projectId);
+  }
+  redirect(`/${lang}/projects`);
+}
+
+/** Deletes the person's account and everything they own, then signs them out. */
+export async function deleteAccount(formData: FormData) {
+  const lang = localeFrom(formData);
+  const supabase = await createSupabaseServerClient();
+  if (supabase) {
+    const { error } = await supabase.rpc("delete_my_account");
+    if (error) console.error("Account deletion failed:", error.message);
+    await supabase.auth.signOut();
+  }
+  redirect(`/${lang}`);
+}

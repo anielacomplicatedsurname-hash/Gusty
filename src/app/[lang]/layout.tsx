@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Caveat_Brush, Google_Sans_Flex } from "next/font/google";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
+import { ServiceWorker } from "@/components/ServiceWorker";
 import { brand } from "@/config/brand";
 import { hasLocale, locales, textDirection } from "@/i18n/config";
 import { getMessages } from "@/i18n/dictionaries";
@@ -67,6 +68,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
     >
       <body className="flex min-h-full flex-col">
         <AppShell locale={lang}>{children}</AppShell>
+        <ServiceWorker />
       </body>
     </html>
   );

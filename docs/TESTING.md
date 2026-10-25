@@ -24,6 +24,7 @@
 - Reading items and AI log are private (db).
 - Next steps (unit): mode visibility, switching modes never changes data, direction and step limits, prompt-tag safety; (e2e, demo): directions → steps, modes and reload, ticking off, make it smaller, help me start, explain differently, own steps, axe scan of the full project page; (db): directions, steps and preferences private.
 - Titles (unit): tidying, length, demo never invents one; (e2e): rename shows in My Projects and survives reading again.
+- Your data and the app (e2e): download, export refused without a session, delete a project, delete an account (its project is gone afterwards), security headers present and no CSP errors in the console, offline page served by the service worker, service worker never caches pages; (db): `delete_my_account` removes only the caller and refuses signed-out visitors.
 - Saving journey: save without an account, autosave, reload, private to the owner, empty-idea message, keeping projects via a real confirmation email in the local test inbox (e2e).
 
 CI starts a local Supabase with the repo's migrations, checks the generated types are current, then runs all of the above.

@@ -9,6 +9,8 @@ import { getReading } from "@/modules/interpretation/data";
 import { AutoRead, ReadingView } from "@/modules/interpretation/Reading";
 import { IdeaEditor } from "@/modules/projects/IdeaEditor";
 import { TitleEditor } from "@/modules/projects/TitleEditor";
+import { deleteProject } from "@/modules/projects/actions";
+import { ConfirmButton } from "@/modules/projects/ConfirmButton";
 import { getStepsState } from "@/modules/steps/data";
 import { NextSteps } from "@/modules/steps/NextSteps";
 import { aiProvider } from "@/ai";
@@ -94,6 +96,17 @@ async function ProjectContent({
       </section>
 
       <NextStepsSection projectId={project.id} lang={lang} t={t} />
+
+      <form action={deleteProject} className="self-start">
+        <input type="hidden" name="projectId" value={project.id} />
+        <input type="hidden" name="lang" value={lang} />
+        <ConfirmButton
+          label={t.projects.deleteProject}
+          confirmText={t.projects.deleteProjectConfirm}
+          confirmLabel={t.projects.deleteProjectYes}
+          cancelLabel={t.projects.cancel}
+        />
+      </form>
     </div>
   );
 }

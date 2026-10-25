@@ -105,5 +105,20 @@ describe("projects Row Level Security", () => {
     const bobsPrefs = await bob.from("user_preferences").select("experience_mode");
     expect(bobsPrefs.data).toEqual([]);
   });
+
+  it("lets people delete only their own account, taking their data with it", async () => {
+    const carol = client();
+    expect((await carol.auth.signInAnonymously()).error).toBeNull();
+    const carolProject = await carol.from("projects").insert({ title: "Carol's", idea: "Carol's idea" }).select("id").single();
+    expect(carolProject.error).toBeNull();
+
+    expect((await client().rpc("delete_my_account")).error).not.toBeNull(); // signed out: refused
+    expect((await carol.rpc("delete_my_account")).error).toBeNull();
+
+    // Carol's data is gone; Alice's is untouched.
+    const { data: aliceStill } = await alice.from("projects").select("id").eq("id", aliceProjectId);
+    expect(aliceStill).toHaveLength(1);
+    expect((await carol.from("projects").select("id")).data ?? []).toEqual([]);
+  });
 });
 

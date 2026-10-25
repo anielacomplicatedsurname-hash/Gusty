@@ -4,7 +4,8 @@ import { Suspense } from "react";
 import { BrandSymbol } from "@/components/BrandSymbol";
 import { getMessages, type Messages } from "@/i18n/dictionaries";
 import { fill, formatDateTime } from "@/i18n/format";
-import { signOut } from "@/modules/projects/actions";
+import { deleteAccount, signOut } from "@/modules/projects/actions";
+import { ConfirmButton } from "@/modules/projects/ConfirmButton";
 import { getCurrentUser, listProjects } from "@/modules/projects/data";
 import { EmailLinkForm } from "@/modules/projects/EmailLinkForm";
 
@@ -87,6 +88,23 @@ async function ProjectsContent({
           ))}
         </ul>
       )}
+
+      <section aria-labelledby="your-data" className="mt-10 flex flex-col items-start gap-3">
+        <h2 id="your-data" className="type-label text-text-muted">{t.projects.yourData}</h2>
+        <p className="text-sm text-text-muted">{t.projects.yourDataBody}</p>
+        <a href="/api/export" download className="text-sm font-medium underline underline-offset-4">
+          {t.projects.download}
+        </a>
+        <form action={deleteAccount}>
+          <input type="hidden" name="lang" value={lang} />
+          <ConfirmButton
+            label={t.projects.deleteAccount}
+            confirmText={t.projects.deleteAccountConfirm}
+            confirmLabel={t.projects.deleteAccountYes}
+            cancelLabel={t.projects.cancel}
+          />
+        </form>
+      </section>
 
       {user.isAnonymous ? (
         <div className="mt-10 rounded-(--radius-card) bg-surface-raised p-6">
