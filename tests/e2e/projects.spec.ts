@@ -61,6 +61,8 @@ test("a guest keeps their projects by confirming an email link", async ({ page }
     .poll(async () => latestLinkFor(email), { timeout: 15_000 })
     .not.toBeNull()
     .then(() => latestLinkFor(email));
+  const search = await (await fetch(`${mailpit}/api/v1/search?query=${encodeURIComponent(`to:"${email}"`)}`)).json();
+  expect(search.messages[0].Subject).toBe("Keep your Gusty projects");
   await page.goto(link!);
 
   await expect(page).toHaveURL(/\/en\/projects$/);

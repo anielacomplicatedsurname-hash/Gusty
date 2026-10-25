@@ -112,3 +112,8 @@ that deletes only `auth.uid()` keeps that key out of the app entirely. Everythin
 One `security definer` function returns all the numbers, after checking the caller is in `admins`. No service
 key in the app, no admin write actions, no per-person drill-down: the founder sees how Gusty is used and what
 it costs without seeing what anyone wrote. A fuller admin panel (roles, branding) waits for white-label needs.
+
+## 2026-10-25 — Email through Resend from heygusty.com
+The founder owns heygusty.com. Resend (free up to 3,000 emails a month) with a verified domain lands in
+inboxes more reliably than a personal sender address. Gusty's email wording lives in `supabase/templates/`,
+not the message files, because Supabase renders and sends these emails. Translations will need one template set per language.

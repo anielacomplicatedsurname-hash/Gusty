@@ -34,10 +34,22 @@ If Gusty ever can't read ideas, open **Table Editor → ai_runs**: the `error` c
 New files in `supabase/migrations/` are run the same way, in filename order, before merging the
 pull request that adds them. (When this gets frequent, automate it with the Supabase CLI in CI.)
 
+## Email (done: Resend, from hello@heygusty.com)
+- **Sending:** the domain `heygusty.com` is verified in Resend (DNS records at GoDaddy). Supabase sends through it:
+  Authentication → Emails → SMTP Settings: host `smtp.resend.com`, port `465`, username `resend`,
+  password = a Resend API key with sending access only (named `supabase-auth-emails`). Never commit that key.
+- **Wording and look:** Authentication → Emails → Templates. For each of these, paste the subject and the
+  whole file from `supabase/templates/` (local Supabase uses the same files via `supabase/config.toml`):
+
+  | Template in Supabase | Subject | File |
+  |---|---|---|
+  | Confirm signup | Welcome to Gusty: confirm your email | `confirmation.html` |
+  | Magic Link | Your Gusty sign-in link | `magic-link.html` |
+  | Change Email Address | Keep your Gusty projects | `email-change.html` |
+- **How many emails:** Authentication → Rate Limits → "Rate limit for sending emails". 30 an hour is
+  plenty for testers; Resend's free plan allows 100 a day.
+
 ## Before inviting real users
-- **Email sending:** Supabase's built-in email only reaches the project's own team members and is
-  heavily rate-limited. Set up custom SMTP (Authentication → Emails → SMTP Settings), for example
-  with Resend, Postmark or Brevo, so sign-in links reach everyone.
 - **Bot protection:** turn on CAPTCHA (Authentication → Attack Protection) to limit fake guest accounts.
 - **Backups:** the Pro plan adds daily backups.
 

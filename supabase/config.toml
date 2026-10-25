@@ -244,6 +244,20 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
+# Gusty's emails. The same subjects and files are pasted into the production dashboard
+# (Authentication → Emails → Templates): see docs/SUPABASE_SETUP.md.
+[auth.email.template.confirmation]
+subject = "Welcome to Gusty: confirm your email"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.magic_link]
+subject = "Your Gusty sign-in link"
+content_path = "./supabase/templates/magic-link.html"
+
+[auth.email.template.email_change]
+subject = "Keep your Gusty projects"
+content_path = "./supabase/templates/email-change.html"
+
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"
