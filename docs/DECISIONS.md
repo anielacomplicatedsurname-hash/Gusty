@@ -2,6 +2,21 @@
 
 Newest first. Each entry: decision, why, and what would make us revisit it.
 
+## 2026-10-25 — Next steps: directions, small steps, modes and help when stuck (stage 4)
+- **Directions first, then steps.** Gusty suggests up to 3 directions with one recommended and the reason
+  shown; the person chooses, then Gusty plans 3–7 small steps, the first the easiest. Two calls, but the
+  person stays in control of where the project goes.
+- **Modes change what's shown, never the data** (`visibleSteps`): Keep it simple = 1 step, Guide me
+  through = up to 3, Let me see everything = all, including done steps. The mode is saved per person.
+- **Nothing is lost.** Done steps are kept; changing direction or making a step smaller sets old steps
+  aside (`replaced`) rather than deleting them.
+- **I'm stuck does something concrete:** split into 2–3 steps of 15 minutes or less, a plainer
+  explanation with an example, or a 2-minute first action plus a ready-to-use draft.
+- **Prompts share one injection-safe project frame** (`src/ai/tasks/context.ts`) and the same rules: no
+  named funders, deadlines or amounts, no pressure, same language as the idea.
+- **Shared AI budget:** 60 AI calls per person per day across these tasks (`src/ai/usage.ts`).
+- **Assistant button deferred**, not needed for the first milestone's journey.
+
 ## 2026-10-25 — Gusty suggests project titles (prompt v3)
 Founder request: each idea gets a short, memorable, descriptive title, used in My Projects. The reading
 returns a 2–6 word title; it replaces the automatic first-line title unless the person has named the

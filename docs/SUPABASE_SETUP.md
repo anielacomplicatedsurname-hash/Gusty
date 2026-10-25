@@ -15,6 +15,7 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 1. `20261025000000_projects.sql` (stage 2, done)
 2. `20261025120000_interpretation.sql` (stage 3, done)
 3. `20261025140000_titles_and_ai_errors.sql` (titles, AI failure reasons)
+4. `20261025160000_next_steps.sql` (stage 4: directions, steps, preferences)
 
 If Gusty ever can't read ideas, open **Table Editor → ai_runs**: the `error` column says why
 (`key` = the API key was refused, `busy` = rate-limited or overloaded).
