@@ -2,13 +2,12 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 import { defaultLocale } from "@/i18n/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { safeNextPath } from "@/modules/projects/validation";
+import { brand } from "@/config/brand";
+import { signInDestination } from "@/modules/projects/validation";
 
 /** Where email sign-in and "keep my projects" links land. */
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
-  const fallback = `/${defaultLocale}/projects`;
-  const next = safeNextPath(searchParams.get("next"), fallback);
   const supabase = await createSupabaseServerClient();
 
   let ok = false;
@@ -23,7 +22,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  const destination = new URL(next, request.nextUrl.origin);
-  if (!ok) destination.searchParams.set("signin", "failed");
-  return NextResponse.redirect(destination);
+  return NextResponse.redirect(
+    signInDestination(searchParams.get("next"), ok, brand.siteUrl, `/${defaultLocale}/projects`),
+  );
 }

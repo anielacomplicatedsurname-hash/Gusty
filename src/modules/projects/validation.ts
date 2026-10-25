@@ -32,3 +32,13 @@ export function checkEmail(raw: unknown): string | null {
 export function safeNextPath(raw: string | null, fallback: string): string {
   return raw && raw.startsWith("/") && !raw.startsWith("//") && !raw.includes("\\") ? raw : fallback;
 }
+
+/**
+ * Where to send someone after an email link. Always built on the public site address:
+ * behind a host like Render the request's own URL is an internal one (e.g. localhost:10000).
+ */
+export function signInDestination(rawNext: string | null, ok: boolean, siteUrl: string, fallback: string) {
+  const url = new URL(safeNextPath(rawNext, fallback), siteUrl);
+  if (!ok) url.searchParams.set("signin", "failed");
+  return url.toString();
+}

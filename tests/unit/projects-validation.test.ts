@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  checkEmail, checkIdea, IDEA_MAX_LENGTH, isProjectId, safeNextPath, titleFromIdea,
+  checkEmail, checkIdea, IDEA_MAX_LENGTH, isProjectId, safeNextPath, signInDestination, titleFromIdea,
 } from "@/modules/projects/validation";
 
 describe("checkIdea", () => {
@@ -56,5 +56,23 @@ describe("safeNextPath", () => {
     expect(safeNextPath("//evil.example", "/en")).toBe("/en");
     expect(safeNextPath("/\\evil.example", "/en")).toBe("/en");
     expect(safeNextPath(null, "/en")).toBe("/en");
+  });
+});
+
+describe("signInDestination", () => {
+  const site = "https://gusty-web.onrender.com";
+
+  it("uses the public site address, never the server's internal one", () => {
+    expect(signInDestination("/en/projects", true, site, "/en")).toBe("https://gusty-web.onrender.com/en/projects");
+  });
+  it("flags a failed link so the page can explain it", () => {
+    expect(signInDestination("/en/projects", false, site, "/en")).toBe(
+      "https://gusty-web.onrender.com/en/projects?signin=failed",
+    );
+  });
+  it("ignores destinations on other sites", () => {
+    expect(signInDestination("https://evil.example/x", true, site, "/en/projects")).toBe(
+      "https://gusty-web.onrender.com/en/projects",
+    );
   });
 });
