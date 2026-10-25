@@ -10,14 +10,18 @@ Requires Node 22+ and pnpm (`corepack enable`).
 
 ```bash
 pnpm install
-cp .env.example .env.local
+npx supabase start  # local database (needs Docker); prints the URL and publishable key
+cp .env.example .env.local   # then paste the publishable key into it
 pnpm dev            # http://localhost:3000
 ```
+
+Sign-in emails sent locally appear at http://127.0.0.1:54324.
 
 ## Checks
 ```bash
 pnpm check                      # lint, types, unit tests
-pnpm build && pnpm test:e2e     # production build + browser tests (phone, tablet, desktop)
+pnpm test:db                    # database privacy rules (needs local Supabase)
+pnpm build && E2E_SUPABASE=1 pnpm test:e2e   # browser tests incl. the saving journey
 ```
 
 ## Deploy

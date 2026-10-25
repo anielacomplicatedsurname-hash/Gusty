@@ -1,6 +1,8 @@
 import { BrandSymbol, type SymbolName } from "@/components/BrandSymbol";
 import { Logo } from "@/components/Logo";
 import { getMessages } from "@/i18n/dictionaries";
+import { supabaseConfig } from "@/lib/supabase/config";
+import { IdeaForm } from "@/modules/projects/IdeaForm";
 
 const stepSymbols: SymbolName[] = ["sprout", "spark", "path"];
 
@@ -13,7 +15,8 @@ function HandUnderline({ className = "" }: { className?: string }) {
   );
 }
 
-export default async function HomePage() {
+export default async function HomePage({ params }: PageProps<"/[lang]">) {
+  const { lang } = await params;
   const t = await getMessages();
 
   return (
@@ -27,33 +30,20 @@ export default async function HomePage() {
           </h1>
           <p className="mt-6 max-w-xl text-lg text-text-muted">{t.home.lead}</p>
 
-          <form className="mt-8 max-w-xl rounded-(--radius-card) border border-border bg-surface-raised p-4 shadow-[0_1px_0_rgba(17,17,17,0.04)] sm:p-5">
-            <label htmlFor="idea" className="block text-lg font-semibold">
-              {t.home.ideaLabel}
-            </label>
-            <p id="idea-hint" className="mt-1 text-sm text-text-muted">
-              {t.home.ideaHint}
-            </p>
-            <textarea
-              id="idea"
-              name="idea"
-              rows={4}
-              aria-describedby="idea-hint idea-not-yet"
-              className="mt-3 w-full resize-y rounded-xl border border-stone bg-paper p-3 text-base leading-relaxed placeholder:text-stone"
-            />
-            <div className="mt-3 flex flex-col gap-3">
-              <p id="idea-not-yet" className="flex items-start gap-2 text-sm text-text-muted">
-                <span className="mt-0.5 whitespace-nowrap rounded-full bg-sky px-2 py-0.5 text-xs font-medium text-ink">
-                  {t.common.previewBadge}
-                </span>
-                <span>{t.home.ideaNotYet}</span>
-              </p>
-              <button type="submit" className="btn-primary sm:self-end" disabled>
-                {t.home.ideaSubmit}
-                <span aria-hidden="true">→</span>
-              </button>
-            </div>
-          </form>
+          <IdeaForm
+            lang={lang}
+            enabled={supabaseConfig() !== null}
+            copy={{
+              label: t.home.ideaLabel,
+              hint: t.home.ideaHint,
+              submit: t.home.ideaSubmit,
+              saving: t.home.ideaSaving,
+              privacy: t.home.ideaPrivacy,
+              unavailable: t.home.ideaUnavailable,
+              previewBadge: t.common.previewBadge,
+              errors: t.home.ideaErrors,
+            }}
+          />
         </div>
 
         <div className="relative hidden lg:block" aria-hidden="true">

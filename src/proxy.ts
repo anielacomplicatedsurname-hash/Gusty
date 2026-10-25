@@ -1,16 +1,20 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { defaultLocale, locales } from "@/i18n/config";
+import { refreshSession } from "@/lib/supabase/proxy";
 
-/** Sends locale-less paths to the default locale, e.g. "/" → "/en". */
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hasLocalePrefix = locales.some(
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
   );
-  if (hasLocalePrefix) return;
 
-  request.nextUrl.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`;
-  return NextResponse.redirect(request.nextUrl);
+  // Send locale-less paths to the default locale, e.g. "/" → "/en".
+  if (!hasLocalePrefix) {
+    request.nextUrl.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`;
+    return NextResponse.redirect(request.nextUrl);
+  }
+
+  return refreshSession(request, NextResponse.next({ request }));
 }
 
 export const config = {

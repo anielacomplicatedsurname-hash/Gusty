@@ -10,8 +10,10 @@ test("home shows the brand headline and the idea box", async ({ page }) => {
   await page.goto("/en");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(/good ideas deserve to move/i);
   await expect(page.getByLabel("What's your idea?")).toBeVisible();
-  // Saving isn't built yet, so the button must not pretend to work.
-  await expect(page.getByRole("button", { name: /start with my idea/i })).toBeDisabled();
+  // Without a database the button must not pretend to work.
+  const button = page.getByRole("button", { name: /start with my idea/i });
+  if (process.env.E2E_SUPABASE) await expect(button).toBeEnabled();
+  else await expect(button).toBeDisabled();
 });
 
 test("navigation: bottom bar on mobile, header nav from tablet up", async ({ page }, testInfo) => {
@@ -27,15 +29,19 @@ test("navigation: bottom bar on mobile, header nav from tablet up", async ({ pag
   }
 });
 
-test("the three destinations open honest placeholder pages", async ({ page }) => {
+test("the three destinations open, with unbuilt ones marked honestly", async ({ page }) => {
   await page.goto("/en");
   const nav = page.getByRole("navigation", { name: "Main" }).filter({ visible: true });
-  for (const [label, path] of [["Explore", "explore"], ["My Projects", "projects"], ["Connections", "connections"]]) {
+  for (const [label, path, placeholder] of [
+    ["Explore", "explore", true],
+    ["My Projects", "projects", false],
+    ["Connections", "connections", true],
+  ] as const) {
     await nav.getByRole("link", { name: label }).click();
     await expect(page).toHaveURL(new RegExp(`/en/${path}$`));
     // Next keeps previously visited pages mounted but hidden, so only count visible text.
     await expect(page.getByRole("heading", { level: 1, name: label })).toBeVisible();
-    await expect(page.getByText("Coming next").filter({ visible: true })).toBeVisible();
+    await expect(page.getByText("Coming next").filter({ visible: true })).toHaveCount(placeholder ? 1 : 0);
     await expect(nav.getByRole("link", { name: label })).toHaveAttribute("aria-current", "page");
   }
 });

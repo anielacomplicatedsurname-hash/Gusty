@@ -2,6 +2,25 @@
 
 Newest first. Each entry: decision, why, and what would make us revisit it.
 
+## 2026-10-25 — Guests first, email to keep (stage 2)
+Saving an idea needs no account: the server creates a Supabase anonymous session on first save.
+"Keep your projects" attaches an email to that same account (confirmed by a link), so nothing is moved
+or lost. Someone already registered gets a normal sign-in link. Revisit if guest accounts are abused
+(add CAPTCHA) or if we add passwordless passkeys.
+
+## 2026-10-25 — Least-privilege tables
+RLS on every table plus column grants: clients can only write `title` and `idea`; owner, organisation and
+timestamps come from defaults. Signed-out visitors have no table access at all. Tested in `tests/db`.
+
+## 2026-10-25 — Migrations applied by hand for now
+The founder runs each new migration in the Supabase SQL Editor before merging. No database password or
+access token leaves Supabase. Revisit when migrations become frequent: run them from CI with a stored token.
+
+## 2026-10-25 — Session reads happen only at request time
+Next 16 prerenders everything it can; Supabase checks token expiry against the clock. The server client
+calls `connection()` so session work never runs during prerendering, and session-dependent UI sits
+inside `<Suspense>`.
+
 ## 2026-10-24 — Brand name is "Gusty"
 Founder decision. One "y" everywhere: code, copy, assets, domains. The "Gustyyy" lockups in the reference
 PDF are not used. A unit test fails if "gustyyy" appears in interface text.

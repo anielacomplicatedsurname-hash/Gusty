@@ -6,13 +6,22 @@ import { BrandSymbol, type SymbolName } from "./BrandSymbol";
 
 export type NavItem = { href: string; label: string; symbol: SymbolName };
 
-/** The three destinations, shared by the desktop header and the mobile bottom bar. */
-export function NavLinks({ items, variant }: { items: NavItem[]; variant: "top" | "bottom" }) {
-  const pathname = usePathname();
+type Props = { items: NavItem[]; variant: "top" | "bottom" };
+
+/** The three destinations with the current one highlighted. */
+export function NavLinks(props: Props) {
+  return <NavList {...props} pathname={usePathname()} />;
+}
+
+/**
+ * The three destinations, shared by the desktop header and the mobile bottom bar.
+ * Rendered without a highlight while the current path is not yet known.
+ */
+export function NavList({ items, variant, pathname }: Props & { pathname: string | null }) {
   return (
     <ul className={variant === "bottom" ? "grid h-full grid-cols-3" : "flex items-center gap-1"}>
       {items.map((item) => {
-        const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+        const active = pathname !== null && (pathname === item.href || pathname.startsWith(`${item.href}/`));
         return (
           <li key={item.href} className={variant === "bottom" ? "h-full" : undefined}>
             <Link

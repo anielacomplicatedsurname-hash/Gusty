@@ -12,7 +12,7 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -24,9 +24,28 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+
+      # A throwaway local Supabase with this repo's migrations, for database and journey tests.
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.122.0
+      - name: Start local Supabase
+        run: |
+          supabase start -x studio,imgproxy,vector,logflare,supavisor,edge-runtime,realtime,storage-api,postgres-meta
+          supabase status -o env --override-name api.url=NEXT_PUBLIC_SUPABASE_URL --override-name auth.publishable_key=NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY \
+            | grep -E '^NEXT_PUBLIC_SUPABASE_(URL|PUBLISHABLE_KEY)=' | tr -d '"' >> "$GITHUB_ENV"
+      - name: Database types match the migrations
+        run: |
+          supabase gen types typescript --local > /tmp/database.types.ts
+          diff -u src/lib/supabase/database.types.ts /tmp/database.types.ts
+      - run: pnpm test:db
       - run: pnpm build
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost:3100
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
+        env:
+          E2E_SUPABASE: "1"
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
