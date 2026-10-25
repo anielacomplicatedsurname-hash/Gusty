@@ -57,6 +57,12 @@ describe("safeNextPath", () => {
     expect(safeNextPath("/\\evil.example", "/en")).toBe("/en");
     expect(safeNextPath(null, "/en")).toBe("/en");
   });
+  it("blocks hidden characters that browsers strip into another site's address", () => {
+    expect(safeNextPath("/\t/evil.example", "/en")).toBe("/en");
+    expect(safeNextPath("/\n/evil.example", "/en")).toBe("/en");
+    expect(safeNextPath("/\r/evil.example", "/en")).toBe("/en");
+    expect(safeNextPath("/\u0000/evil.example", "/en")).toBe("/en");
+  });
 });
 
 describe("signInDestination", () => {
@@ -69,6 +75,9 @@ describe("signInDestination", () => {
     expect(signInDestination("/en/projects", false, site, "/en")).toBe(
       "https://gusty-web.onrender.com/en/projects?signin=failed",
     );
+  });
+  it("never leaves the site, even with hidden characters", () => {
+    expect(signInDestination("/\t/evil.example", true, site, "/en/projects")).toBe("https://gusty-web.onrender.com/en/projects");
   });
   it("ignores destinations on other sites", () => {
     expect(signInDestination("https://evil.example/x", true, site, "/en/projects")).toBe(

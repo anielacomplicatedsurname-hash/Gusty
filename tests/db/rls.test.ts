@@ -140,3 +140,15 @@ describe("admin overview", () => {
     expect((await erin.from("admins").select("user_id")).error).not.toBeNull();
   });
 });
+
+describe("security tightening", () => {
+  it("keeps organisations closed and the usage log within plausible bounds", async () => {
+    const frank = client();
+    expect((await frank.auth.signInAnonymously()).error).toBeNull();
+    expect((await frank.from("organisations").select("id")).error).not.toBeNull();
+    const run = { task: "interpret_idea", model: "x", prompt_version: "v", status: "ok" as const };
+    expect((await frank.from("ai_runs").insert({ ...run, cost_usd: 500 })).error).not.toBeNull();
+    expect((await frank.from("ai_runs").insert({ ...run, input_tokens: 10_000_000 })).error).not.toBeNull();
+    expect((await frank.from("ai_runs").insert({ ...run, cost_usd: 0.02, input_tokens: 1200 })).error).toBeNull();
+  });
+});

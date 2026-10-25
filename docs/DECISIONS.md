@@ -117,3 +117,9 @@ it costs without seeing what anyone wrote. A fuller admin panel (roles, branding
 The founder owns heygusty.com. Resend (free up to 3,000 emails a month) with a verified domain lands in
 inboxes more reliably than a personal sender address. Gusty's email wording lives in `supabase/templates/`,
 not the message files, because Supabase renders and sends these emails. Translations will need one template set per language.
+
+## 2026-10-25 — No site-wide AI budget inside Gusty (for now)
+A site-wide cap computed from `ai_runs` could be switched off for everyone by one person logging fake
+costs, because the log is written with each person's own session. The Anthropic Console spend limit is
+enforced by Anthropic and can't be faked, so it is the ceiling. Revisit with a server-only log (service
+key or a separate service) when Gusty opens publicly.

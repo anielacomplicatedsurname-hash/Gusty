@@ -50,6 +50,26 @@
 - **Delete a project:** removes it and everything attached (`on delete cascade`).
 - **Delete my account:** `delete_my_account()` is a `security definer` function that only ever deletes the caller (`auth.uid()`); signed-out visitors can't run it. Everything they own goes with it. Both deletions ask for confirmation first.
 
+## Security review (stage 5, 2026-10-25)
+Checked: every table has Row Level Security; every `security definer` function pins `search_path`;
+signed-out visitors can't call any function; private pages are `noindex` and checked on the server;
+no secrets in the code or browser bundle; `pnpm audit --prod` finds no known vulnerabilities.
+
+Fixed:
+- **Sign-in redirect:** a link with a hidden tab or line break (`next=/%09/evil.example`) could send someone
+  to another site after signing in. Hidden characters are now refused and the destination must be Gusty itself.
+- **Email links** are always built from the public site address, never from the request.
+- **Leftover permissions** on `organisations` and `touch_updated_at` removed (already blocked by RLS).
+- **Usage log bounds:** one AI call can't be logged as costing over $1 or using over 200,000 tokens.
+
+Known, accepted for testers (to address before public launch):
+- **AI spending across many guest accounts.** Limits are per person; someone could make many guest
+  accounts. The firm cap is the monthly spend limit in the Anthropic Console (founder setting). Supabase
+  also limits new guest accounts per IP address (Authentication → Rate Limits). CAPTCHA closes this.
+- **Usage log is written by the person's own session**, so a determined person could add fake rows for
+  themselves, which would show in the admin totals (within the bounds above). It can't touch anyone else's data.
+- **Email requests** can be sent to any address, within Supabase's hourly email limit. CAPTCHA closes this too.
+
 ## To do before public launch
 CAPTCHA on guest sign-in, clean-up of abandoned guest accounts, stricter CSP (nonces instead of inline scripts), privacy policy and data processing records,
 dependency audit in CI, Supabase backups (Pro plan).
