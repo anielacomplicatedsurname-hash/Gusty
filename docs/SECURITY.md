@@ -40,11 +40,16 @@
 - `admin_overview()` checks `is_admin()` inside the database and refuses everyone else, so the page can't be opened by changing the browser.
 - To everyone who isn't an admin, the page looks exactly like a missing page. It is `noindex` and not linked anywhere.
 
+## Email
+- Sign-in emails are sent by Supabase through Resend, from `hello@heygusty.com` (SPF and DKIM verified). The
+  Resend key can only send email and lives only in the Supabase dashboard.
+- Emails say what the link does, that it works once and expires, and that ignoring it changes nothing.
+
 ## Your data (built in stage 5)
 - **Download:** "Download my projects" on My Projects returns a JSON file of every project with its reading, directions and steps (`/api/export`, owner only via RLS, `no-store`).
 - **Delete a project:** removes it and everything attached (`on delete cascade`).
 - **Delete my account:** `delete_my_account()` is a `security definer` function that only ever deletes the caller (`auth.uid()`); signed-out visitors can't run it. Everything they own goes with it. Both deletions ask for confirmation first.
 
 ## To do before public launch
-CAPTCHA on guest sign-in, custom SMTP for auth emails, clean-up of abandoned guest accounts, stricter CSP (nonces instead of inline scripts), privacy policy and data processing records,
+CAPTCHA on guest sign-in, clean-up of abandoned guest accounts, stricter CSP (nonces instead of inline scripts), privacy policy and data processing records,
 dependency audit in CI, Supabase backups (Pro plan).
