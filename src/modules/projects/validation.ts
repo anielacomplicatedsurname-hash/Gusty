@@ -30,7 +30,9 @@ export function checkEmail(raw: unknown): string | null {
 
 /** Only same-site paths may be used as a post-sign-in destination. */
 export function safeNextPath(raw: string | null, fallback: string): string {
-  return raw && raw.startsWith("/") && !raw.startsWith("//") && !raw.includes("\\") ? raw : fallback;
+  // Browsers drop tabs and line breaks inside URLs, so "/\t/evil.example" would become "//evil.example".
+  const clean = raw && !/[\u0000-\u001f\u007f\\]/.test(raw);
+  return clean && raw.startsWith("/") && !raw.startsWith("//") ? raw : fallback;
 }
 
 /**
@@ -38,7 +40,9 @@ export function safeNextPath(raw: string | null, fallback: string): string {
  * behind a host like Render the request's own URL is an internal one (e.g. localhost:10000).
  */
 export function signInDestination(rawNext: string | null, ok: boolean, siteUrl: string, fallback: string) {
-  const url = new URL(safeNextPath(rawNext, fallback), siteUrl);
+  let url = new URL(safeNextPath(rawNext, fallback), siteUrl);
+  // Belt and braces: whatever the path, the destination must be Gusty itself.
+  if (url.origin !== new URL(siteUrl).origin) url = new URL(fallback, siteUrl);
   if (!ok) url.searchParams.set("signin", "failed");
   return url.toString();
 }

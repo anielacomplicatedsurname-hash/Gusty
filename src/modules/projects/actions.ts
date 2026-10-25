@@ -1,6 +1,5 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { brand } from "@/config/brand";
 import { defaultLocale, hasLocale } from "@/i18n/config";
@@ -87,8 +86,8 @@ export async function requestEmailLink(
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { error: "unavailable" };
 
-  const origin = (await headers()).get("origin") ?? brand.siteUrl;
-  const emailRedirectTo = `${origin}/api/auth/confirm?next=${encodeURIComponent(`/${lang}/projects`)}`;
+  // Always the public site address, never one taken from the request.
+  const emailRedirectTo = `${brand.siteUrl}/api/auth/confirm?next=${encodeURIComponent(`/${lang}/projects`)}`;
 
   const { data: userData } = await supabase.auth.getUser();
   const { error } = userData.user?.is_anonymous

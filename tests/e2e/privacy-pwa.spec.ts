@@ -85,6 +85,13 @@ test.describe("installable app and security headers", () => {
     await context.setOffline(false);
   });
 
+  test("sign-in links can't be turned into a redirect to another site", async ({ request, baseURL }) => {
+    for (const next of ["//evil.example", "/%09/evil.example", "/%0a/evil.example", "https://evil.example"]) {
+      const response = await request.get(`/api/auth/confirm?next=${next}`, { maxRedirects: 0 });
+      expect(new URL(response.headers().location).origin).toBe(new URL(baseURL!).origin);
+    }
+  });
+
   test("the service worker never caches private pages", async ({ request }) => {
     const sw = await (await request.get("/sw.js")).text();
     // Pages go straight to the network; the only cache.put is inside the static-asset branch.
