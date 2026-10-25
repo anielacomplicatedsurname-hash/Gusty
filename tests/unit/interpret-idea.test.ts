@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { estimateCostUsd } from "@/ai/models";
 import {
-  INTERPRET_SYSTEM_PROMPT, demoInterpretation, interpretationToFacts, interpretUserMessage, normaliseInterpretation, planRefresh,
+  INTERPRET_SYSTEM_PROMPT, cleanTitle, demoInterpretation, interpretationToFacts, interpretUserMessage, normaliseInterpretation, planRefresh,
   type ExistingFact, type Interpretation,
 } from "@/ai/tasks/interpret-idea";
 
 const reading: Interpretation = {
+  title: ' "Street Seed Library." ',
   summary: { text: "  A seed   library for the street ", basis: "stated" },
   audience: ["Neighbours", "Children", "Gardeners", "Schools"].map((text) => ({ text, basis: "inferred" as const })),
   place: { text: "  ", basis: "inferred" },
@@ -88,5 +89,23 @@ describe("prompt wording rules", () => {
     expect(INTERPRET_SYSTEM_PROMPT).toMatch(/keep the person's meaning and intent exactly/);
     expect(INTERPRET_SYSTEM_PROMPT).toMatch(/grammatically correct/);
     expect(INTERPRET_SYSTEM_PROMPT).toMatch(/must never add, remove or change facts/);
+  });
+});
+
+describe("titles", () => {
+  it("tidies quotes, full stops and spaces", () => {
+    expect(normaliseInterpretation(reading).title).toBe("Street Seed Library");
+    expect(cleanTitle("  “Saturday   Repair Café”  ")).toBe("Saturday Repair Café");
+  });
+  it("keeps long titles to a readable length at a word boundary", () => {
+    const long = cleanTitle("A very long project name that keeps going and going well past any sensible title length");
+    expect(long.length).toBeLessThanOrEqual(60);
+    expect(long.endsWith(" ")).toBe(false);
+  });
+  it("asks Claude for a short, memorable, descriptive title", () => {
+    expect(INTERPRET_SYSTEM_PROMPT).toMatch(/short, memorable, descriptive name/);
+  });
+  it("never invents a title in demo mode", () => {
+    expect(demoInterpretation("A repair café.", []).title).toBe("");
   });
 });

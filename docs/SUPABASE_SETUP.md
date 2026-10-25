@@ -13,7 +13,11 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 
 ## Migrations so far (run in this order)
 1. `20261025000000_projects.sql` (stage 2, done)
-2. `20261025120000_interpretation.sql` (stage 3)
+2. `20261025120000_interpretation.sql` (stage 3, done)
+3. `20261025140000_titles_and_ai_errors.sql` (titles, AI failure reasons)
+
+If Gusty ever can't read ideas, open **Table Editor → ai_runs**: the `error` column says why
+(`key` = the API key was refused, `busy` = rate-limited or overloaded).
 
 ## Each later migration
 New files in `supabase/migrations/` are run the same way, in filename order, before merging the

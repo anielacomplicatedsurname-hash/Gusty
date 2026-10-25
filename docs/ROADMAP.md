@@ -15,7 +15,7 @@
 | 0. Foundations | Repo, docs, CI, Render blueprint, empty app deployed | Preview URL live, CI green | **Done** — live at gusty-web.onrender.com |
 | 1. Design system and shell | Tokens, fonts, brand assets, responsive nav with mobile bottom bar, Home | Founder approves the look on phone, tablet, desktop | **Done** — approved (fonts may change later) |
 | 2. Projects and saving | Supabase schema + RLS, guest sessions, email save, autosave, My Projects | An idea survives closing the browser; RLS tests pass | **Done** — verified live by the founder |
-| 3. AI interpretation | AI layer, `interpretIdea`, editable "Here's what I understood" card, demo mode | Real interpretation, edited and saved with provenance labels | **Built — awaiting review** |
+| 3. AI interpretation | AI layer, `interpretIdea`, editable "Here's what I understood" card, demo mode | Real interpretation, edited and saved with provenance labels | **Done** — verified live by the founder |
 | 4. Directions, steps, modes | Up to 3 directions and next steps, three modes, "I'm stuck" | Full journey works on a phone | Planned |
 | 5. Ready for testers | Service worker, admin basics, full e2e journey, security review | Installed on a phone, end-to-end green | Planned |
 
@@ -24,7 +24,8 @@
 - Next steps, directions and the three experience modes arrive in stage 4.
 - No full version history: instead, Gusty never changes anything the person wrote or confirmed (only unconfirmed AI items are replaced on a new reading). A browsable history can come later.
 - Without `ANTHROPIC_API_KEY`, readings run in a clearly labelled demo mode that only repeats the first sentence.
-- The real Claude call is not exercised by automated tests (no API key in CI); it was checked by unit tests of the prompt, schema handling and limits, and needs one live check after the key is added.
+- The real Claude call is not exercised by automated tests (no API key in CI); prompt, schema handling and limits are unit-tested, and readings were verified live by the founder.
+- The Claude API key in Render may expire (the founder's current key lasts one month); when it does, readings fail politely until it is replaced.
 - Readings are limited to 30 per person per day to protect the AI budget.
 - The AI usage log has no admin view yet (stage 5).
 - Production email uses Supabase's built-in sender, which only reaches project team members. Custom SMTP is needed before real users (see `docs/SUPABASE_SETUP.md`).

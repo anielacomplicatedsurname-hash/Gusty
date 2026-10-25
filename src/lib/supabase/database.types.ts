@@ -25,14 +25,14 @@ export type Database = {
           Tables: {
             "ai_runs": {
                   Row: {
-                    "cost_usd": number,"created_at": string,"id": string,"input_tokens": number,"model": string,"output_tokens": number,"owner_id": string,"project_id": string | null,"prompt_version": string,"status": string,"task": string
+                    "cost_usd": number,"created_at": string,"error": string | null,"id": string,"input_tokens": number,"model": string,"output_tokens": number,"owner_id": string,"project_id": string | null,"prompt_version": string,"status": string,"task": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "cost_usd"?: number,"created_at"?: string,"id"?: string,"input_tokens"?: number,"model": string,"output_tokens"?: number,"owner_id"?: string,"project_id"?: string | null,"prompt_version": string,"status": string,"task": string
+                    "cost_usd"?: number,"created_at"?: string,"error"?: string | null,"id"?: string,"input_tokens"?: number,"model": string,"output_tokens"?: number,"owner_id"?: string,"project_id"?: string | null,"prompt_version": string,"status": string,"task": string
                   }
                   Update: {
-                    "cost_usd"?: number,"created_at"?: string,"id"?: string,"input_tokens"?: number,"model"?: string,"output_tokens"?: number,"owner_id"?: string,"project_id"?: string | null,"prompt_version"?: string,"status"?: string,"task"?: string
+                    "cost_usd"?: number,"created_at"?: string,"error"?: string | null,"id"?: string,"input_tokens"?: number,"model"?: string,"output_tokens"?: number,"owner_id"?: string,"project_id"?: string | null,"prompt_version"?: string,"status"?: string,"task"?: string
                   }
                   Relationships: [
                     {
@@ -79,14 +79,14 @@ isOneToOne: false
                   ]
                 },"projects": {
                   Row: {
-                    "created_at": string,"id": string,"idea": string,"organisation_id": string,"owner_id": string,"title": string,"updated_at": string
+                    "created_at": string,"id": string,"idea": string,"organisation_id": string,"owner_id": string,"title": string,"title_source": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"id"?: string,"idea": string,"organisation_id"?: string,"owner_id"?: string,"title": string,"updated_at"?: string
+                    "created_at"?: string,"id"?: string,"idea": string,"organisation_id"?: string,"owner_id"?: string,"title": string,"title_source"?: string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"id"?: string,"idea"?: string,"organisation_id"?: string,"owner_id"?: string,"title"?: string,"updated_at"?: string
+                    "created_at"?: string,"id"?: string,"idea"?: string,"organisation_id"?: string,"owner_id"?: string,"title"?: string,"title_source"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {

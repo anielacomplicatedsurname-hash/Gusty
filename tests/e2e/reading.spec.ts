@@ -69,3 +69,21 @@ test("reading again keeps the person's own words and confirmed items", async ({ 
   await expect(section(page, "Where you are now").getByText("Started")).toBeVisible();
   await expect(section(page, "Where you are now").getByText("Just an idea")).toHaveCount(0);
 });
+
+test("people can rename a project, and the new title shows in My Projects", async ({ page }) => {
+  await newProject(page);
+  await page.getByRole("button", { name: /^Rename/ }).click();
+  await page.getByLabel("Project title").fill("Saturday Repair Café");
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Saturday Repair Café" })).toBeVisible();
+  await expect(page.getByText("Title suggested by Gusty")).toHaveCount(0);
+
+  // Reading again never touches a title the person chose.
+  await page.getByRole("button", { name: "Read my idea again" }).click();
+  await expect(page.getByRole("button", { name: "Read my idea again" })).toBeEnabled();
+  await page.reload();
+  await expect(page.getByRole("heading", { level: 1, name: "Saturday Repair Café" })).toBeVisible();
+
+  await page.goto("/en/projects");
+  await expect(page.getByRole("link", { name: /Saturday Repair Café/ })).toBeVisible();
+});

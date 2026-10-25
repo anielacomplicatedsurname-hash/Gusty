@@ -3,7 +3,7 @@ import { isProjectId } from "./validation";
 
 export type CurrentUser = { id: string; email: string | null; isAnonymous: boolean };
 export type ProjectSummary = { id: string; title: string; updatedAt: string };
-export type Project = ProjectSummary & { idea: string; createdAt: string };
+export type Project = ProjectSummary & { idea: string; createdAt: string; titleSource: "auto" | "ai" | "user" };
 
 /** Who is signed in, if anyone. Row Level Security still guards every query. */
 export async function getCurrentUser(): Promise<CurrentUser | null> {
@@ -39,7 +39,7 @@ export async function getProject(id: string): Promise<Project | null> {
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("projects")
-    .select("id, title, idea, created_at, updated_at")
+    .select("id, title, title_source, idea, created_at, updated_at")
     .eq("id", id)
     .maybeSingle();
   if (error) throw new Error(`Could not load project: ${error.message}`);
@@ -47,6 +47,7 @@ export async function getProject(id: string): Promise<Project | null> {
   return {
     id: data.id,
     title: data.title,
+    titleSource: data.title_source as Project["titleSource"],
     idea: data.idea,
     createdAt: data.created_at,
     updatedAt: data.updated_at,
