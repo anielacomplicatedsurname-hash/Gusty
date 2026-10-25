@@ -99,7 +99,17 @@
     "renameLabel": "Project title",
     "renameSave": "Save",
     "renameCancel": "Cancel",
-    "renameFailed": "That title didn't save. Please try again."
+    "renameFailed": "That title didn't save. Please try again.",
+    "deleteProject": "Delete this project",
+    "deleteProjectConfirm": "Delete this project, Gusty's reading and all its steps? This can't be undone.",
+    "deleteProjectYes": "Yes, delete this project",
+    "cancel": "Cancel",
+    "yourData": "Your data",
+    "yourDataBody": "Everything you save in Gusty is yours. You can take a copy or delete it at any time.",
+    "download": "Download my projects",
+    "deleteAccount": "Delete my account",
+    "deleteAccountConfirm": "Delete your account and every project in it? This can't be undone. You may want to download your projects first.",
+    "deleteAccountYes": "Yes, delete everything"
   },
   "emailLink": {
     "label": "Email address",
@@ -279,5 +289,10 @@
       "limit": "You've reached today's limit for Gusty's suggestions. It resets within a day.",
       "failed": "That change didn't save. Please try again."
     }
+  },
+  "offline": {
+    "title": "You're offline right now.",
+    "body": "Gusty needs an internet connection to open your projects. Check your connection and try again when you're ready.",
+    "saved": "Anything that showed “Saved” is safe."
   }
 }

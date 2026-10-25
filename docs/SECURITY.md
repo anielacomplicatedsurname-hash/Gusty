@@ -7,7 +7,7 @@
   or the system. AI outputs are schema-validated before anything is saved; actions need user approval.
 - Log errors and usage (tokens, cost), not the content of people's ideas (`ai_runs` stores no content).
 - The idea is passed to the model inside `<idea>` tags with an instruction to treat it as text, not instructions; closing tags inside it are neutralised. Model output is schema-validated and length-limited before it is saved.
-- AI calls run only on the server; the key never reaches the browser. 30 readings per person per day.
+- AI calls run only on the server; the key never reaches the browser. 30 readings and 60 AI calls in total per person per day.
 
 ## Secrets
 - Never committed. `.env*` is git-ignored except `.env.example`, which holds names only.
@@ -30,7 +30,15 @@
 - Response headers: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options: DENY`, `Permissions-Policy`; no `X-Powered-By`.
 - Health endpoint reveals no configuration.
 - Fonts self-hosted: visitors' browsers make no requests to Google.
+- Content Security Policy: everything from Gusty's own address only; no plugins, no framing, forms only post to Gusty. Inline scripts are still allowed (Next.js needs them); `unsafe-eval` only in development.
+- HSTS: browsers always use HTTPS.
+- Service worker caches only public, versioned files (`/_next/static/`, `/brand/`, `/icons/`) and the offline page. Pages and API responses are never cached, so private projects never stay on a shared device. An e2e test checks this.
+
+## Your data (built in stage 5)
+- **Download:** "Download my projects" on My Projects returns a JSON file of every project with its reading, directions and steps (`/api/export`, owner only via RLS, `no-store`).
+- **Delete a project:** removes it and everything attached (`on delete cascade`).
+- **Delete my account:** `delete_my_account()` is a `security definer` function that only ever deletes the caller (`auth.uid()`); signed-out visitors can't run it. Everything they own goes with it. Both deletions ask for confirmation first.
 
 ## To do before public launch
-CAPTCHA on guest sign-in, custom SMTP for auth emails, clean-up of abandoned guest accounts, Content Security Policy, rate limiting on AI endpoints, privacy policy and data processing records,
-data export and deletion flows, dependency audit in CI, Supabase backups (Pro plan).
+CAPTCHA on guest sign-in, custom SMTP for auth emails, clean-up of abandoned guest accounts, stricter CSP (nonces instead of inline scripts), privacy policy and data processing records,
+dependency audit in CI, Supabase backups (Pro plan).

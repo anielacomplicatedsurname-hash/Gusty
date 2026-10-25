@@ -8,6 +8,7 @@ src/
 ├─ app/                 routes (App Router)
 │  ├─ [lang]/           every page sits under a locale segment (/en/...)
 │  ├─ api/health/       liveness check for Render
+│  ├─ api/export/       "Download my projects" (JSON, owner only)
 │  └─ manifest.ts, robots.ts, sitemap.ts, icons
 ├─ components/          shared UI (AppShell, Logo, BrandSymbol, NavLinks, ComingNext)
 ├─ config/              brand.ts (white-label seam), site-url.ts (tolerant site address)
@@ -34,7 +35,7 @@ roadmap, Opportunity Discovery — not milestone 1).
 | Styling | Tailwind CSS 4 over CSS custom-property tokens in `globals.css` |
 | i18n | Built-in Next.js pattern: `[lang]` segment, JSON dictionaries, `next/root-params`, `Intl` for formatting. English only until the core journey is validated. |
 | Fonts | `next/font/google`, self-hosted at build time (no visitor requests to Google) |
-| PWA | Web app manifest + icons now; service worker for app-shell caching in stage 5. No offline promise. |
+| PWA | Web app manifest + icons; a small hand-written service worker (`public/sw.js`, no library) caches only static files and shows an offline page. Private pages are never cached. |
 | Data, auth, files | Supabase Postgres, Row Level Security, guest (anonymous) sessions → email link. Migrations in `supabase/migrations/`; setup in `docs/SUPABASE_SETUP.md` |
 | AI | Server-side only. `src/ai` provider interface; Claude Opus 5.5 by default (`GUSTY_AI_MODEL`); structured outputs via Zod; server-side fallback; labelled demo mode without a key |
 | Hosting | Render (`render.yaml` Blueprint), region Frankfurt |

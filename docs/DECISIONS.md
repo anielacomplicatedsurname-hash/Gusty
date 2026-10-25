@@ -98,3 +98,12 @@ Starter before real users. Vercel would be smoother for Next.js but splits hosti
 ## 2026-10-24 — Guest-first sign-in (planned, stage 2)
 People can describe an idea before creating an account (Supabase anonymous session), then keep it with an
 email magic link. Lower barrier, aligned with the neuroinclusive principles.
+
+## 2026-10-25 — Hand-written service worker; nothing private cached
+Serwist (in the original plan) would add a dependency and build step for ~50 lines of behaviour. Gusty's
+service worker caches only versioned static files and an offline page; pages always come from the network,
+so private projects never stay on a shared or lost device. Trade-off: no offline editing. Revisit if testers ask for it.
+
+## 2026-10-25 — Account deletion through a database function
+Deleting a Supabase user normally needs the secret service key on the server. A `security definer` function
+that deletes only `auth.uid()` keeps that key out of the app entirely. Everything the person owns cascades.
