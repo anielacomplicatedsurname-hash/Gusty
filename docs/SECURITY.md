@@ -5,7 +5,9 @@
 - Users can export and delete their data.
 - Uploaded documents, web pages, PDFs and retrieved text are **untrusted input** — never instructions to the AI
   or the system. AI outputs are schema-validated before anything is saved; actions need user approval.
-- Log errors and usage (tokens, cost), not the content of people's ideas.
+- Log errors and usage (tokens, cost), not the content of people's ideas (`ai_runs` stores no content).
+- The idea is passed to the model inside `<idea>` tags with an instruction to treat it as text, not instructions; closing tags inside it are neutralised. Model output is schema-validated and length-limited before it is saved.
+- AI calls run only on the server; the key never reaches the browser. 30 readings per person per day.
 
 ## Secrets
 - Never committed. `.env*` is git-ignored except `.env.example`, which holds names only.
@@ -15,7 +17,7 @@
 
 ## Data access (built in stage 2)
 - Supabase Row Level Security on every table; default deny. Each project readable only by its owner.
-- Column grants: clients may only write `title` and `idea`. Signed-out visitors have no table access.
+- Column grants: clients may only write `title` and `idea` on projects; reading items can only be added to the person's own projects. Signed-out visitors have no table access.
 - Guest (anonymous) accounts can save projects; adding an email requires confirming a link.
 - Sign-in redirects only go to same-site paths (`safeNextPath`), and Supabase only allows listed redirect URLs.
 - Deleting a user deletes their projects (`on delete cascade`).

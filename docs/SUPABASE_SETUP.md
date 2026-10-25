@@ -11,6 +11,10 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
    - Redirect URLs: add `https://gusty-web.onrender.com/**`
 4. **Email confirmation** stays on (the default): Authentication → Sign In / Providers → Email → "Confirm email".
 
+## Migrations so far (run in this order)
+1. `20261025000000_projects.sql` (stage 2, done)
+2. `20261025120000_interpretation.sql` (stage 3)
+
 ## Each later migration
 New files in `supabase/migrations/` are run the same way, in filename order, before merging the
 pull request that adds them. (When this gets frequent, automate it with the Supabase CLI in CI.)
