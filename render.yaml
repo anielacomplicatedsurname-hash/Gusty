@@ -18,8 +18,10 @@ services:
         value: "22"
       - key: NEXT_TELEMETRY_DISABLED
         value: "1"
+      # The public address, used for links in emails, canonical URLs and the sitemap.
+      # Change it here when the real domain is connected.
       - key: NEXT_PUBLIC_SITE_URL
-        sync: false # e.g. https://gusty-web.onrender.com, later the real domain
+        value: https://gusty-web.onrender.com
       # Public by design (protected by Row Level Security). Read at build time.
       - key: NEXT_PUBLIC_SUPABASE_URL
         value: https://xxordvjyxfjkidfenqla.supabase.co
