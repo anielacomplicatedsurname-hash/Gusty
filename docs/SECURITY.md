@@ -24,7 +24,7 @@
 - Tenant-owned tables carry `organisation_id` from the first migration.
 - Private routes (`/[lang]/projects`, `/[lang]/admin`, conversations) are access-controlled on the server and `noindex`.
   `robots.txt` is a hint, not protection.
-- Admin is role-based and checked on the server and in RLS.
+- Admin is checked inside the database (see below).
 
 ## Current hardening
 - Response headers: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options: DENY`, `Permissions-Policy`; no `X-Powered-By`.
@@ -33,6 +33,12 @@
 - Content Security Policy: everything from Gusty's own address only; no plugins, no framing, forms only post to Gusty. Inline scripts are still allowed (Next.js needs them); `unsafe-eval` only in development.
 - HSTS: browsers always use HTTPS.
 - Service worker caches only public, versioned files (`/_next/static/`, `/brand/`, `/icons/`) and the offline page. Pages and API responses are never cached, so private projects never stay on a shared device. An e2e test checks this.
+
+## Admin overview (built in stage 5)
+- `/[lang]/admin` shows counts and estimated costs only: people, projects, AI requests by feature and day, problem reasons. It never shows ideas, titles, emails or anything people wrote.
+- Admins are listed in `public.admins`, which the app can't read or write; they are added by hand in the SQL Editor.
+- `admin_overview()` checks `is_admin()` inside the database and refuses everyone else, so the page can't be opened by changing the browser.
+- To everyone who isn't an admin, the page looks exactly like a missing page. It is `noindex` and not linked anywhere.
 
 ## Your data (built in stage 5)
 - **Download:** "Download my projects" on My Projects returns a JSON file of every project with its reading, directions and steps (`/api/export`, owner only via RLS, `no-store`).

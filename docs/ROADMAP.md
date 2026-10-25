@@ -17,7 +17,7 @@
 | 2. Projects and saving | Supabase schema + RLS, guest sessions, email save, autosave, My Projects | An idea survives closing the browser; RLS tests pass | **Done** — verified live by the founder |
 | 3. AI interpretation | AI layer, `interpretIdea`, editable "Here's what I understood" card, demo mode | Real interpretation, edited and saved with provenance labels | **Done** — verified live by the founder |
 | 4. Directions, steps, modes | Up to 3 directions and next steps, three modes, "I'm stuck" | Full journey works on a phone | **Done** — verified live by the founder |
-| 5. Ready for testers | Service worker, admin basics, full e2e journey, security review | Installed on a phone, end-to-end green | **In progress** — install, offline page, export, deletion and security headers built; admin view and tester email next |
+| 5. Ready for testers | Service worker, admin basics, full e2e journey, security review | Installed on a phone, end-to-end green | **In progress** — install, offline page, export, deletion, security headers and admin overview built; tester email next |
 
 ## Known limitations (current build)
 - Explore and Connections are labelled "Coming next" placeholders, excluded from search engines.
@@ -26,7 +26,8 @@
 - The real Claude call is not exercised by automated tests (no API key in CI); prompt, schema handling and limits are unit-tested, and readings were verified live by the founder.
 - The Claude API key in Render may expire (the founder's current key lasts one month); when it does, readings fail politely until it is replaced.
 - Readings are limited to 30 per person per day to protect the AI budget.
-- The AI usage log has no admin view yet (next part of stage 5).
+- The admin overview shows totals only: no charts, no per-person view (on purpose), days in UTC, costs estimated from token counts.
+- There is one kind of admin (the founder). Roles for institutions come with white-label deployments.
 - Offline, Gusty shows a calm offline page; projects themselves are not available offline (they are never cached on the device, by design).
 - The Content Security Policy still allows inline scripts (Next.js needs them without per-request nonces); tightening it is a later step.
 - Production email uses Supabase's built-in sender, which only reaches project team members. Custom SMTP is needed before real users (see `docs/SUPABASE_SETUP.md`).

@@ -23,7 +23,21 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "ai_runs": {
+            "admins": {
+                  Row: {
+                    "created_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"ai_runs": {
                   Row: {
                     "cost_usd": number,"created_at": string,"error": string | null,"id": string,"input_tokens": number,"model": string,"output_tokens": number,"owner_id": string,"project_id": string | null,"prompt_version": string,"status": string,"task": string
                   }
@@ -163,8 +177,14 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "delete_my_account":
+            "admin_overview":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"delete_my_account":
 { Args: Record<PropertyKey, never>; Returns: undefined
+                           },
+"is_admin":
+{ Args: Record<PropertyKey, never>; Returns: boolean
                            }
           }
           Enums: {

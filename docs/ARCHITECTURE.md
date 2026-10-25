@@ -16,6 +16,7 @@ src/
 ├─ modules/projects/    data access, server actions, idea form, autosave editor, email link
 ├─ modules/interpretation/  Gusty's reading: data, actions (read, confirm, edit, add, remove), UI
 ├─ modules/steps/       directions, next steps, modes (visibleSteps), I'm stuck, UI
+├─ modules/admin/       founder overview (counts and costs only, via `admin_overview()`)
 ├─ ai/                  provider interface, Claude provider, prices, usage log + daily budget, tasks/ (prompts + schemas)
 ├─ i18n/                locale config, message dictionaries (messages/en.json)
 └─ proxy.ts             redirects locale-less URLs to the default locale
@@ -24,7 +25,7 @@ tests/unit, tests/e2e   Vitest and Playwright
 ```
 
 Planned additions, each arriving with the stage that needs it (`docs/ROADMAP.md`):
-`src/modules/{assistant,preferences,admin}` (stage 4–5), `services/research/` Python FastAPI service (stage 2 of the product
+`src/modules/assistant` (later), `services/research/` Python FastAPI service (stage 2 of the product
 roadmap, Opportunity Discovery — not milestone 1).
 
 ## Key choices

@@ -122,3 +122,21 @@ describe("projects Row Level Security", () => {
   });
 });
 
+
+describe("admin overview", () => {
+  it("is refused to signed-out visitors and to people who aren't admins", async () => {
+    expect((await client().rpc("admin_overview")).error).not.toBeNull();
+    const dave = client();
+    expect((await dave.auth.signInAnonymously()).error).toBeNull();
+    const { error } = await dave.rpc("admin_overview");
+    expect(error?.code).toBe("42501");
+    expect((await dave.rpc("is_admin")).data).toBe(false);
+  });
+
+  it("can't be granted from the app: the admins list is unreadable and unwritable", async () => {
+    const erin = client();
+    const { data } = await erin.auth.signInAnonymously();
+    expect((await erin.from("admins").insert({ user_id: data.user!.id })).error).not.toBeNull();
+    expect((await erin.from("admins").select("user_id")).error).not.toBeNull();
+  });
+});
