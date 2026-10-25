@@ -88,7 +88,8 @@ async function ProjectContent({
 }
 
 async function ReadingSection({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
-  const { facts, lastRun } = await getReading(projectId);
+  const { facts, lastRun, unavailable } = await getReading(projectId);
+  if (unavailable) return <p role="status">{t.interpretation.errors.unavailable}</p>;
   if (facts.length === 0) return <AutoRead projectId={projectId} lang={lang} copy={t.interpretation} />;
   return (
     <ReadingView

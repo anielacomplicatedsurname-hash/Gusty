@@ -2,7 +2,12 @@ import type { ExistingFact, FactKind, FactSource } from "@/ai/tasks/interpret-id
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type Fact = ExistingFact & { position: number };
-export type ReadingState = { facts: Fact[]; lastRun: "ok" | "demo" | "error" | "declined" | null };
+export type ReadingState = {
+  facts: Fact[];
+  lastRun: "ok" | "demo" | "error" | "declined" | null;
+  /** The reading couldn't be loaded (e.g. a database change not yet applied). The page still works. */
+  unavailable?: boolean;
+};
 
 /** Gusty's reading for a project, and how the last reading went. RLS limits this to the owner. */
 export async function getReading(projectId: string): Promise<ReadingState> {
@@ -22,7 +27,10 @@ export async function getReading(projectId: string): Promise<ReadingState> {
       .order("created_at", { ascending: false })
       .limit(1),
   ]);
-  if (facts.error) throw new Error(`Could not load Gusty's reading: ${facts.error.message}`);
+  if (facts.error) {
+    console.error("Could not load Gusty's reading:", facts.error.message);
+    return { facts: [], lastRun: null, unavailable: true };
+  }
   return {
     facts: (facts.data ?? []).map((f) => ({
       id: f.id,
