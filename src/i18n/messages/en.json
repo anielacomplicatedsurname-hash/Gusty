@@ -294,5 +294,53 @@
     "title": "You're offline right now.",
     "body": "Gusty needs an internet connection to open your projects. Check your connection and try again when you're ready.",
     "saved": "Anything that showed “Saved” is safe."
+  },
+  "admin": {
+    "title": "Admin overview",
+    "intro": "Only you can see this page. It shows counts and costs, never anyone's ideas.",
+    "loading": "Loading the overview…",
+    "unavailable": "The overview couldn't load. Please try again later.",
+    "people": "People",
+    "peopleTotal": "Everyone",
+    "peopleWithEmail": "Kept with an email",
+    "peopleGuests": "Guests (no email yet)",
+    "newThisWeek": "New in the last 7 days",
+    "projects": "Projects",
+    "projectsTotal": "All projects",
+    "cost": "Estimated AI cost",
+    "costNote": "Estimated from token counts and published prices, in US dollars. Your Anthropic bill is the exact figure.",
+    "costToday": "Today",
+    "costWeek": "Last 7 days",
+    "costMonth": "Last 30 days",
+    "byDay": "AI use by day (last 14 days, UTC)",
+    "day": "Day",
+    "runs": "Requests",
+    "errors": "Problems",
+    "demo": "Demo",
+    "costColumn": "Cost",
+    "byTask": "AI use by feature (last 7 days)",
+    "feature": "Feature",
+    "noRuns": "No AI requests in the last 7 days.",
+    "problems": "Problems (last 7 days)",
+    "noProblems": "No problems in the last 7 days.",
+    "reason": "What happened",
+    "count": "Times",
+    "last": "Most recent",
+    "tasks": {
+      "interpret_idea": "Reading an idea",
+      "suggest_directions": "Directions",
+      "plan_steps": "Next steps",
+      "unstick_smaller": "I'm stuck: make it smaller",
+      "unstick_explain": "I'm stuck: explain differently",
+      "unstick_start": "I'm stuck: help me start"
+    },
+    "reasons": {
+      "key": "API key missing, expired or refused",
+      "busy": "Claude was busy or rate-limited",
+      "declined": "Claude declined the request",
+      "invalid": "Claude's answer was incomplete",
+      "other": "Other error",
+      "error": "Other error"
+    }
   }
 }

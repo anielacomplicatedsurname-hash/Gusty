@@ -107,3 +107,8 @@ so private projects never stay on a shared or lost device. Trade-off: no offline
 ## 2026-10-25 — Account deletion through a database function
 Deleting a Supabase user normally needs the secret service key on the server. A `security definer` function
 that deletes only `auth.uid()` keeps that key out of the app entirely. Everything the person owns cascades.
+
+## 2026-10-25 — Admin overview: one database function, counts only
+One `security definer` function returns all the numbers, after checking the caller is in `admins`. No service
+key in the app, no admin write actions, no per-person drill-down: the founder sees how Gusty is used and what
+it costs without seeing what anyone wrote. A fuller admin panel (roles, branding) waits for white-label needs.

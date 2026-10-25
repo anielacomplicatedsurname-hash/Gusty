@@ -17,6 +17,15 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 3. `20261025140000_titles_and_ai_errors.sql` (titles, AI failure reasons)
 4. `20261025160000_next_steps.sql` (stage 4: directions, steps, preferences)
 5. `20261025180000_delete_my_account.sql` (stage 5: lets people delete their own account)
+6. `20261025200000_admin.sql` (stage 5: the admin overview)
+
+## Making yourself an admin
+Sign in to Gusty with your email first, then in the SQL Editor run (with your own email):
+```sql
+insert into public.admins (user_id) select id from auth.users where email = 'you@example.com';
+```
+The overview is at `/en/admin`. To remove someone: `delete from public.admins where user_id = '…';`.
+The app itself can never add admins.
 
 If Gusty ever can't read ideas, open **Table Editor → ai_runs**: the `error` column says why
 (`key` = the API key was refused, `busy` = rate-limited or overloaded).
