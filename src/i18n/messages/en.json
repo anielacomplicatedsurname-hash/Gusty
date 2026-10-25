@@ -158,5 +158,11 @@
       "limit": "You've reached today's limit for readings. It resets within a day.",
       "failed": "That change didn't save. Please try again."
     }
+  },
+  "errorPage": {
+    "title": "Something went wrong on our side.",
+    "body": "Your work is saved. Please try again in a moment.",
+    "retry": "Try again",
+    "home": "Back to home"
   }
 }
