@@ -23,7 +23,27 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "organisations": {
+            "ai_runs": {
+                  Row: {
+                    "cost_usd": number,"created_at": string,"id": string,"input_tokens": number,"model": string,"output_tokens": number,"owner_id": string,"project_id": string | null,"prompt_version": string,"status": string,"task": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cost_usd"?: number,"created_at"?: string,"id"?: string,"input_tokens"?: number,"model": string,"output_tokens"?: number,"owner_id"?: string,"project_id"?: string | null,"prompt_version": string,"status": string,"task": string
+                  }
+                  Update: {
+                    "cost_usd"?: number,"created_at"?: string,"id"?: string,"input_tokens"?: number,"model"?: string,"output_tokens"?: number,"owner_id"?: string,"project_id"?: string | null,"prompt_version"?: string,"status"?: string,"task"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "ai_runs_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"organisations": {
                   Row: {
                     "created_at": string,"id": string,"name": string,"slug": string
                   }
@@ -36,6 +56,26 @@ export type Database = {
                   }
                   Relationships: [
                     
+                  ]
+                },"project_facts": {
+                  Row: {
+                    "created_at": string,"id": string,"kind": string,"owner_id": string,"position": number,"project_id": string,"source": string,"status": string,"updated_at": string,"value": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"kind": string,"owner_id"?: string,"position"?: number,"project_id": string,"source": string,"status"?: string,"updated_at"?: string,"value": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"kind"?: string,"owner_id"?: string,"position"?: number,"project_id"?: string,"source"?: string,"status"?: string,"updated_at"?: string,"value"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "project_facts_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"projects": {
                   Row: {

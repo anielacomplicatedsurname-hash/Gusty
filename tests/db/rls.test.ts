@@ -58,4 +58,31 @@ describe("projects Row Level Security", () => {
       .insert({ title: "Sneaky", idea: "Pretending to be Alice", owner_id: me.user!.id });
     expect(error?.code).toBe("42501");
   });
+
+  it("keeps Gusty's reading private and tied to the owner's projects", async () => {
+    const own = await alice
+      .from("project_facts")
+      .insert({ project_id: aliceProjectId, kind: "summary", value: "Alice's summary", source: "user", status: "confirmed" })
+      .select("id")
+      .single();
+    expect(own.error).toBeNull();
+
+    const peek = await bob.from("project_facts").select("id").eq("project_id", aliceProjectId);
+    expect(peek.data).toEqual([]);
+
+    const plant = await bob
+      .from("project_facts")
+      .insert({ project_id: aliceProjectId, kind: "need", value: "Planted by Bob", source: "user", status: "confirmed" });
+    expect(plant.error?.code).toBe("42501");
+  });
+
+  it("keeps the AI usage log private", async () => {
+    const logged = await alice.from("ai_runs").insert({
+      project_id: aliceProjectId, task: "interpret_idea", model: "demo", prompt_version: "test", status: "demo",
+    });
+    expect(logged.error).toBeNull();
+    const peek = await bob.from("ai_runs").select("id").eq("project_id", aliceProjectId);
+    expect(peek.data).toEqual([]);
+  });
 });
+

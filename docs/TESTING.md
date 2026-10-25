@@ -19,6 +19,9 @@
 - Title, description, canonical, hreflang, `noindex` on placeholders, robots.txt, manifest and icons (e2e).
 - Idea, title, email and redirect validation (unit); site address handling (unit).
 - Row Level Security: owner-only read, update and delete; no access when signed out; owner can't be forged (db).
+- Gusty's reading (unit): limits, provenance mapping, never overwriting the person's words, prompt-tag safety, demo output, cost estimates.
+- Gusty's reading (e2e, demo mode): appears automatically and labelled, confirm/edit/add/remove persist, reading again keeps the person's words.
+- Reading items and AI log are private (db).
 - Saving journey: save without an account, autosave, reload, private to the owner, empty-idea message, keeping projects via a real confirmation email in the local test inbox (e2e).
 
 CI starts a local Supabase with the repo's migrations, checks the generated types are current, then runs all of the above.

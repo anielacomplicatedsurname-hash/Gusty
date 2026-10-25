@@ -27,3 +27,6 @@ services:
         value: https://xxordvjyxfjkidfenqla.supabase.co
       - key: NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
         value: sb_publishable_dhsDmLb3KRSmhnGLJ3wwIw_jiuxaZem
+      # Server-only. Entered in the Render dashboard, never committed.
+      - key: ANTHROPIC_API_KEY
+        sync: false

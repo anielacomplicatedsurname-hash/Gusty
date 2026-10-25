@@ -86,11 +86,6 @@
       "saved": "Saved",
       "failed": "Couldn't save. Your text is still here; we'll try again when you next type."
     },
-    "nextBuild": {
-      "label": "Coming next",
-      "title": "Gusty's reading of your idea",
-      "body": "Soon Gusty will reflect your idea back clearly and suggest up to three small next steps. That part isn't built yet."
-    },
     "notFound": "We couldn't find that project. It may belong to another account or browser.",
     "signedOutTitle": "Find your projects",
     "signedOutBody": "Projects are private to you. Enter the email you used and we'll send you a sign-in link.",
@@ -109,6 +104,59 @@
       "invalid": "That doesn't look like an email address. Please check it.",
       "unavailable": "Email sign-in isn't available right now. Please try again later.",
       "failed": "We couldn't send the link. Please try again in a minute."
+    }
+  },
+  "interpretation": {
+    "title": "Here's what I understood",
+    "intro": "Check this and change anything that isn't right. Your words always win.",
+    "reading": "Gusty is reading your idea. This usually takes a few seconds.",
+    "demoNotice": "Demo mode: this is not a real AI reading yet. It only repeats your first sentence and asks general questions. Gusty's real reading switches on once the AI key is set up.",
+    "sections": {
+      "summary": "In one sentence",
+      "audience": "Who it's for",
+      "place": "Where",
+      "stage": "Where you are now",
+      "need": "What it might need",
+      "question": "Still open"
+    },
+    "stages": {
+      "just_an_idea": "Just an idea",
+      "planning": "Planning",
+      "started": "Started",
+      "running": "Up and running"
+    },
+    "sources": {
+      "user": "Your words",
+      "ai_from_user": "From your words",
+      "ai_suggestion": "Gusty's suggestion"
+    },
+    "confirmed": "Confirmed",
+    "unknown": "Not mentioned yet",
+    "actions": {
+      "confirm": "That's right",
+      "edit": "Edit",
+      "remove": "Remove",
+      "save": "Save",
+      "cancel": "Cancel",
+      "add": "Add",
+      "addPlaceholder": "Type it in your own words",
+      "refresh": "Read my idea again",
+      "refreshing": "Reading…",
+      "refreshNote": "Your own words and anything you've confirmed stay as they are."
+    },
+    "questionsNote": "Questions to think about when you're ready. No need to answer them now.",
+    "demoQuestions": [
+      "Who would this help most?",
+      "What would a small first version look like?",
+      "What do you already have that could help?"
+    ],
+    "errors": {
+      "unavailable": "Gusty can't read ideas right now. Your idea is saved. Please try again later.",
+      "declined": "Gusty couldn't read this one. Your idea is saved and you can keep working on it.",
+      "invalid": "Gusty's reading came back incomplete. Please try again.",
+      "error": "Something went wrong. Your idea is saved. Please try again.",
+      "limit": "You've reached today's limit for readings. It resets within a day.",
+      "failed": "That change didn't save. Please try again."
     }
   }
 }

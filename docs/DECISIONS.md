@@ -2,6 +2,23 @@
 
 Newest first. Each entry: decision, why, and what would make us revisit it.
 
+## 2026-10-25 — Gusty's reading: provenance per item, and your words always win (stage 3)
+The reading is stored item by item in `project_facts`, each marked *your words* (user), *from your words*
+(Gusty restating what they wrote) or *Gusty's suggestion* (inferred), and *proposed* or *confirmed*.
+A new reading only replaces unconfirmed AI items; anything the person wrote or confirmed is never touched
+(`planRefresh`). Unknowns are shown as "Not mentioned yet", never guessed.
+
+## 2026-10-25 — AI provider layer, structured output, server-side fallback
+Tasks call a small `AiProvider` interface (`src/ai`), not the vendor SDK, so the model or provider can
+change per task. Claude returns schema-checked JSON (Zod), then code enforces list and length limits.
+Default model Claude Opus 5.5 at medium effort (`GUSTY_AI_MODEL` overrides it). Anthropic's server-side
+fallback is on, so an over-cautious safety decline is retried on another Claude model rather than failing.
+Without a key the app uses a labelled demo. Revisit model choice once real usage and cost are measured.
+
+## 2026-10-25 — AI usage log without content, and a daily limit
+Every AI call is logged in `ai_runs` with model, prompt version, tokens and estimated cost, never the idea
+text. A person can request 30 readings per 24 hours. Revisit the limit with real usage.
+
 ## 2026-10-25 — Guests first, email to keep (stage 2)
 Saving an idea needs no account: the server creates a Supabase anonymous session on first save.
 "Keep your projects" attaches an email to that same account (confirmed by a link), so nothing is moved

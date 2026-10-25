@@ -5,6 +5,8 @@ import { BrandSymbol } from "@/components/BrandSymbol";
 import { getMessages, type Messages } from "@/i18n/dictionaries";
 import { fill, formatDateTime } from "@/i18n/format";
 import { getProject } from "@/modules/projects/data";
+import { getReading } from "@/modules/interpretation/data";
+import { AutoRead, ReadingView } from "@/modules/interpretation/Reading";
 import { IdeaEditor } from "@/modules/projects/IdeaEditor";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -66,14 +68,35 @@ async function ProjectContent({
         />
       </div>
 
-      <aside className="flex items-start gap-4 rounded-(--radius-card) bg-sky p-5 text-ink">
-        <BrandSymbol name="spark" size={32} />
-        <div>
-          <p className="type-label">{t.projects.nextBuild.label}</p>
-          <h2 className="mt-1 text-lg font-semibold">{t.projects.nextBuild.title}</h2>
-          <p className="mt-1">{t.projects.nextBuild.body}</p>
+      <section
+        aria-labelledby="reading-title"
+        className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6"
+      >
+        <div className="flex items-center gap-3">
+          <BrandSymbol name="spark" size={28} />
+          <h2 id="reading-title" className="text-xl font-semibold">
+            {t.interpretation.title}
+          </h2>
         </div>
-      </aside>
+        <p className="mt-1 text-sm text-text-muted">{t.interpretation.intro}</p>
+        <div className="mt-5">
+          <ReadingSection projectId={project.id} lang={lang} t={t} />
+        </div>
+      </section>
     </div>
+  );
+}
+
+async function ReadingSection({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
+  const { facts, lastRun } = await getReading(projectId);
+  if (facts.length === 0) return <AutoRead projectId={projectId} lang={lang} copy={t.interpretation} />;
+  return (
+    <ReadingView
+      projectId={projectId}
+      lang={lang}
+      facts={facts}
+      demo={lastRun === "demo"}
+      copy={t.interpretation}
+    />
   );
 }
