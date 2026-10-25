@@ -17,7 +17,9 @@
 | 2. Projects and saving | Supabase schema + RLS, guest sessions, email save, autosave, My Projects | An idea survives closing the browser; RLS tests pass | **Done** — verified live by the founder |
 | 3. AI interpretation | AI layer, `interpretIdea`, editable "Here's what I understood" card, demo mode | Real interpretation, edited and saved with provenance labels | **Done** — verified live by the founder |
 | 4. Directions, steps, modes | Up to 3 directions and next steps, three modes, "I'm stuck" | Full journey works on a phone | **Done** — verified live by the founder |
-| 5. Ready for testers | Service worker, admin basics, full e2e journey, security review | Installed on a phone, end-to-end green | **In progress** — install, offline page, export, deletion, security headers and admin overview built; tester email set up (Resend, heygusty.com), security review done |
+| 5. Ready for testers | Service worker, admin basics, full e2e journey, security review | Installed on a phone, end-to-end green | **Done** — verified live by the founder: installed on a phone, admin overview, sign-in email from hello@heygusty.com |
+
+**Milestone 1 is complete (2026-10-25).** Next: testing with real people, including neurodivergent testers, before Opportunity Discovery.
 
 ## Known limitations (current build)
 - Explore and Connections are labelled "Coming next" placeholders, excluded from search engines.
