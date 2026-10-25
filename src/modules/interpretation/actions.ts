@@ -18,7 +18,7 @@ const STAGES = ["just_an_idea", "planning", "started", "running"];
 
 export type InterpretResult =
   | { ok: true }
-  | { ok: false; error: "unavailable" | "declined" | "invalid" | "error" | "limit" };
+  | { ok: false; error: "unavailable" | "busy" | "declined" | "invalid" | "error" | "limit" };
 
 /**
  * Asks Gusty to read the project's idea. `first` does nothing if a reading already exists (safe to
@@ -29,7 +29,11 @@ export async function interpretProject(projectId: string, mode: "first" | "refre
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { ok: false, error: "unavailable" };
 
-  const { data: project } = await supabase.from("projects").select("id, idea").eq("id", projectId).maybeSingle();
+  const { data: project } = await supabase
+    .from("projects")
+    .select("id, idea, title_source")
+    .eq("id", projectId)
+    .maybeSingle();
   if (!project) return { ok: false, error: "error" };
 
   const { data: existingRows } = await supabase
@@ -48,7 +52,13 @@ export async function interpretProject(projectId: string, mode: "first" | "refre
   if ((count ?? 0) >= DAILY_READING_LIMIT) return { ok: false, error: "limit" };
 
   const provider = aiProvider();
-  const log = (status: "ok" | "demo" | "error" | "declined", model: string, inputTokens = 0, outputTokens = 0) =>
+  const log = (
+    status: "ok" | "demo" | "error" | "declined",
+    model: string,
+    inputTokens = 0,
+    outputTokens = 0,
+    error: "key" | "busy" | "declined" | "invalid" | "other" | null = null,
+  ) =>
     supabase.from("ai_runs").insert({
       project_id: projectId,
       task: "interpret_idea",
@@ -58,6 +68,7 @@ export async function interpretProject(projectId: string, mode: "first" | "refre
       input_tokens: inputTokens,
       output_tokens: outputTokens,
       cost_usd: status === "demo" ? 0 : estimateCostUsd(model, inputTokens, outputTokens),
+      error,
     });
 
   let reading;
@@ -71,9 +82,19 @@ export async function interpretProject(projectId: string, mode: "first" | "refre
       schema: InterpretationSchema,
       effort: "medium",
     });
-    await log(result.ok ? "ok" : result.reason === "declined" ? "declined" : "error", result.model, result.inputTokens, result.outputTokens);
-    if (!result.ok) return { ok: false, error: result.reason };
+    if (!result.ok) {
+      const error = result.reason === "error" ? "other" : result.reason;
+      await log(result.reason === "declined" ? "declined" : "error", result.model, result.inputTokens, result.outputTokens, error);
+      // People see a calm message; the precise reason is in the usage log for diagnosis.
+      return { ok: false, error: result.reason === "key" ? "unavailable" : result.reason };
+    }
+    await log("ok", result.model, result.inputTokens, result.outputTokens);
     reading = normaliseInterpretation(result.data);
+  }
+
+  // Gusty's title replaces the automatic one, but never a title the person chose.
+  if (reading.title && project.title_source !== "user") {
+    await supabase.from("projects").update({ title: reading.title, title_source: "ai" }).eq("id", projectId);
   }
 
   const { remove, add } = planRefresh(existing, interpretationToFacts(reading));

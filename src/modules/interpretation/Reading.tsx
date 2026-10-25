@@ -62,12 +62,15 @@ export function ReadingView({
   lang,
   facts,
   demo,
+  aiReady,
   copy,
 }: {
   projectId: string;
   lang: string;
   facts: Fact[];
   demo: boolean;
+  /** The AI is configured now, so an old demo reading can be replaced by a real one. */
+  aiReady: boolean;
   copy: Copy;
 }) {
   const router = useRouter();
@@ -89,7 +92,7 @@ export function ReadingView({
     <div className="flex flex-col gap-6" aria-busy={pending}>
       {demo && (
         <p className="rounded-xl bg-sky p-3 text-sm text-ink" data-testid="demo-notice">
-          {copy.demoNotice}
+          {aiReady ? copy.demoNoticeReady : copy.demoNotice}
         </p>
       )}
 

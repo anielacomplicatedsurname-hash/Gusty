@@ -93,7 +93,13 @@
     "keepBody": "Right now your projects are saved in this browser only. Add your email and we'll send a link that keeps them safe and lets you open them on any device.",
     "signedInAs": "Signed in as {email}",
     "signOut": "Sign out",
-    "signInFailed": "That sign-in link didn't work. It may have expired or already been used. Please ask for a new one."
+    "signInFailed": "That sign-in link didn't work. It may have expired or already been used. Please ask for a new one.",
+    "titleSuggested": "Title suggested by Gusty",
+    "rename": "Rename",
+    "renameLabel": "Project title",
+    "renameSave": "Save",
+    "renameCancel": "Cancel",
+    "renameFailed": "That title didn't save. Please try again."
   },
   "emailLink": {
     "label": "Email address",
@@ -156,8 +162,10 @@
       "invalid": "Gusty's reading came back incomplete. Please try again.",
       "error": "Something went wrong. Your idea is saved. Please try again.",
       "limit": "You've reached today's limit for readings. It resets within a day.",
-      "failed": "That change didn't save. Please try again."
-    }
+      "failed": "That change didn't save. Please try again.",
+      "busy": "Gusty is a little busy right now. Your idea is saved. Please try again in a minute."
+    },
+    "demoNoticeReady": "This reading was made in demo mode, before Gusty's AI was switched on. Press “Read my idea again” for Gusty's real reading."
   },
   "errorPage": {
     "title": "Something went wrong on our side.",

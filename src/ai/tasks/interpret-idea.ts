@@ -1,12 +1,13 @@
 import { z } from "zod";
 
-export const INTERPRET_PROMPT_VERSION = "interpret-idea@2";
+export const INTERPRET_PROMPT_VERSION = "interpret-idea@3";
 
 const basis = z.enum(["stated", "inferred"]);
 const item = z.object({ text: z.string(), basis });
 
 /** What Claude must return. Limits are enforced after parsing (see `normaliseInterpretation`). */
 export const InterpretationSchema = z.object({
+  title: z.string(),
   summary: item,
   audience: z.array(item),
   place: item.nullable(),
@@ -22,6 +23,9 @@ Many of the people you help are neurodivergent, tired, or new to project work. Y
 only to reflect their idea back clearly so they feel understood and can correct you.
 
 Return a structured reading of the idea:
+- title: a short, memorable, descriptive name for the project, 2 to 6 words, that the person would
+  recognise as theirs at a glance (for example "Saturday Repair Café" or "Street Seed Library").
+  No quotation marks, emojis or full stop. Don't invent a brand name they didn't use.
 - summary: the idea in one plain sentence (max 25 words).
 - audience: up to 3 groups of people it helps or involves.
 - place: where it happens, or null if they did not say and it is not obvious. Never guess a town or country.
@@ -55,12 +59,29 @@ const LIMITS = { audience: 3, needs: 5, openQuestions: 3, textLength: 200 } as c
 
 const clean = (text: string) => text.replace(/\s+/g, " ").trim().slice(0, LIMITS.textLength);
 
+const TITLE_MAX_LENGTH = 60;
+
+/** A tidy project title: no wrapping quotes, trailing full stop or extra spaces, and a sensible length. */
+export function cleanTitle(raw: string): string {
+  const title = raw
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^["'“”‘’«»]+|["'“”‘’«»]+$/g, "")
+    .replace(/[.。]+$/, "")
+    .trim();
+  if (title.length <= TITLE_MAX_LENGTH) return title;
+  const cut = title.slice(0, TITLE_MAX_LENGTH);
+  const lastSpace = cut.lastIndexOf(" ");
+  return lastSpace > 20 ? cut.slice(0, lastSpace) : cut;
+}
+
 /** Applies the limits the schema can't express: list sizes, text length, empty items. */
 export function normaliseInterpretation(raw: Interpretation): Interpretation {
   const items = (list: Interpretation["audience"], max: number) =>
     list.map((i) => ({ ...i, text: clean(i.text) })).filter((i) => i.text).slice(0, max);
   const place = raw.place && clean(raw.place.text) ? { ...raw.place, text: clean(raw.place.text) } : null;
   return {
+    title: cleanTitle(raw.title),
     summary: { ...raw.summary, text: clean(raw.summary.text) },
     audience: items(raw.audience, LIMITS.audience),
     place,
@@ -77,6 +98,8 @@ export function normaliseInterpretation(raw: Interpretation): Interpretation {
 export function demoInterpretation(idea: string, questions: string[]): Interpretation {
   const firstSentence = idea.trim().split(/(?<=[.!?])\s|\n/, 1)[0] ?? idea;
   return {
+    // Empty: the demo never pretends to suggest a title.
+    title: "",
     summary: { text: clean(firstSentence), basis: "stated" },
     audience: [],
     place: null,

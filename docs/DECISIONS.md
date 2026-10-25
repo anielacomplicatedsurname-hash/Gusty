@@ -2,6 +2,14 @@
 
 Newest first. Each entry: decision, why, and what would make us revisit it.
 
+## 2026-10-25 — Gusty suggests project titles (prompt v3)
+Founder request: each idea gets a short, memorable, descriptive title, used in My Projects. The reading
+returns a 2–6 word title; it replaces the automatic first-line title unless the person has named the
+project themselves (`projects.title_source`: auto · ai · user). Renaming sets `user`, and Gusty never
+changes it again. The demo never suggests a title. AI failures now record a reason in `ai_runs.error`
+(key, busy, declined, invalid, other) so problems can be diagnosed without logs; people still see a calm
+message.
+
 ## 2026-10-25 — Gusty rewords for clarity, keeping the meaning (prompt v2)
 Founder feedback: the first readings copied the person's wording, including grammar slips and unclear
 phrasing. Gusty now keeps meaning and intent exactly but rewrites items in clear, correct language, never

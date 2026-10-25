@@ -112,3 +112,20 @@ function localeFrom(formData: FormData) {
   const value = String(formData.get("lang") ?? "");
   return hasLocale(value) ? value : defaultLocale;
 }
+
+export type RenameResult = { ok: boolean };
+
+/** The person names their project. From then on Gusty never changes the title. */
+export async function renameProject(projectId: string, rawTitle: string): Promise<RenameResult> {
+  const title = rawTitle.replace(/\s+/g, " ").trim().slice(0, 120);
+  if (!isProjectId(projectId) || !title) return { ok: false };
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { ok: false };
+  const { data, error } = await supabase
+    .from("projects")
+    .update({ title, title_source: "user" })
+    .eq("id", projectId)
+    .select("id")
+    .maybeSingle();
+  return { ok: !error && !!data };
+}

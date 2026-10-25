@@ -8,6 +8,8 @@ import { getProject } from "@/modules/projects/data";
 import { getReading } from "@/modules/interpretation/data";
 import { AutoRead, ReadingView } from "@/modules/interpretation/Reading";
 import { IdeaEditor } from "@/modules/projects/IdeaEditor";
+import { TitleEditor } from "@/modules/projects/TitleEditor";
+import { aiProvider } from "@/ai";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getMessages();
@@ -54,7 +56,12 @@ async function ProjectContent({
     <div className="flex flex-col gap-8">
       {back}
       <header>
-        <h1 className="text-3xl font-semibold sm:text-4xl">{project.title}</h1>
+        <TitleEditor
+          projectId={project.id}
+          title={project.title}
+          suggested={project.titleSource === "ai"}
+          copy={t.projects}
+        />
         <p className="mt-2 text-sm text-text-muted">
           {fill(t.projects.created, { date: formatDateTime(project.createdAt, lang) })}
         </p>
@@ -97,6 +104,7 @@ async function ReadingSection({ projectId, lang, t }: { projectId: string; lang:
       lang={lang}
       facts={facts}
       demo={lastRun === "demo"}
+      aiReady={aiProvider() !== null}
       copy={t.interpretation}
     />
   );

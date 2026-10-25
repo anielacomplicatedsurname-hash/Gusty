@@ -40,11 +40,11 @@ export function anthropicProvider(apiKey: string): AiProvider {
         const empty = { model, inputTokens: 0, outputTokens: 0 };
         if (error instanceof Anthropic.AuthenticationError || error instanceof Anthropic.PermissionDeniedError) {
           console.error("Claude API key rejected:", error.message);
-          return { ok: false, reason: "unavailable", ...empty };
+          return { ok: false, reason: "key", ...empty };
         }
-        if (error instanceof Anthropic.RateLimitError) {
-          console.error("Claude rate limit:", error.message);
-          return { ok: false, reason: "unavailable", ...empty };
+        if (error instanceof Anthropic.RateLimitError || (error instanceof Anthropic.APIError && error.status === 529)) {
+          console.error("Claude busy:", error.message);
+          return { ok: false, reason: "busy", ...empty };
         }
         if (error instanceof Anthropic.APIError) {
           console.error(`Claude API error ${error.status}:`, error.message);
