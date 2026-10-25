@@ -27,3 +27,5 @@ The founder leads vision, brand and priorities; Claude leads technical implement
 
 ## Commands
 `pnpm dev` · `pnpm check` (lint + types + unit) · `pnpm build` · `pnpm test:e2e` (needs a build)
+Database: `npx supabase start` · `pnpm test:db` · `pnpm db:types` after changing a migration.
+New migrations need the founder to run them in production first: see `docs/SUPABASE_SETUP.md`.

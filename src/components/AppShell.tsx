@@ -1,9 +1,9 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { getMessages } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import { Logo } from "./Logo";
-import { NavLinks, type NavItem } from "./NavLinks";
+import { NavLinks, NavList, type NavItem } from "./NavLinks";
 
 /**
  * Responsive frame. Under 768px: compact header + fixed bottom bar with the three
@@ -32,7 +32,9 @@ export async function AppShell({ locale, children }: { locale: Locale; children:
             <Logo variant="primary" height={34} alt="" priority />
           </Link>
           <nav aria-label={t.nav.label} className="hidden md:block">
-            <NavLinks items={items} variant="top" />
+            <Suspense fallback={<NavList items={items} variant="top" pathname={null} />}>
+              <NavLinks items={items} variant="top" />
+            </Suspense>
           </nav>
         </div>
       </header>
@@ -57,7 +59,9 @@ export async function AppShell({ locale, children }: { locale: Locale; children:
         className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-paper pb-[env(safe-area-inset-bottom)] md:hidden"
       >
         <div className="h-(--bottom-nav-height)">
-          <NavLinks items={items} variant="bottom" />
+          <Suspense fallback={<NavList items={items} variant="bottom" pathname={null} />}>
+            <NavLinks items={items} variant="bottom" />
+          </Suspense>
         </div>
       </nav>
     </>

@@ -1,0 +1,79 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Suspense } from "react";
+import { BrandSymbol } from "@/components/BrandSymbol";
+import { getMessages, type Messages } from "@/i18n/dictionaries";
+import { fill, formatDateTime } from "@/i18n/format";
+import { getProject } from "@/modules/projects/data";
+import { IdeaEditor } from "@/modules/projects/IdeaEditor";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getMessages();
+  return { title: t.projects.title, robots: { index: false, follow: false } };
+}
+
+export default async function ProjectPage({ params }: PageProps<"/[lang]/projects/[id]">) {
+  const t = await getMessages();
+  return (
+    <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6 md:py-14">
+      <Suspense fallback={<p className="text-text-muted">{t.projects.loading}</p>}>
+        <ProjectContent params={params} t={t} />
+      </Suspense>
+    </section>
+  );
+}
+
+async function ProjectContent({
+  params,
+  t,
+}: {
+  params: PageProps<"/[lang]/projects/[id]">["params"];
+  t: Messages;
+}) {
+  const { lang, id } = await params;
+  const project = await getProject(id);
+  const back = (
+    <Link href={`/${lang}/projects`} className="text-sm font-medium underline underline-offset-4">
+      ← {t.projects.back}
+    </Link>
+  );
+
+  if (!project) {
+    return (
+      <div className="flex flex-col items-start gap-6">
+        {back}
+        <BrandSymbol name="two-waves" size={56} />
+        <p className="text-lg">{t.projects.notFound}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-8">
+      {back}
+      <header>
+        <h1 className="text-3xl font-semibold sm:text-4xl">{project.title}</h1>
+        <p className="mt-2 text-sm text-text-muted">
+          {fill(t.projects.created, { date: formatDateTime(project.createdAt, lang) })}
+        </p>
+      </header>
+
+      <div className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
+        <IdeaEditor
+          projectId={project.id}
+          initialIdea={project.idea}
+          copy={{ label: t.projects.ideaLabel, hint: t.projects.ideaHint, status: t.projects.save }}
+        />
+      </div>
+
+      <aside className="flex items-start gap-4 rounded-(--radius-card) bg-sky p-5 text-ink">
+        <BrandSymbol name="spark" size={32} />
+        <div>
+          <p className="type-label">{t.projects.nextBuild.label}</p>
+          <h2 className="mt-1 text-lg font-semibold">{t.projects.nextBuild.title}</h2>
+          <p className="mt-1">{t.projects.nextBuild.body}</p>
+        </div>
+      </aside>
+    </div>
+  );
+}

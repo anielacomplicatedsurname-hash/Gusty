@@ -20,3 +20,8 @@ services:
         value: "1"
       - key: NEXT_PUBLIC_SITE_URL
         sync: false # e.g. https://gusty-web.onrender.com, later the real domain
+      # Public by design (protected by Row Level Security). Read at build time.
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://xxordvjyxfjkidfenqla.supabase.co
+      - key: NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+        value: sb_publishable_dhsDmLb3KRSmhnGLJ3wwIw_jiuxaZem

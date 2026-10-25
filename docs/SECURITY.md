@@ -10,11 +10,15 @@
 ## Secrets
 - Never committed. `.env*` is git-ignored except `.env.example`, which holds names only.
 - Production values live in the Render dashboard (`sync: false` in `render.yaml`).
-- **Browser-safe:** `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (protected by RLS).
+- **Browser-safe:** `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (protected by RLS; committed in `render.yaml`).
 - **Server-only:** `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`. Never prefix with `NEXT_PUBLIC_`, never paste into chat.
 
-## Data access (stage 2 onwards)
+## Data access (built in stage 2)
 - Supabase Row Level Security on every table; default deny. Each project readable only by its owner.
+- Column grants: clients may only write `title` and `idea`. Signed-out visitors have no table access.
+- Guest (anonymous) accounts can save projects; adding an email requires confirming a link.
+- Sign-in redirects only go to same-site paths (`safeNextPath`), and Supabase only allows listed redirect URLs.
+- Deleting a user deletes their projects (`on delete cascade`).
 - Tenant-owned tables carry `organisation_id` from the first migration.
 - Private routes (`/[lang]/projects`, `/[lang]/admin`, conversations) are access-controlled on the server and `noindex`.
   `robots.txt` is a hint, not protection.
@@ -26,5 +30,5 @@
 - Fonts self-hosted: visitors' browsers make no requests to Google.
 
 ## To do before public launch
-Content Security Policy, rate limiting on AI endpoints, privacy policy and data processing records,
+CAPTCHA on guest sign-in, custom SMTP for auth emails, clean-up of abandoned guest accounts, Content Security Policy, rate limiting on AI endpoints, privacy policy and data processing records,
 data export and deletion flows, dependency audit in CI, Supabase backups (Pro plan).

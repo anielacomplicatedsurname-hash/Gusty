@@ -22,14 +22,31 @@
     "ideaLabel": "What's your idea?",
     "ideaHint": "Write it however it comes to you. A few words is enough.",
     "ideaSubmit": "Start with my idea",
-    "ideaNotYet": "This is a preview. Saving ideas and Gusty's replies arrive in the next build, so nothing you type here is stored yet.",
     "howTitle": "How it works",
     "steps": [
-      { "title": "Describe it", "body": "In your own words, as messy as you like." },
-      { "title": "See it understood", "body": "Gusty reflects your idea back clearly. You stay in control and can change anything." },
-      { "title": "Take a small step", "body": "Up to three next steps, with the most useful one first. Never a wall of tasks." }
+      {
+        "title": "Describe it",
+        "body": "In your own words, as messy as you like."
+      },
+      {
+        "title": "See it understood",
+        "body": "Gusty reflects your idea back clearly. You stay in control and can change anything."
+      },
+      {
+        "title": "Take a small step",
+        "body": "Up to three next steps, with the most useful one first. Never a wall of tasks."
+      }
     ],
-    "closing": "Less searching. More happening."
+    "closing": "Less searching. More happening.",
+    "ideaSaving": "Saving your idea…",
+    "ideaPrivacy": "Your idea is saved privately. No account needed: you can add your email later to keep it on any device.",
+    "ideaUnavailable": "Saving ideas isn't switched on in this version yet, so nothing you type here is stored.",
+    "ideaErrors": {
+      "empty": "Write a few words about your idea first.",
+      "tooLong": "That's a lot of words! Please keep it under 5,000 characters for now.",
+      "unavailable": "Saving isn't available right now. Your text is still here; please try again later.",
+      "failed": "Something went wrong while saving. Your text is still here; please try again."
+    }
   },
   "comingNext": {
     "label": "Coming next",
@@ -37,10 +54,6 @@
     "explore": {
       "title": "Explore",
       "body": "Funding, people, opportunities, events and organisations that fit your project. We're building this carefully, with real, verified sources, so it isn't switched on yet."
-    },
-    "projects": {
-      "title": "My Projects",
-      "body": "Your ideas and projects will live here, saved automatically so you can pick up exactly where you left off. This arrives in the next build."
     },
     "connections": {
       "title": "Connections",
@@ -53,5 +66,49 @@
   "notFound": {
     "title": "This page wandered off.",
     "body": "Let's get you back somewhere useful."
+  },
+  "projects": {
+    "title": "My Projects",
+    "intro": "Your ideas, saved as you go. Pick up wherever you left off.",
+    "loading": "Loading your projects…",
+    "empty": "No projects yet. Every project starts with a few words.",
+    "startNew": "Start with an idea",
+    "lastSaved": "Last saved {date}",
+    "open": "Open",
+    "back": "Back to My Projects",
+    "ideaLabel": "Your idea",
+    "ideaHint": "Change anything. Gusty saves as you type.",
+    "created": "Started {date}",
+    "save": {
+      "idle": "All changes saved",
+      "pending": "Unsaved changes…",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "failed": "Couldn't save. Your text is still here; we'll try again when you next type."
+    },
+    "nextBuild": {
+      "label": "Coming next",
+      "title": "Gusty's reading of your idea",
+      "body": "Soon Gusty will reflect your idea back clearly and suggest up to three small next steps. That part isn't built yet."
+    },
+    "notFound": "We couldn't find that project. It may belong to another account or browser.",
+    "signedOutTitle": "Find your projects",
+    "signedOutBody": "Projects are private to you. Enter the email you used and we'll send you a sign-in link.",
+    "keepTitle": "Keep your projects",
+    "keepBody": "Right now your projects are saved in this browser only. Add your email and we'll send a link that keeps them safe and lets you open them on any device.",
+    "signedInAs": "Signed in as {email}",
+    "signOut": "Sign out",
+    "signInFailed": "That sign-in link didn't work. It may have expired or already been used. Please ask for a new one."
+  },
+  "emailLink": {
+    "label": "Email address",
+    "submit": "Send me a link",
+    "sending": "Sending…",
+    "sent": "Check your inbox. We've sent you a link. You can close this page; your work is saved.",
+    "errors": {
+      "invalid": "That doesn't look like an email address. Please check it.",
+      "unavailable": "Email sign-in isn't available right now. Please try again later.",
+      "failed": "We couldn't send the link. Please try again in a minute."
+    }
   }
 }
