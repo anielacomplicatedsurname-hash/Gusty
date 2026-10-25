@@ -43,6 +43,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"next_steps": {
+                  Row: {
+                    "created_at": string,"detail": string,"direction_id": string | null,"done_at": string | null,"explanation": string | null,"id": string,"minutes": number | null,"owner_id": string,"position": number,"project_id": string,"source": string,"starter": string | null,"status": string,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"owner_id"?: string,"position"?: number,"project_id": string,"source"?: string,"starter"?: string | null,"status"?: string,"title": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"owner_id"?: string,"position"?: number,"project_id"?: string,"source"?: string,"starter"?: string | null,"status"?: string,"title"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "next_steps_direction_id_fkey"
+      columns: ["direction_id"]
+isOneToOne: false
+      referencedRelation: "project_directions"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "next_steps_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"organisations": {
                   Row: {
                     "created_at": string,"id": string,"name": string,"slug": string
@@ -56,6 +82,26 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"project_directions": {
+                  Row: {
+                    "chosen": boolean,"created_at": string,"id": string,"label": string,"owner_id": string,"position": number,"project_id": string,"reason": string,"recommended": boolean
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "chosen"?: boolean,"created_at"?: string,"id"?: string,"label": string,"owner_id"?: string,"position"?: number,"project_id": string,"reason"?: string,"recommended"?: boolean
+                  }
+                  Update: {
+                    "chosen"?: boolean,"created_at"?: string,"id"?: string,"label"?: string,"owner_id"?: string,"position"?: number,"project_id"?: string,"reason"?: string,"recommended"?: boolean
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "project_directions_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"project_facts": {
                   Row: {
@@ -96,6 +142,20 @@ isOneToOne: false
       referencedRelation: "organisations"
       referencedColumns: ["id"]
     }
+                  ]
+                },"user_preferences": {
+                  Row: {
+                    "experience_mode": string,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "experience_mode"?: string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Update: {
+                    "experience_mode"?: string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    
                   ]
                 }
           }

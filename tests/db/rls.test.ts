@@ -84,5 +84,26 @@ describe("projects Row Level Security", () => {
     const peek = await bob.from("ai_runs").select("id").eq("project_id", aliceProjectId);
     expect(peek.data).toEqual([]);
   });
+
+  it("keeps directions, steps and preferences private", async () => {
+    const dir = await alice
+      .from("project_directions")
+      .insert({ project_id: aliceProjectId, label: "Shape the idea", reason: "", recommended: true, position: 0 })
+      .select("id")
+      .single();
+    expect(dir.error).toBeNull();
+    const step = await alice
+      .from("next_steps")
+      .insert({ project_id: aliceProjectId, title: "Write three sentences", source: "user", position: 0 });
+    expect(step.error).toBeNull();
+    expect((await alice.from("user_preferences").upsert({ experience_mode: "simple" }, { onConflict: "user_id" })).error).toBeNull();
+
+    expect((await bob.from("project_directions").select("id").eq("project_id", aliceProjectId)).data).toEqual([]);
+    expect((await bob.from("next_steps").select("id").eq("project_id", aliceProjectId)).data).toEqual([]);
+    const planted = await bob.from("next_steps").insert({ project_id: aliceProjectId, title: "Planted", source: "user", position: 0 });
+    expect(planted.error?.code).toBe("42501");
+    const bobsPrefs = await bob.from("user_preferences").select("experience_mode");
+    expect(bobsPrefs.data).toEqual([]);
+  });
 });
 

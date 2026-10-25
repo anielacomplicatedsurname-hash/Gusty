@@ -14,7 +14,8 @@ src/
 ├─ lib/supabase/        server client, session refresh, generated database types
 ├─ modules/projects/    data access, server actions, idea form, autosave editor, email link
 ├─ modules/interpretation/  Gusty's reading: data, actions (read, confirm, edit, add, remove), UI
-├─ ai/                  provider interface, Claude provider, model prices, tasks/ (prompts + schemas)
+├─ modules/steps/       directions, next steps, modes (visibleSteps), I'm stuck, UI
+├─ ai/                  provider interface, Claude provider, prices, usage log + daily budget, tasks/ (prompts + schemas)
 ├─ i18n/                locale config, message dictionaries (messages/en.json)
 └─ proxy.ts             redirects locale-less URLs to the default locale
 public/brand/           approved logo and symbol SVGs (traced originals)

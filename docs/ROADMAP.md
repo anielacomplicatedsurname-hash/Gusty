@@ -16,12 +16,11 @@
 | 1. Design system and shell | Tokens, fonts, brand assets, responsive nav with mobile bottom bar, Home | Founder approves the look on phone, tablet, desktop | **Done** — approved (fonts may change later) |
 | 2. Projects and saving | Supabase schema + RLS, guest sessions, email save, autosave, My Projects | An idea survives closing the browser; RLS tests pass | **Done** — verified live by the founder |
 | 3. AI interpretation | AI layer, `interpretIdea`, editable "Here's what I understood" card, demo mode | Real interpretation, edited and saved with provenance labels | **Done** — verified live by the founder |
-| 4. Directions, steps, modes | Up to 3 directions and next steps, three modes, "I'm stuck" | Full journey works on a phone | Planned |
+| 4. Directions, steps, modes | Up to 3 directions and next steps, three modes, "I'm stuck" | Full journey works on a phone | **Built — awaiting review** |
 | 5. Ready for testers | Service worker, admin basics, full e2e journey, security review | Installed on a phone, end-to-end green | Planned |
 
 ## Known limitations (current build)
 - Explore and Connections are labelled "Coming next" placeholders, excluded from search engines.
-- Next steps, directions and the three experience modes arrive in stage 4.
 - No full version history: instead, Gusty never changes anything the person wrote or confirmed (only unconfirmed AI items are replaced on a new reading). A browsable history can come later.
 - Without `ANTHROPIC_API_KEY`, readings run in a clearly labelled demo mode that only repeats the first sentence.
 - The real Claude call is not exercised by automated tests (no API key in CI); prompt, schema handling and limits are unit-tested, and readings were verified live by the founder.
@@ -31,7 +30,9 @@
 - Production email uses Supabase's built-in sender, which only reaches project team members. Custom SMTP is needed before real users (see `docs/SUPABASE_SETUP.md`).
 - Guests who never add an email keep their projects only in that browser. Old unused guest accounts are not cleaned up yet.
 - Database changes are applied to production by hand (SQL Editor) before merging.
-- No always-available assistant button yet; it arrives with stage 4.
+- No always-available assistant button yet (deferred: the directive's first milestone doesn't need it; it fits better with Connections and Explore).
+- Directions, steps and "I'm stuck" help can't be fully tested without the AI key; automated tests use the labelled demo versions.
+- All AI calls share a limit of 60 per person per day (readings keep their own 30).
 - Tablet uses the desktop header navigation (no separate side rail).
 - Logo and symbols are traced from the images in the PDF; original vector artwork, if it exists, would be sharper at very large sizes.
 - Fonts are free matches for unnamed suggestions; display and accent fonts cover Latin scripts only.

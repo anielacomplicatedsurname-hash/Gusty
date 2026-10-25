@@ -172,5 +172,112 @@
     "body": "Your work is saved. Please try again in a moment.",
     "retry": "Try again",
     "home": "Back to home"
+  },
+  "steps": {
+    "title": "Your next steps",
+    "intro": "Big possibilities, small steps. Gusty suggests where to go next. You choose.",
+    "modes": {
+      "label": "How much would you like to see?",
+      "simple": "Keep it simple",
+      "simpleHint": "Just the one next thing",
+      "guide": "Guide me through",
+      "guideHint": "Up to three steps",
+      "everything": "Let me see everything",
+      "everythingHint": "The full plan"
+    },
+    "start": "Show me where I could go next",
+    "starting": "Gusty is thinking about directions…",
+    "directionsTitle": "Where could this go next?",
+    "directionsIntro": "Pick the one that feels right. You can change it any time.",
+    "recommended": "Gusty recommends starting here",
+    "choose": "Choose this",
+    "chosen": "Your direction",
+    "change": "Change direction",
+    "planning": "Gusty is planning small steps…",
+    "startHere": "Start here",
+    "minutes": "About {n} min",
+    "markDone": "Done",
+    "markNotDone": "Not done yet",
+    "doneLabel": "Done",
+    "doneCount": "{n} done so far",
+    "moreHidden": "{n} more steps are waiting. Switch to “Let me see everything” to see them.",
+    "allDone": "That's everything for now. Nice work.",
+    "more": "Suggest the next few steps",
+    "addOwn": "Add your own step",
+    "addPlaceholder": "Write a step in your own words",
+    "add": "Add",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "yours": "Your step",
+    "stuck": {
+      "button": "I'm stuck",
+      "title": "What would help?",
+      "smaller": "Make this smaller",
+      "explain": "Explain it differently",
+      "start": "Help me start",
+      "working": "Working on it…",
+      "close": "Close"
+    },
+    "explanationTitle": "Another way to look at it",
+    "starterTitle": "A way to begin",
+    "copy": "Copy",
+    "copied": "Copied",
+    "demoNotice": "Demo mode: these are example directions and steps, not a real AI suggestion.",
+    "demoDirections": [
+      {
+        "label": "Shape the idea",
+        "reason": "Example: get clear on what you want to make happen, and for whom."
+      },
+      {
+        "label": "Try a small version",
+        "reason": "Example: test the idea in a small, low-risk way."
+      },
+      {
+        "label": "Find your first helpers",
+        "reason": "Example: find one or two people who could help."
+      }
+    ],
+    "demoSteps": [
+      {
+        "title": "Write your idea in three sentences",
+        "detail": "Example step: what it is, who it's for, and why it matters to you.",
+        "minutes": 10
+      },
+      {
+        "title": "List three people you could tell about it",
+        "detail": "Example step: friends, neighbours or people who'd care.",
+        "minutes": 10
+      },
+      {
+        "title": "Choose one small thing to try this week",
+        "detail": "Example step: something you could do in under an hour.",
+        "minutes": 15
+      }
+    ],
+    "demoUnstick": {
+      "smaller": [
+        {
+          "title": "Open a blank note",
+          "detail": "Example: just open it, nothing else yet.",
+          "minutes": 2
+        },
+        {
+          "title": "Write one sentence about the step",
+          "detail": "Example: any sentence is fine.",
+          "minutes": 5
+        }
+      ],
+      "explain": "Example explanation (demo mode): this step is about taking one small, clear action so the idea starts to feel real.",
+      "start": "Example (demo mode): open a blank note and write the first word that comes to mind."
+    },
+    "errors": {
+      "unavailable": "Gusty can't suggest steps right now. Your work is saved. Please try again later.",
+      "busy": "Gusty is a little busy right now. Please try again in a minute.",
+      "declined": "Gusty couldn't help with this one. Your work is saved.",
+      "invalid": "Gusty's suggestion came back incomplete. Please try again.",
+      "error": "Something went wrong. Your work is saved. Please try again.",
+      "limit": "You've reached today's limit for Gusty's suggestions. It resets within a day.",
+      "failed": "That change didn't save. Please try again."
+    }
   }
 }

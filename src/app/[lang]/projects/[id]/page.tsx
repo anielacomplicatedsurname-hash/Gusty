@@ -9,6 +9,8 @@ import { getReading } from "@/modules/interpretation/data";
 import { AutoRead, ReadingView } from "@/modules/interpretation/Reading";
 import { IdeaEditor } from "@/modules/projects/IdeaEditor";
 import { TitleEditor } from "@/modules/projects/TitleEditor";
+import { getStepsState } from "@/modules/steps/data";
+import { NextSteps } from "@/modules/steps/NextSteps";
 import { aiProvider } from "@/ai";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -90,6 +92,8 @@ async function ProjectContent({
           <ReadingSection projectId={project.id} lang={lang} t={t} />
         </div>
       </section>
+
+      <NextStepsSection projectId={project.id} lang={lang} t={t} />
     </div>
   );
 }
@@ -107,5 +111,33 @@ async function ReadingSection({ projectId, lang, t }: { projectId: string; lang:
       aiReady={aiProvider() !== null}
       copy={t.interpretation}
     />
+  );
+}
+
+/** Next steps appear once Gusty has read the idea. */
+async function NextStepsSection({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
+  const [{ facts }, state] = await Promise.all([getReading(projectId), getStepsState(projectId)]);
+  if (facts.length === 0 || state.unavailable) return null;
+  return (
+    <section aria-labelledby="steps-title" className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
+      <div className="flex items-center gap-3">
+        <BrandSymbol name="path" size={28} />
+        <h2 id="steps-title" className="text-xl font-semibold">
+          {t.steps.title}
+        </h2>
+      </div>
+      <p className="mt-1 text-sm text-text-muted">{t.steps.intro}</p>
+      <div className="mt-5">
+        <NextSteps
+          projectId={projectId}
+          lang={lang}
+          directions={state.directions}
+          steps={state.steps}
+          initialMode={state.mode}
+          demo={state.demo}
+          copy={t.steps}
+        />
+      </div>
+    </section>
   );
 }
