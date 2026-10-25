@@ -123,3 +123,9 @@ A site-wide cap computed from `ai_runs` could be switched off for everyone by on
 costs, because the log is written with each person's own session. The Anthropic Console spend limit is
 enforced by Anthropic and can't be faked, so it is the ceiling. Revisit with a server-only log (service
 key or a separate service) when Gusty opens publicly.
+
+## 2026-10-25 — heygusty.com is the one address
+Gusty's public address is `https://heygusty.com` (DNS at GoDaddy, custom domain on Render). Page visits to
+`gusty-web.onrender.com` or `www.heygusty.com` are permanently redirected there, so search engines, sign-in
+links and saved sessions all use one address. Guest projects started on the old address stay in that
+browser's old session (few testers were affected; people who added an email just sign in again).

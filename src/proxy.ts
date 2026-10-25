@@ -1,9 +1,16 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { defaultLocale, locales } from "@/i18n/config";
+import { brand } from "@/config/brand";
+import { canonicalRedirect } from "@/config/site-url";
 import { refreshSession } from "@/lib/supabase/proxy";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  const canonical = canonicalRedirect(request.headers.get("host"), brand.siteUrl);
+  if (canonical) {
+    return NextResponse.redirect(new URL(pathname + request.nextUrl.search, canonical), 308);
+  }
   const hasLocalePrefix = locales.some(
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
   );
