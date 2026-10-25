@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { estimateCostUsd } from "@/ai/models";
 import {
-  demoInterpretation, interpretationToFacts, interpretUserMessage, normaliseInterpretation, planRefresh,
+  INTERPRET_SYSTEM_PROMPT, demoInterpretation, interpretationToFacts, interpretUserMessage, normaliseInterpretation, planRefresh,
   type ExistingFact, type Interpretation,
 } from "@/ai/tasks/interpret-idea";
 
@@ -80,5 +80,13 @@ describe("estimateCostUsd", () => {
   });
   it("never treats an unknown model as free", () => {
     expect(estimateCostUsd("some-new-model", 1_000, 1_000)).toBeGreaterThan(0);
+  });
+});
+
+describe("prompt wording rules", () => {
+  it("asks for the person's meaning in clear, corrected language, never invented facts", () => {
+    expect(INTERPRET_SYSTEM_PROMPT).toMatch(/keep the person's meaning and intent exactly/);
+    expect(INTERPRET_SYSTEM_PROMPT).toMatch(/grammatically correct/);
+    expect(INTERPRET_SYSTEM_PROMPT).toMatch(/must never add, remove or change facts/);
   });
 });

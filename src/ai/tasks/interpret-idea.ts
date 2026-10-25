@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const INTERPRET_PROMPT_VERSION = "interpret-idea@1";
+export const INTERPRET_PROMPT_VERSION = "interpret-idea@2";
 
 const basis = z.enum(["stated", "inferred"]);
 const item = z.object({ text: z.string(), basis });
@@ -30,8 +30,14 @@ Return a structured reading of the idea:
   "A place to meet", "Permission from the council"). Name kinds of help, never specific organisations.
 - openQuestions: up to 3 short, kind questions whose answers would help most. No pressure, no deadlines.
 
-For every item, set basis to "stated" if it comes directly from their words, or "inferred" if it is your
-own reasonable reading. Be honest: prefer leaving something out over guessing.
+Wording: keep the person's meaning and intent exactly, but do not copy their words. Rewrite every item
+in clear, grammatically correct, easy-to-read language, fixing spelling, grammar and unclear phrasing.
+Rewording must never add, remove or change facts. If part of the idea is too unclear to reword without
+guessing, leave it out of the items and ask about it in openQuestions instead.
+
+For every item, set basis to "stated" if its meaning comes directly from what they wrote (even though
+you reworded it), or "inferred" if it is your own reasonable reading. Be honest: prefer leaving something
+out over guessing.
 
 Rules:
 - Never name specific grants, funders, organisations, people, deadlines, amounts or eligibility rules.

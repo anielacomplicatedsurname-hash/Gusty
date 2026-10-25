@@ -2,6 +2,12 @@
 
 Newest first. Each entry: decision, why, and what would make us revisit it.
 
+## 2026-10-25 — Gusty rewords for clarity, keeping the meaning (prompt v2)
+Founder feedback: the first readings copied the person's wording, including grammar slips and unclear
+phrasing. Gusty now keeps meaning and intent exactly but rewrites items in clear, correct language, never
+adding or changing facts; anything too unclear to reword without guessing becomes an open question.
+"From your words" still marks items whose meaning came from the person.
+
 ## 2026-10-25 — Gusty's reading: provenance per item, and your words always win (stage 3)
 The reading is stored item by item in `project_facts`, each marked *your words* (user), *from your words*
 (Gusty restating what they wrote) or *Gusty's suggestion* (inferred), and *proposed* or *confirmed*.
