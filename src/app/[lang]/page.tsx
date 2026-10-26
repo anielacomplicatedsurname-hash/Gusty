@@ -46,14 +46,8 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           />
         </div>
 
-        <div className="relative hidden lg:block" aria-hidden="true">
+        <div className="hidden lg:block" aria-hidden="true">
           <Logo variant="hey" height={300} alt="" priority />
-          <span className="absolute -bottom-6 right-6 text-ink/90">
-            <BrandSymbol name="leaf-cluster" size={64} />
-          </span>
-          <span className="absolute -top-6 left-4 text-ink/80">
-            <BrandSymbol name="spark" size={40} />
-          </span>
         </div>
       </section>
 
