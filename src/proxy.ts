@@ -11,6 +11,14 @@ export async function proxy(request: NextRequest) {
   if (canonical) {
     return NextResponse.redirect(new URL(pathname + request.nextUrl.search, canonical), 308);
   }
+  // If Supabase ever falls back to the site's home page with a sign-in code, finish signing in anyway.
+  const code = request.nextUrl.searchParams.get("code");
+  if (code && (pathname === "/" || locales.some((locale) => pathname === `/${locale}`))) {
+    const confirm = new URL("/api/auth/confirm", brand.siteUrl);
+    confirm.searchParams.set("code", code);
+    return NextResponse.redirect(confirm);
+  }
+
   const hasLocalePrefix = locales.some(
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
   );

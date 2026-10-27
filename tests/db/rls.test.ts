@@ -154,7 +154,9 @@ describe("security tightening", () => {
 });
 
 describe("bringing guest projects into an account", () => {
-  const hash = (n: number) => String(n).repeat(64).slice(0, 64);
+  // Unique per run: transfers from earlier runs may still be in the local database.
+  const run = crypto.randomUUID().replaceAll("-", "");
+  const hash = (n: number) => `${run}${String(n).repeat(32)}`.slice(0, 64);
 
   it("only guests can start a transfer, and only signed-in accounts can claim one", async () => {
     expect((await client().rpc("start_project_transfer", { p_token_hash: hash(1) })).error).not.toBeNull();

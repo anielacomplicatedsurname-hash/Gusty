@@ -8,7 +8,7 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 2. **Guest sign-in.** Authentication → Sign In / Providers → turn on **Allow anonymous sign-ins**.
 3. **Where sign-in links go.** Authentication → URL Configuration:
    - Site URL: `https://heygusty.com`
-   - Redirect URLs: `https://heygusty.com/**` (and `https://gusty-web.onrender.com/**` while links sent before the move may still be opened)
+   - Redirect URLs: `https://heygusty.com/**`. The `/**` matters: without it Supabase only allows the bare home page and sends sign-in links to the Site URL instead (and `https://gusty-web.onrender.com/**` while links sent before the move may still be opened)
 4. **Email confirmation** stays on (the default): Authentication → Sign In / Providers → Email → "Confirm email".
 
 ## Migrations so far (run in this order)
