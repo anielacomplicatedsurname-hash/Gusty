@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { getMessages } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
+import { AccountBadge } from "./AccountBadge";
 import { Logo } from "./Logo";
 import { NavLinks, NavList, type NavItem } from "./NavLinks";
 
@@ -31,11 +32,16 @@ export async function AppShell({ locale, children }: { locale: Locale; children:
           <Link href={`/${locale}`} aria-label={t.common.home} className="flex items-center">
             <Logo variant="primary" height={34} alt="" priority />
           </Link>
-          <nav aria-label={t.nav.label} className="hidden md:block">
-            <Suspense fallback={<NavList items={items} variant="top" pathname={null} />}>
-              <NavLinks items={items} variant="top" />
+          <div className="flex min-w-0 items-center gap-3">
+            <nav aria-label={t.nav.label} className="hidden md:block">
+              <Suspense fallback={<NavList items={items} variant="top" pathname={null} />}>
+                <NavLinks items={items} variant="top" />
+              </Suspense>
+            </nav>
+            <Suspense fallback={null}>
+              <AccountBadge locale={locale} label={t.common.signedInAs} />
             </Suspense>
-          </nav>
+          </div>
         </div>
       </header>
 

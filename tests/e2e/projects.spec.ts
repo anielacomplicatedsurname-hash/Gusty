@@ -69,6 +69,16 @@ test("a guest keeps their projects by confirming an email link", async ({ page }
   await expect(page).toHaveURL(/\/en\/projects$/);
   await expect(page.getByText(`Signed in as ${email}`)).toBeVisible();
   await expect(page.getByRole("link", { name: /Repair café in the old library/ })).toBeVisible();
+
+  // Who is signed in shows on every page, not only My Projects.
+  await page.goto("/en");
+  await expect(page.getByRole("link", { name: `Signed in as ${email}. Go to My Projects` })).toBeVisible();
+});
+
+test("guests don't see a signed-in badge", async ({ page }) => {
+  await createProject(page, "An idea from a guest");
+  await page.goto("/en");
+  await expect(page.getByRole("link", { name: /Signed in as/ })).toHaveCount(0);
 });
 
 test("a guest whose email already has an account can bring their projects into it", async ({ page, browser }, testInfo) => {

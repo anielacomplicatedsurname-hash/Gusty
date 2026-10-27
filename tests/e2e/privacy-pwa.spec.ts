@@ -92,6 +92,14 @@ test.describe("installable app and security headers", () => {
     }
   });
 
+  test("a sign-in code that lands on the home page is still used to sign in", async ({ request, baseURL }) => {
+    const response = await request.get("/?code=not-a-real-code", { maxRedirects: 0 });
+    expect(response.status()).toBe(307);
+    const location = new URL(response.headers().location, baseURL);
+    expect(location.origin).toBe(new URL(baseURL!).origin);
+    expect(location.pathname + location.search).toBe("/api/auth/confirm?code=not-a-real-code");
+  });
+
   test("the service worker never caches private pages", async ({ request }) => {
     const sw = await (await request.get("/sw.js")).text();
     // Pages go straight to the network; the only cache.put is inside the static-asset branch.
