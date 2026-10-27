@@ -45,8 +45,12 @@
   Resend key can only send email and lives only in the Supabase dashboard.
 - Emails say what the link does, that it works once and expires, and that ignoring it changes nothing.
 
+## Sign-in codes
+- Sign-in emails carry a one-time code as well as the link (Supabase email OTP, one hour). Typing it signs in the
+  browser where it's typed, so people can read the email on another device. Supabase limits verification attempts.
+
 ## Bringing guest projects into an account
-- "Sign in and keep my projects" stores a random secret in an `httpOnly` cookie (path `/api/auth`, one hour)
+- "Sign in and keep my projects" stores a random secret in an `httpOnly` cookie (one hour)
   and only its SHA-256 in `project_transfers`, which the app can't read.
 - After the sign-in link is confirmed in that same browser, `claim_guest_projects()` moves the guest's rows to
   the signed-in account and deletes the empty guest account. It refuses unless the caller is a real (not guest)

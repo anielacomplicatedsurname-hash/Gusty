@@ -1,10 +1,9 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { defaultLocale } from "@/i18n/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { brand } from "@/config/brand";
-import { hashTransferSecret, TRANSFER_COOKIE } from "@/modules/projects/transfer";
+import { finishProjectTransfer } from "@/modules/projects/transfer";
 import { signInDestination } from "@/modules/projects/validation";
 
 /** Where email sign-in and "keep my projects" links land. */
@@ -24,13 +23,7 @@ export async function GET(request: NextRequest) {
     }
 
     // A guest who chose "Sign in and keep my projects" on this device: move their projects across.
-    const cookieStore = await cookies();
-    const secret = cookieStore.get(TRANSFER_COOKIE)?.value;
-    if (ok && secret) {
-      const { error } = await supabase.rpc("claim_guest_projects", { p_token_hash: hashTransferSecret(secret) });
-      if (error) console.error("Bringing guest projects failed:", error.message);
-      cookieStore.delete({ name: TRANSFER_COOKIE, path: "/api/auth" });
-    }
+    if (ok) await finishProjectTransfer(supabase);
   }
 
   return NextResponse.redirect(
