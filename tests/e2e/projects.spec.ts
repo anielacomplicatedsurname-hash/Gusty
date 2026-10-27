@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 // Needs a Supabase the app was built against (local `supabase start` in dev and CI).
@@ -70,32 +71,59 @@ test("a guest keeps their projects by confirming an email link", async ({ page }
   await expect(page.getByRole("link", { name: /Repair café in the old library/ })).toBeVisible();
 });
 
-test("a guest whose email already has an account is told so and can sign in instead", async ({ page, browser }, testInfo) => {
+test("a guest whose email already has an account can bring their projects into it", async ({ page, browser }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "one email round-trip is enough");
   const email = `returning-${Date.now()}@example.com`;
 
-  // Someone already has an account with this email (made from another browser).
-  const other = await browser.newPage();
+  // Someone already has an account with this email (made in another browser).
+  const laptop = await browser.newContext();
+  const other = await laptop.newPage();
   await createProject(other, "My first project, from my laptop");
   await other.goto("/en/projects");
   await other.getByLabel("Email address").fill(email);
   await other.getByRole("button", { name: "Send me a link" }).click();
   await expect(other.getByRole("status").filter({ hasText: "Check your inbox" })).toBeVisible();
-  const link = await expect.poll(async () => latestLinkFor(email), { timeout: 15_000 }).not.toBeNull().then(() => latestLinkFor(email));
-  await other.goto(link!);
+  await other.goto((await waitForLink(email, 1))!);
   await expect(other.getByText(`Signed in as ${email}`)).toBeVisible();
-  await other.close();
+  await laptop.close();
 
-  // On a new device they start as a guest, then try to keep their projects with the same email.
+  // On a new device they start as a guest, then use the same email.
   await createProject(page, "A second idea, from my phone");
   await page.goto("/en/projects");
   await page.getByLabel("Email address").fill(email);
   await page.getByRole("button", { name: "Send me a link" }).click();
-  await expect(page.getByRole("alert").filter({ hasText: "already has a Gusty account" })).toBeVisible();
-  await expect(page.getByLabel("Email address")).toHaveValue(email);
-  await page.getByRole("button", { name: "Send me a sign-in link instead" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "Check your inbox" })).toBeVisible();
+  await expect(page.getByText("Welcome back to Gusty!")).toBeVisible();
+  await expect(page.getByText("Want to bring your current projects with you?")).toBeVisible();
+  const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(scan.violations).toEqual([]);
+
+  // "Use a different email" clears the box and hides the choice.
+  await page.getByRole("button", { name: "Use a different email" }).click();
+  await expect(page.getByLabel("Email address")).toHaveValue("");
+  await expect(page.getByText("Welcome back to Gusty!")).toHaveCount(0);
+
+  await page.getByLabel("Email address").fill(email);
+  await page.getByRole("button", { name: "Send me a link" }).click();
+  await page.getByRole("button", { name: "Sign in and keep my projects" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "your projects will come with you" })).toBeVisible();
+
+  await page.goto((await waitForLink(email, 2))!);
+  await expect(page).toHaveURL(/\/en\/projects$/);
+  await expect(page.getByText(`Signed in as ${email}`)).toBeVisible();
+  await expect(page.getByRole("link", { name: /A second idea, from my phone/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /My first project, from my laptop/ })).toBeVisible();
 });
+
+/** Waits until the inbox holds `count` emails for this address, then returns the newest link. */
+async function waitForLink(email: string, count: number): Promise<string | null> {
+  await expect
+    .poll(async () => {
+      const search = await (await fetch(`${mailpit}/api/v1/search?query=${encodeURIComponent(`to:"${email}"`)}`)).json();
+      return search.messages?.length ?? 0;
+    }, { timeout: 15_000 })
+    .toBeGreaterThanOrEqual(count);
+  return latestLinkFor(email);
+}
 
 async function latestLinkFor(email: string): Promise<string | null> {
   const search = await fetch(`${mailpit}/api/v1/search?query=${encodeURIComponent(`to:"${email}"`)}`);

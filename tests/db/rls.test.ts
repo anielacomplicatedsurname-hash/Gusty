@@ -152,3 +152,26 @@ describe("security tightening", () => {
     expect((await frank.from("ai_runs").insert({ ...run, cost_usd: 0.02, input_tokens: 1200 })).error).toBeNull();
   });
 });
+
+describe("bringing guest projects into an account", () => {
+  const hash = (n: number) => String(n).repeat(64).slice(0, 64);
+
+  it("only guests can start a transfer, and only signed-in accounts can claim one", async () => {
+    expect((await client().rpc("start_project_transfer", { p_token_hash: hash(1) })).error).not.toBeNull();
+    const guest = client();
+    expect((await guest.auth.signInAnonymously()).error).toBeNull();
+    expect((await guest.rpc("start_project_transfer", { p_token_hash: hash(2) })).error).toBeNull();
+    // A guest can't claim (it would need to be signed in to a real account).
+    expect((await guest.rpc("claim_guest_projects", { p_token_hash: hash(2) })).error?.code).toBe("42501");
+  });
+
+  it("a wrong secret moves nothing, and the transfers list is closed to the app", async () => {
+    const guest = client();
+    expect((await guest.auth.signInAnonymously()).error).toBeNull();
+    await guest.from("projects").insert({ title: "Guest idea", idea: "Stays put" });
+    expect((await guest.rpc("start_project_transfer", { p_token_hash: hash(3) })).error).toBeNull();
+    expect((await guest.from("project_transfers").select("token_hash")).error).not.toBeNull();
+    const { data } = await guest.from("projects").select("id");
+    expect(data).toHaveLength(1);
+  });
+});

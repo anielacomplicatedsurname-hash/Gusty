@@ -19,6 +19,7 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 5. `20261025180000_delete_my_account.sql` (stage 5: lets people delete their own account)
 6. `20261025200000_admin.sql` (stage 5: the admin overview)
 7. `20261025220000_security_tightening.sql` (stage 5 security review)
+8. `20261027120000_bring_guest_projects.sql` (guests can bring their projects into an existing account)
 
 ## Making yourself an admin
 Sign in to Gusty with your email first, then in the SQL Editor run (with your own email):

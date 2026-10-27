@@ -129,3 +129,9 @@ Gusty's public address is `https://heygusty.com` (DNS at GoDaddy, custom domain 
 `gusty-web.onrender.com` or `www.heygusty.com` are permanently redirected there, so search engines, sign-in
 links and saved sessions all use one address. Guest projects started on the old address stay in that
 browser's old session (few testers were affected; people who added an email just sign in again).
+
+## 2026-10-27 — Guests can bring their projects into an existing account
+The founder asked for "Welcome back to Gusty! … Sign in and keep my projects". Moving rows between accounts
+needs proof the person controlled the guest session, so the guest's browser holds a one-time secret and the
+move happens only after their sign-in link is opened on that device. Simpler than real account merging, no
+service key, and no way to pull projects out of someone else's account.

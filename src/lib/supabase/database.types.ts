@@ -137,6 +137,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"project_transfers": {
+                  Row: {
+                    "created_at": string,"from_user": string,"token_hash": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"from_user": string,"token_hash": string
+                  }
+                  Update: {
+                    "created_at"?: string,"from_user"?: string,"token_hash"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"projects": {
                   Row: {
                     "created_at": string,"id": string,"idea": string,"organisation_id": string,"owner_id": string,"title": string,"title_source": string,"updated_at": string
@@ -180,11 +194,17 @@ isOneToOne: false
             "admin_overview":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },
+"claim_guest_projects":
+{ Args: { "p_token_hash": string }; Returns: number
+                           },
 "delete_my_account":
 { Args: Record<PropertyKey, never>; Returns: undefined
                            },
 "is_admin":
 { Args: Record<PropertyKey, never>; Returns: boolean
+                           },
+"start_project_transfer":
+{ Args: { "p_token_hash": string }; Returns: undefined
                            }
           }
           Enums: {
