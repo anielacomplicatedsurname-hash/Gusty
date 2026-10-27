@@ -135,3 +135,9 @@ The founder asked for "Welcome back to Gusty! … Sign in and keep my projects".
 needs proof the person controlled the guest session, so the guest's browser holds a one-time secret and the
 move happens only after their sign-in link is opened on that device. Simpler than real account merging, no
 service key, and no way to pull projects out of someone else's account.
+
+## 2026-10-27 — Support through Stripe Payment Links
+The founder wants one-off and monthly support (€3, €5, €10, other). Payment Links need no keys, code library
+or webhook, and Stripe handles cards, Apple/Google Pay, receipts and cancelling. Gusty isn't a charity, so the
+wording is "support", not "donation". No totals, goals or countdowns (no false urgency). Monthly has no "other
+amount" because Stripe's pay-what-you-want links are one-time only.

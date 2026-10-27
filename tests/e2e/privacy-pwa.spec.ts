@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
 test.describe("data controls", () => {
@@ -108,5 +109,32 @@ test.describe("installable app and security headers", () => {
     expect(sw.indexOf("cache.put")).toBeGreaterThan(sw.indexOf("if (isStaticAsset(url))"));
     for (const prefix of ["/_next/static/", "/brand/", "/icons/"]) expect(sw).toContain(`startsWith("${prefix}")`);
     expect(sw.match(/startsWith\(/g)).toHaveLength(3);
+  });
+});
+
+test.describe("support", () => {
+  test("the support card offers one-off and monthly support through Stripe", async ({ page }) => {
+    await page.goto("/en");
+    const card = page.locator("section[aria-labelledby=support-title]");
+    await expect(card.getByRole("heading", { name: "Help Gusty take off!" })).toBeVisible();
+    for (const amount of ["€3", "€5", "€10", "Other amount"]) {
+      await expect(card.getByRole("link", { name: amount, exact: true })).toHaveAttribute("href", /^https:\/\/buy\.stripe\.com\//);
+    }
+    await card.getByText("Monthly", { exact: true }).click();
+    await expect(card.getByRole("link", { name: "€5 a month" })).toHaveAttribute("href", /^https:\/\/buy\.stripe\.com\//);
+    await expect(card.getByRole("link", { name: "Other amount" })).toHaveCount(0);
+    await expect(card.getByRole("link", { name: "Manage or stop a monthly contribution" })).toHaveAttribute("href", /^https:\/\/billing\.stripe\.com\//);
+    const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+    expect(scan.violations).toEqual([]);
+
+    await page.getByRole("link", { name: "Support Gusty" }).click();
+    await expect(page).toHaveURL(/\/en\/support$/);
+    await expect(page.getByRole("heading", { name: "Help Gusty take off!" })).toBeVisible();
+  });
+
+  test("the thank-you page is calm and kept out of search engines", async ({ page }) => {
+    await page.goto("/en/thank-you");
+    await expect(page.getByRole("heading", { level: 1, name: "Thank you for the lift." })).toBeVisible();
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   });
 });

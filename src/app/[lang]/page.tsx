@@ -1,8 +1,10 @@
 import { BrandSymbol, type SymbolName } from "@/components/BrandSymbol";
 import { Logo } from "@/components/Logo";
 import { getMessages } from "@/i18n/dictionaries";
+import { supportChoices } from "@/config/support";
 import { supabaseConfig } from "@/lib/supabase/config";
 import { IdeaForm } from "@/modules/projects/IdeaForm";
+import { SupportCard } from "@/modules/support/SupportCard";
 
 const stepSymbols: SymbolName[] = ["sprout", "spark", "path"];
 
@@ -18,6 +20,7 @@ function HandUnderline({ className = "" }: { className?: string }) {
 export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   const t = await getMessages();
+  const support = supportChoices();
 
   return (
     <>
@@ -73,6 +76,12 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           </ol>
         </div>
       </section>
+
+      {support && (
+        <div className="mx-auto max-w-3xl px-4 pt-16 sm:px-6">
+          <SupportCard choices={support} copy={t.support} lang={lang} />
+        </div>
+      )}
 
       <section className="mx-auto max-w-(--content-max) px-4 py-16 text-center sm:px-6">
         <p className="type-display text-5xl sm:text-6xl">{t.home.closing}</p>
