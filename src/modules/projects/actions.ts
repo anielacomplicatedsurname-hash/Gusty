@@ -5,7 +5,9 @@ import { redirect } from "next/navigation";
 import { brand } from "@/config/brand";
 import { defaultLocale, hasLocale } from "@/i18n/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { hashTransferSecret, newTransferSecret, TRANSFER_COOKIE, TRANSFER_MAX_AGE_SECONDS } from "./transfer";
+import {
+  finishProjectTransfer, hashTransferSecret, newTransferSecret, TRANSFER_COOKIE, TRANSFER_MAX_AGE_SECONDS,
+} from "./transfer";
 import { checkEmail, checkIdea, isProjectId, titleFromIdea } from "./validation";
 
 export type CreateProjectState = { error?: "empty" | "tooLong" | "unavailable" | "failed" };
@@ -75,6 +77,8 @@ export type EmailLinkState = {
   status?: "sent" | "sentBring";
   error?: "invalid" | "unavailable" | "failed" | "exists";
   email?: string;
+  /** Which kind of code the email holds, for typing it in instead of opening the link. */
+  codeType?: "email" | "email_change";
 };
 
 /**
@@ -111,7 +115,8 @@ export async function requestEmailLink(
       httpOnly: true,
       secure: brand.siteUrl.startsWith("https://"),
       sameSite: "lax",
-      path: "/api/auth",
+      // The whole site: the email link (/api/auth/confirm) and the code form both finish the move.
+      path: "/",
       maxAge: TRANSFER_MAX_AGE_SECONDS,
     });
   }
@@ -123,7 +128,28 @@ export async function requestEmailLink(
     console.error("Sending the email link failed:", error.message);
     return { error: "failed" };
   }
-  return { status: bring ? "sentBring" : "sent" };
+  return { status: bring ? "sentBring" : "sent", email, codeType: isGuest && !bring ? "email_change" : "email" };
+}
+
+export type EmailCodeState = { error?: "invalid" | "wrong" };
+
+/**
+ * Signs in with the code from the email instead of the link: handy when the email is read on
+ * another device. Finishes "keep my projects" in this browser, like the link does.
+ */
+export async function verifyEmailCode(_prev: EmailCodeState, formData: FormData): Promise<EmailCodeState> {
+  const lang = localeFrom(formData);
+  const email = checkEmail(formData.get("email"));
+  const code = String(formData.get("code") ?? "").replace(/\s+/g, "");
+  const type = formData.get("type") === "email_change" ? "email_change" : "email";
+  if (!email || !/^\d{6,10}$/.test(code)) return { error: "invalid" };
+
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { error: "wrong" };
+  const { error } = await supabase.auth.verifyOtp({ email, token: code, type });
+  if (error) return { error: "wrong" };
+  await finishProjectTransfer(supabase);
+  redirect(`/${lang}/projects`);
 }
 
 export async function signOut(formData: FormData) {
