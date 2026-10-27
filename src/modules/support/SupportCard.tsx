@@ -20,10 +20,10 @@ type Copy = {
 export function SupportCard({ choices, copy, lang }: { choices: SupportChoices; copy: Copy; lang: string }) {
   const [frequency, setFrequency] = useState<"oneOff" | "monthly">("oneOff");
   const options = frequency === "monthly" ? choices.monthly : choices.oneOff;
-  const euros = (n: number) =>
-    new Intl.NumberFormat(lang, { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
+  const money = (n: number) =>
+    new Intl.NumberFormat(lang, { style: "currency", currency: choices.currency, maximumFractionDigits: 0 }).format(n);
   const label = (amount: number | "other") =>
-    amount === "other" ? copy.other : frequency === "monthly" ? copy.perMonth.replace("{amount}", euros(amount)) : euros(amount);
+    amount === "other" ? copy.other : frequency === "monthly" ? copy.perMonth.replace("{amount}", money(amount)) : money(amount);
 
   return (
     <section aria-labelledby="support-title" className="rounded-(--radius-card) bg-surface-raised p-6 sm:p-8">

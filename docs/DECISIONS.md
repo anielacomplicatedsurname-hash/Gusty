@@ -141,3 +141,8 @@ The founder wants one-off and monthly support (€3, €5, €10, other). Paymen
 or webhook, and Stripe handles cards, Apple/Google Pay, receipts and cancelling. Gusty isn't a charity, so the
 wording is "support", not "donation". No totals, goals or countdowns (no false urgency). Monthly has no "other
 amount" because Stripe's pay-what-you-want links are one-time only.
+
+## 2026-10-27 — Support in pounds sterling
+The founder chose GBP over EUR for support payments. Stripe prices can't change currency, so new GBP prices
+and links were made with the same amounts (£3, £5, £10, other from £2) and the euro links switched off.
+The card's currency comes from `src/config/support.ts`.

@@ -7,9 +7,9 @@ Stripe keys and needs no webhook. The card only appears once links are added in 
 ## Links the founder creates in Stripe (Payment Links → New)
 | Use | Type | Price |
 |---|---|---|
-| One-off €3, €5, €10 | One-time | Fixed |
-| One-off "Other amount" | One-time | "Customers choose what to pay", minimum €2 |
-| Monthly €3, €5, €10 | Recurring, monthly | Fixed |
+| One-off £3, £5, £10 | One-time | Fixed |
+| One-off "Other amount" | One-time | "Customers choose what to pay", minimum £2 |
+| Monthly £3, £5, £10 | Recurring, monthly | Fixed |
 | Change or stop monthly | Settings → Billing → Customer portal → login link | — |
 
 For every payment link, **After payment** → redirect to `https://heygusty.com/en/thank-you`.
@@ -20,7 +20,9 @@ are accepted), then the home page card, the `/en/support` page and the footer li
 the "change or stop" link appear only when monthly links exist.
 
 ## What exists in Stripe (live, account "Gusty", created 2026-10-27)
-- Product "Support Gusty" (`prod_VWLwGt2n2oEbEG`) with prices looked up by `gusty_support_once_3/5/10/other`
-  and `gusty_support_monthly_3/5/10`.
-- 7 payment links (metadata `gusty=support_…`), redirect to `/en/thank-you`, Managed Payments off.
+- Product "Support Gusty" (`prod_VWLwGt2n2oEbEG`). Live prices are in pounds, looked up by
+  `gusty_support_gbp_once_3/5/10/other` and `gusty_support_gbp_monthly_3/5/10`.
+- 7 payment links (metadata `gusty=support_gbp_…`), redirect to `/en/thank-you`, Managed Payments off.
+- The first euro links (2026-10-27, metadata `gusty=support_once_…`/`support_monthly_…`) were switched off when
+  the card moved to pounds; their prices are kept for the record.
 - Customer portal "Gusty supporters": cancel at period end, update card, see receipts; login link enabled.

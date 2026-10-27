@@ -117,11 +117,11 @@ test.describe("support", () => {
     await page.goto("/en");
     const card = page.locator("section[aria-labelledby=support-title]");
     await expect(card.getByRole("heading", { name: "Help Gusty take off!" })).toBeVisible();
-    for (const amount of ["€3", "€5", "€10", "Other amount"]) {
+    for (const amount of ["£3", "£5", "£10", "Other amount"]) {
       await expect(card.getByRole("link", { name: amount, exact: true })).toHaveAttribute("href", /^https:\/\/buy\.stripe\.com\//);
     }
     await card.getByText("Monthly", { exact: true }).click();
-    await expect(card.getByRole("link", { name: "€5 a month" })).toHaveAttribute("href", /^https:\/\/buy\.stripe\.com\//);
+    await expect(card.getByRole("link", { name: "£5 a month" })).toHaveAttribute("href", /^https:\/\/buy\.stripe\.com\//);
     await expect(card.getByRole("link", { name: "Other amount" })).toHaveCount(0);
     await expect(card.getByRole("link", { name: "Manage or stop a monthly contribution" })).toHaveAttribute("href", /^https:\/\/billing\.stripe\.com\//);
     const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();

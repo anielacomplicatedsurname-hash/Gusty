@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { supportChoices, type SupportLinks } from "@/config/support";
 
-const empty: SupportLinks = { oneOff: { 3: "", 5: "", 10: "", other: "" }, monthly: { 3: "", 5: "", 10: "" }, manage: "" };
+const empty: SupportLinks = { currency: "GBP", oneOff: { 3: "", 5: "", 10: "", other: "" }, monthly: { 3: "", 5: "", 10: "" }, manage: "" };
 const link = (id: string) => `https://buy.stripe.com/test_${id}`;
 
 describe("supportChoices", () => {
@@ -19,6 +19,7 @@ describe("supportChoices", () => {
 
   it("only accepts Stripe's own payment and billing pages", () => {
     const choices = supportChoices({
+      currency: "GBP",
       oneOff: { 3: link("a"), 5: "https://evil.example/pay", 10: "javascript:alert(1)", other: "" },
       monthly: { 3: link("m"), 5: "", 10: "" },
       manage: "https://billing.stripe.com/p/login/test",
