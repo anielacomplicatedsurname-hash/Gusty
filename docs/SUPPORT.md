@@ -18,3 +18,9 @@ For every payment link, **After payment** → redirect to `https://heygusty.com/
 Paste the links into `src/config/support.ts` (only `https://buy.stripe.com/…` and `https://billing.stripe.com/…`
 are accepted), then the home page card, the `/en/support` page and the footer link appear. Monthly options and
 the "change or stop" link appear only when monthly links exist.
+
+## What exists in Stripe (live, account "Gusty", created 2026-10-27)
+- Product "Support Gusty" (`prod_VWLwGt2n2oEbEG`) with prices looked up by `gusty_support_once_3/5/10/other`
+  and `gusty_support_monthly_3/5/10`.
+- 7 payment links (metadata `gusty=support_…`), redirect to `/en/thank-you`, Managed Payments off.
+- Customer portal "Gusty supporters": cancel at period end, update card, see receipts; login link enabled.

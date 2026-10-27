@@ -361,7 +361,7 @@
     "perMonth": "{amount} a month",
     "other": "Other amount",
     "note": "Payments are handled securely by Stripe. Gusty isn't a registered charity, so support isn't tax-deductible.",
-    "manage": "Change or stop a monthly contribution",
+    "manage": "Manage or stop a monthly contribution",
     "footerLink": "Support Gusty",
     "pageTitle": "Support Gusty",
     "pageDescription": "Help Gusty take off. One-off or monthly support, handled securely by Stripe.",

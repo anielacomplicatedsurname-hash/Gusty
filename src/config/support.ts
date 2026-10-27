@@ -4,10 +4,19 @@
  * whole support card is hidden, so nothing half-finished ever shows.
  */
 export const supportLinks: SupportLinks = {
-  oneOff: { 3: "", 5: "", 10: "", other: "" },
-  monthly: { 3: "", 5: "", 10: "" },
-  // Stripe customer portal login link, where monthly supporters change or stop their contribution.
-  manage: "",
+  oneOff: {
+    3: "https://buy.stripe.com/00weVc4QCaA77MR1fN8so00",
+    5: "https://buy.stripe.com/7sY14m96S5fN6IN9Mj8so01",
+    10: "https://buy.stripe.com/eVq28qfvg5fN4AF8If8so02",
+    other: "https://buy.stripe.com/dRmeVcbf09w32sxf6D8so03",
+  },
+  monthly: {
+    3: "https://buy.stripe.com/9B67sK96SeQn1otcYv8so04",
+    5: "https://buy.stripe.com/cNi28q5UG0Zxffj0bJ8so05",
+    10: "https://buy.stripe.com/5kQ4gygzkdMj1ot6A78so06",
+  },
+  // Stripe customer portal login: monthly supporters update their card, see receipts or stop.
+  manage: "https://billing.stripe.com/p/login/00weVc4QCaA77MR1fN8so00",
 };
 
 export type SupportLinks = {
