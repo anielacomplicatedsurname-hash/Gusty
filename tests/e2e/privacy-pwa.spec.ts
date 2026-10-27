@@ -110,3 +110,19 @@ test.describe("installable app and security headers", () => {
     expect(sw.match(/startsWith\(/g)).toHaveLength(3);
   });
 });
+
+test.describe("support", () => {
+  test("the support card stays hidden until Stripe links are added", async ({ page }) => {
+    await page.goto("/en");
+    await expect(page.getByRole("heading", { name: "Help Gusty take off!" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Support Gusty" })).toHaveCount(0);
+    await page.goto("/en/support");
+    await expect(page.getByRole("heading", { name: "This page wandered off." })).toBeVisible();
+  });
+
+  test("the thank-you page is calm and kept out of search engines", async ({ page }) => {
+    await page.goto("/en/thank-you");
+    await expect(page.getByRole("heading", { level: 1, name: "Thank you for the lift." })).toBeVisible();
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  });
+});

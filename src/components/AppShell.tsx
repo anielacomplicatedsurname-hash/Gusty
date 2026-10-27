@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
+import { supportChoices } from "@/config/support";
 import { getMessages } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import { AccountBadge } from "./AccountBadge";
@@ -56,6 +57,11 @@ export async function AppShell({ locale, children }: { locale: Locale; children:
         <div className="mx-auto flex max-w-(--content-max) flex-col gap-2 px-4 py-8 text-sm text-text-muted sm:px-6 md:flex-row md:items-center md:justify-between">
           <Logo variant="wordmark" height={22} />
           <p>{t.footer.tagline}</p>
+          {supportChoices() && (
+            <Link href={`/${locale}/support`} className="font-medium text-ink underline underline-offset-4">
+              {t.support.footerLink}
+            </Link>
+          )}
         </div>
       </footer>
 
