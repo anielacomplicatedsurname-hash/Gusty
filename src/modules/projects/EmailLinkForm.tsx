@@ -2,6 +2,7 @@
 
 import { useActionState, useRef, useState } from "react";
 import { requestEmailLink, type EmailLinkState } from "./actions";
+import { EmailCodeForm } from "./EmailCodeForm";
 
 type Copy = {
   label: string;
@@ -10,6 +11,7 @@ type Copy = {
   sent: string;
   sentBring: string;
   welcomeBack: { title: string; body: string; bring: string; different: string };
+  code: Parameters<typeof EmailCodeForm>[0]["copy"];
   errors: Record<Exclude<NonNullable<EmailLinkState["error"]>, "exists">, string>;
 };
 
@@ -22,9 +24,14 @@ export function EmailLinkForm({ lang, copy }: { lang: string; copy: Copy }) {
 
   if (state.status) {
     return (
-      <p role="status" className="rounded-xl bg-confirmed/60 p-3 text-sm font-medium text-ink">
-        {state.status === "sentBring" ? copy.sentBring : copy.sent}
-      </p>
+      <div>
+        <p role="status" className="rounded-xl bg-confirmed/60 p-3 text-sm font-medium text-ink">
+          {state.status === "sentBring" ? copy.sentBring : copy.sent}
+        </p>
+        {state.email && (
+          <EmailCodeForm lang={lang} email={state.email} type={state.codeType ?? "email"} copy={copy.code} />
+        )}
+      </div>
     );
   }
 
