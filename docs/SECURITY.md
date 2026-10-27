@@ -45,6 +45,13 @@
   Resend key can only send email and lives only in the Supabase dashboard.
 - Emails say what the link does, that it works once and expires, and that ignoring it changes nothing.
 
+## Bringing guest projects into an account
+- "Sign in and keep my projects" stores a random secret in an `httpOnly` cookie (path `/api/auth`, one hour)
+  and only its SHA-256 in `project_transfers`, which the app can't read.
+- After the sign-in link is confirmed in that same browser, `claim_guest_projects()` moves the guest's rows to
+  the signed-in account and deletes the empty guest account. It refuses unless the caller is a real (not guest)
+  account, only ever moves from a guest account, and each secret works once.
+
 ## Your data (built in stage 5)
 - **Download:** "Download my projects" on My Projects returns a JSON file of every project with its reading, directions and steps (`/api/export`, owner only via RLS, `no-store`).
 - **Delete a project:** removes it and everything attached (`on delete cascade`).

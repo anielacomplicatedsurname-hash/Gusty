@@ -1,9 +1,11 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { brand } from "@/config/brand";
 import { defaultLocale, hasLocale } from "@/i18n/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { hashTransferSecret, newTransferSecret, TRANSFER_COOKIE, TRANSFER_MAX_AGE_SECONDS } from "./transfer";
 import { checkEmail, checkIdea, isProjectId, titleFromIdea } from "./validation";
 
 export type CreateProjectState = { error?: "empty" | "tooLong" | "unavailable" | "failed" };
@@ -69,7 +71,11 @@ export async function saveIdea(projectId: string, rawIdea: string): Promise<Save
   return { ok: true, savedAt: data.updated_at };
 }
 
-export type EmailLinkState = { status?: "sent"; error?: "invalid" | "unavailable" | "failed" | "exists"; email?: string };
+export type EmailLinkState = {
+  status?: "sent" | "sentBring";
+  error?: "invalid" | "unavailable" | "failed" | "exists";
+  email?: string;
+};
 
 /**
  * Sends a sign-in link. For a guest, this attaches the email to their existing account,
@@ -89,10 +95,27 @@ export async function requestEmailLink(
   // Always the public site address, never one taken from the request.
   const emailRedirectTo = `${brand.siteUrl}/api/auth/confirm?next=${encodeURIComponent(`/${lang}/projects`)}`;
 
-  // "signin" is chosen by a guest whose email already has an account: they sign in to that one instead.
-  const signInInstead = formData.get("mode") === "signin";
+  // "bring" is chosen by a guest whose email already has an account: they sign in to it and their
+  // projects come with them, once they open the link on this device (see /api/auth/confirm).
+  const bring = formData.get("mode") === "bring";
   const { data: userData } = await supabase.auth.getUser();
-  const { error } = userData.user?.is_anonymous && !signInInstead
+  const isGuest = userData.user?.is_anonymous ?? false;
+  if (bring && isGuest) {
+    const secret = newTransferSecret();
+    const { error: transferError } = await supabase.rpc("start_project_transfer", { p_token_hash: hashTransferSecret(secret) });
+    if (transferError) {
+      console.error("Starting the project transfer failed:", transferError.message);
+      return { error: "failed", email };
+    }
+    (await cookies()).set(TRANSFER_COOKIE, secret, {
+      httpOnly: true,
+      secure: brand.siteUrl.startsWith("https://"),
+      sameSite: "lax",
+      path: "/api/auth",
+      maxAge: TRANSFER_MAX_AGE_SECONDS,
+    });
+  }
+  const { error } = isGuest && !bring
     ? await supabase.auth.updateUser({ email }, { emailRedirectTo })
     : await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo } });
   if (error?.code === "email_exists") return { error: "exists", email };
@@ -100,7 +123,7 @@ export async function requestEmailLink(
     console.error("Sending the email link failed:", error.message);
     return { error: "failed" };
   }
-  return { status: "sent" };
+  return { status: bring ? "sentBring" : "sent" };
 }
 
 export async function signOut(formData: FormData) {

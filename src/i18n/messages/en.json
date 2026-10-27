@@ -116,13 +116,18 @@
     "submit": "Send me a link",
     "sending": "Sending…",
     "sent": "Check your inbox. We've sent you a link. You can close this page; your work is saved.",
+    "sentBring": "Check your inbox. Open the link on this device and your projects will come with you.",
+    "welcomeBack": {
+      "title": "Welcome back to Gusty!",
+      "body": "You already have an account with this email. Want to bring your current projects with you?",
+      "bring": "Sign in and keep my projects",
+      "different": "Use a different email"
+    },
     "errors": {
       "invalid": "That doesn't look like an email address. Please check it.",
       "unavailable": "Email sign-in isn't available right now. Please try again later.",
-      "failed": "We couldn't send the link. Please try again in a minute.",
-      "exists": "This email already has a Gusty account. You can sign in to it, but projects started here without an account won't move across yet. To keep them, use a different email."
-    },
-    "signInInstead": "Send me a sign-in link instead"
+      "failed": "We couldn't send the link. Please try again in a minute."
+    }
   },
   "interpretation": {
     "title": "Here's what I understood",
