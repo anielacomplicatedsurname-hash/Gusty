@@ -8,6 +8,7 @@ type Copy = {
   submit: string;
   sending: string;
   sent: string;
+  signInInstead: string;
   errors: Record<NonNullable<EmailLinkState["error"]>, string>;
 };
 
@@ -37,6 +38,7 @@ export function EmailLinkForm({ lang, copy }: { lang: string; copy: Copy }) {
           type="email"
           required
           autoComplete="email"
+          defaultValue={state.email}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? "email-error" : undefined}
           className="mt-1 h-12 w-full rounded-xl border border-stone bg-paper px-3 text-base"
@@ -49,6 +51,11 @@ export function EmailLinkForm({ lang, copy }: { lang: string; copy: Copy }) {
         <p id="email-error" role="alert" className="text-sm font-medium text-ink sm:basis-full">
           {error}
         </p>
+      )}
+      {state.error === "exists" && (
+        <button type="submit" name="mode" value="signin" className="btn-secondary sm:basis-full sm:self-start" disabled={pending}>
+          {copy.signInInstead}
+        </button>
       )}
     </form>
   );

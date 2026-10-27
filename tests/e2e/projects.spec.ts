@@ -70,6 +70,33 @@ test("a guest keeps their projects by confirming an email link", async ({ page }
   await expect(page.getByRole("link", { name: /Repair café in the old library/ })).toBeVisible();
 });
 
+test("a guest whose email already has an account is told so and can sign in instead", async ({ page, browser }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "one email round-trip is enough");
+  const email = `returning-${Date.now()}@example.com`;
+
+  // Someone already has an account with this email (made from another browser).
+  const other = await browser.newPage();
+  await createProject(other, "My first project, from my laptop");
+  await other.goto("/en/projects");
+  await other.getByLabel("Email address").fill(email);
+  await other.getByRole("button", { name: "Send me a link" }).click();
+  await expect(other.getByRole("status").filter({ hasText: "Check your inbox" })).toBeVisible();
+  const link = await expect.poll(async () => latestLinkFor(email), { timeout: 15_000 }).not.toBeNull().then(() => latestLinkFor(email));
+  await other.goto(link!);
+  await expect(other.getByText(`Signed in as ${email}`)).toBeVisible();
+  await other.close();
+
+  // On a new device they start as a guest, then try to keep their projects with the same email.
+  await createProject(page, "A second idea, from my phone");
+  await page.goto("/en/projects");
+  await page.getByLabel("Email address").fill(email);
+  await page.getByRole("button", { name: "Send me a link" }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "already has a Gusty account" })).toBeVisible();
+  await expect(page.getByLabel("Email address")).toHaveValue(email);
+  await page.getByRole("button", { name: "Send me a sign-in link instead" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Check your inbox" })).toBeVisible();
+});
+
 async function latestLinkFor(email: string): Promise<string | null> {
   const search = await fetch(`${mailpit}/api/v1/search?query=${encodeURIComponent(`to:"${email}"`)}`);
   const { messages } = (await search.json()) as { messages: { ID: string }[] };

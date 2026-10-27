@@ -119,8 +119,10 @@
     "errors": {
       "invalid": "That doesn't look like an email address. Please check it.",
       "unavailable": "Email sign-in isn't available right now. Please try again later.",
-      "failed": "We couldn't send the link. Please try again in a minute."
-    }
+      "failed": "We couldn't send the link. Please try again in a minute.",
+      "exists": "This email already has a Gusty account. You can sign in to it, but projects started here without an account won't move across yet. To keep them, use a different email."
+    },
+    "signInInstead": "Send me a sign-in link instead"
   },
   "interpretation": {
     "title": "Here's what I understood",
