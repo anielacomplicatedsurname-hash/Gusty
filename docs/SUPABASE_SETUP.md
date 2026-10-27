@@ -7,8 +7,8 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
    `supabase/migrations/20261025000000_projects.sql` → Run. It should say "Success. No rows returned".
 2. **Guest sign-in.** Authentication → Sign In / Providers → turn on **Allow anonymous sign-ins**.
 3. **Where sign-in links go.** Authentication → URL Configuration:
-   - Site URL: `https://gusty-web.onrender.com` (later: the real domain)
-   - Redirect URLs: add `https://gusty-web.onrender.com/**`
+   - Site URL: `https://heygusty.com`
+   - Redirect URLs: `https://heygusty.com/**` (and `https://gusty-web.onrender.com/**` while links sent before the move may still be opened)
 4. **Email confirmation** stays on (the default): Authentication → Sign In / Providers → Email → "Confirm email".
 
 ## Migrations so far (run in this order)

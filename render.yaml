@@ -19,9 +19,9 @@ services:
       - key: NEXT_TELEMETRY_DISABLED
         value: "1"
       # The public address, used for links in emails, canonical URLs and the sitemap.
-      # Change it here when the real domain is connected.
+      # Visits to the Render address are sent here too (see src/proxy.ts).
       - key: NEXT_PUBLIC_SITE_URL
-        value: https://gusty-web.onrender.com
+        value: https://heygusty.com
       # Public by design (protected by Row Level Security). Read at build time.
       - key: NEXT_PUBLIC_SUPABASE_URL
         value: https://xxordvjyxfjkidfenqla.supabase.co

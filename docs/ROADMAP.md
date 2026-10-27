@@ -41,4 +41,5 @@
 - Logo and symbols are traced from the images in the PDF; original vector artwork, if it exists, would be sharper at very large sizes.
 - Fonts are free matches for unnamed suggestions; display and accent fonts cover Latin scripts only.
 - Render builds with `npx pnpm@10.28.0` (pinned to `packageManager` in package.json): update both together.
+- Guest projects started on gusty-web.onrender.com before the move to heygusty.com stay with the old address's session; adding an email there and signing in on heygusty.com brings them back.
 - Render plan is set to `free` (sleeps when idle) until the founder decides to upgrade.
