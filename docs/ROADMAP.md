@@ -32,6 +32,7 @@
 - Offline, Gusty shows a calm offline page; projects themselves are not available offline (they are never cached on the device, by design).
 - The Content Security Policy still allows inline scripts (Next.js needs them without per-request nonces); tightening it is a later step.
 - Sign-in emails come from hello@heygusty.com via Resend (free plan: 100 a day). They're in English only, and their wording lives in `supabase/templates/` rather than the message files, because Supabase sends them.
+- If a guest adds an email that already has a Gusty account, Gusty says so and offers a sign-in link; the projects they started as a guest don't move into that account yet (merging accounts comes later).
 - Guests who never add an email keep their projects only in that browser. Old unused guest accounts are not cleaned up yet.
 - Database changes are applied to production by hand (SQL Editor) before merging.
 - No always-available assistant button yet (deferred: the directive's first milestone doesn't need it; it fits better with Connections and Explore).

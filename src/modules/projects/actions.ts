@@ -69,7 +69,7 @@ export async function saveIdea(projectId: string, rawIdea: string): Promise<Save
   return { ok: true, savedAt: data.updated_at };
 }
 
-export type EmailLinkState = { status?: "sent"; error?: "invalid" | "unavailable" | "failed" };
+export type EmailLinkState = { status?: "sent"; error?: "invalid" | "unavailable" | "failed" | "exists"; email?: string };
 
 /**
  * Sends a sign-in link. For a guest, this attaches the email to their existing account,
@@ -89,10 +89,13 @@ export async function requestEmailLink(
   // Always the public site address, never one taken from the request.
   const emailRedirectTo = `${brand.siteUrl}/api/auth/confirm?next=${encodeURIComponent(`/${lang}/projects`)}`;
 
+  // "signin" is chosen by a guest whose email already has an account: they sign in to that one instead.
+  const signInInstead = formData.get("mode") === "signin";
   const { data: userData } = await supabase.auth.getUser();
-  const { error } = userData.user?.is_anonymous
+  const { error } = userData.user?.is_anonymous && !signInInstead
     ? await supabase.auth.updateUser({ email }, { emailRedirectTo })
     : await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo } });
+  if (error?.code === "email_exists") return { error: "exists", email };
   if (error) {
     console.error("Sending the email link failed:", error.message);
     return { error: "failed" };

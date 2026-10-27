@@ -27,7 +27,7 @@
 - Your data and the app (e2e): download, export refused without a session, delete a project, delete an account (its project is gone afterwards), security headers present and no CSP errors in the console, offline page served by the service worker, service worker never caches pages; (db): `delete_my_account` removes only the caller and refuses signed-out visitors.
 - Admin overview (e2e): looks like a missing page to signed-out and ordinary people, shows counts but never ideas to an admin, axe scan; (db): refused to non-admins, the admins list can't be read or written from the app.
 - Security (unit + e2e): sign-in redirects can't leave the site, including hidden-character tricks; (db): organisations closed, usage log bounds.
-- Saving journey: save without an account, autosave, reload, private to the owner, empty-idea message, keeping projects via a real confirmation email in the local test inbox, sent with Gusty's own template (e2e).
+- Saving journey: save without an account, autosave, reload, private to the owner, empty-idea message, keeping projects via a real confirmation email in the local test inbox, sent with Gusty's own template, and a clear message plus sign-in option when the email already has an account (e2e).
 
 CI starts a local Supabase with the repo's migrations, checks the generated types are current, then runs all of the above.
 
