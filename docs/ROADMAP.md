@@ -44,4 +44,5 @@
 - Render builds with `npx pnpm@10.28.0` (pinned to `packageManager` in package.json): update both together.
 - Guest projects started on gusty-web.onrender.com before the move to heygusty.com stay with the old address's session; adding an email there and signing in on heygusty.com brings them back.
 - Support payments go through Stripe Payment Links (Managed Payments off for these links). Gusty doesn't record who supported it; Stripe's dashboard is the record. Monthly supporters change their amount by stopping and choosing a new one (Stripe's portal can't switch between same-interval prices of one product).
+- The privacy notice and terms are written from how Gusty works but haven't had a legal review. The founder may need to pay the ICO data protection fee as a sole trader handling personal data.
 - Render plan is set to `free` (sleeps when idle) until the founder decides to upgrade.

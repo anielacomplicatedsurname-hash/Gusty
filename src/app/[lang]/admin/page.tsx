@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { BrandSymbol } from "@/components/BrandSymbol";
 import { getMessages, type Messages } from "@/i18n/dictionaries";
 import { formatDateTime } from "@/i18n/format";
-import { getAdminOverview } from "@/modules/admin/data";
+import { getAdminFeedback, getAdminOverview, type FeedbackItem } from "@/modules/admin/data";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getMessages();
@@ -47,6 +47,7 @@ async function AdminContent({ params, t }: { params: PageProps<"/[lang]/admin">[
   }
 
   const { people, projects, cost, days, tasks, errors } = result.overview;
+  const feedback = await getAdminFeedback();
   const a = t.admin;
   const taskName = (task: string) => (a.tasks as Record<string, string>)[task] ?? task;
   const reasonName = (reason: string) => (a.reasons as Record<string, string>)[reason] ?? reason;
@@ -64,6 +65,8 @@ async function AdminContent({ params, t }: { params: PageProps<"/[lang]/admin">[
         <Card title={a.cost} rows={[[a.costToday, money(cost.today, lang)], [a.costWeek, money(cost.week, lang)], [a.costMonth, money(cost.month, lang)]]} />
       </div>
       <p className="-mt-6 text-sm text-text-muted">{a.costNote}</p>
+
+      <Feedback items={feedback} t={t} lang={lang} />
 
       <Table
         caption={a.byTask}
@@ -84,6 +87,39 @@ async function AdminContent({ params, t }: { params: PageProps<"/[lang]/admin">[
         rows={days.map((r) => [r.day, r.runs, r.errors, money(r.cost, lang)])}
       />
     </div>
+  );
+}
+
+function Feedback({ items, t, lang }: { items: FeedbackItem[]; t: Messages; lang: string }) {
+  const a = t.admin;
+  return (
+    <section>
+      <h2 className="text-xl font-semibold">{a.feedback}</h2>
+      {items.length === 0 ? (
+        <p className="mt-3 text-text-muted">{a.noFeedback}</p>
+      ) : (
+        <ul className="mt-3 flex flex-col gap-3">
+          {items.map((item) => (
+            <li key={item.at} className="rounded-(--radius-card) bg-surface-raised p-5">
+              <p className="text-sm text-text-muted">
+                {formatDateTime(item.at, lang)}
+                {item.page && ` · ${a.feedbackFrom.replace("{page}", item.page)}`}
+              </p>
+              <dl className="mt-2 flex flex-col gap-2">
+                {([[a.feedbackWorked, item.worked], [a.feedbackConfusing, item.confusing], [a.feedbackOther, item.other]] as const)
+                  .filter(([, text]) => text)
+                  .map(([label, text]) => (
+                    <div key={label}>
+                      <dt className="text-sm font-semibold">{label}</dt>
+                      <dd className="whitespace-pre-line">{text}</dd>
+                    </div>
+                  ))}
+              </dl>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
 

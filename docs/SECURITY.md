@@ -56,6 +56,15 @@
   the signed-in account and deletes the empty guest account. It refuses unless the caller is a real (not guest)
   account, only ever moves from a guest account, and each secret works once.
 
+## Feedback
+- Anyone can send feedback (a guest session is created if needed); at most 20 messages per person per day.
+- Nobody can read feedback through the app except the admin (`admin_feedback()`); the page it came from is
+  stored without ids. Feedback is unlinked from a person when they delete their account.
+
+## Privacy notice and terms
+- `/en/privacy` and `/en/terms`, linked from every page's footer. They describe what Gusty actually does
+  (processors: Supabase, Render, Anthropic, Resend, Stripe, ImprovMX). Update them whenever that changes.
+
 ## Your data (built in stage 5)
 - **Download:** "Download my projects" on My Projects returns a JSON file of every project with its reading, directions and steps (`/api/export`, owner only via RLS, `no-store`).
 - **Delete a project:** removes it and everything attached (`on delete cascade`).

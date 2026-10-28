@@ -20,6 +20,7 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 6. `20261025200000_admin.sql` (stage 5: the admin overview)
 7. `20261025220000_security_tightening.sql` (stage 5 security review)
 8. `20261027120000_bring_guest_projects.sql` (guests can bring their projects into an existing account)
+9. `20261028120000_feedback.sql` ("Tell us what you think" feedback, read on the admin page)
 
 ## Making yourself an admin
 Sign in to Gusty with your email first, then in the SQL Editor run (with your own email):

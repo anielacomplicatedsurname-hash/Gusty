@@ -22,3 +22,17 @@ export async function getAdminOverview(): Promise<{ ok: true; overview: AdminOve
   if (error) return { ok: false, error: error.code === "42501" ? "forbidden" : "unavailable" };
   return { ok: true, overview: data as unknown as AdminOverview };
 }
+
+export type FeedbackItem = { worked: string | null; confusing: string | null; other: string | null; page: string | null; at: string };
+
+/** Feedback testers chose to send, newest first. Only admins can read it (checked in the database). */
+export async function getAdminFeedback(): Promise<FeedbackItem[]> {
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return [];
+  const { data, error } = await supabase.rpc("admin_feedback");
+  if (error) {
+    console.error("Loading feedback failed:", error.message);
+    return [];
+  }
+  return data as unknown as FeedbackItem[];
+}

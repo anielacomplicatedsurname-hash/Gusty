@@ -146,3 +146,9 @@ amount" because Stripe's pay-what-you-want links are one-time only.
 The founder chose GBP over EUR for support payments. Stripe prices can't change currency, so new GBP prices
 and links were made with the same amounts (£3, £5, £10, other from £2) and the euro links switched off.
 The card's currency comes from `src/config/support.ts`.
+
+## 2026-10-28 — Privacy notice, terms and feedback before inviting testers
+Gusty stores emails, ideas and payments, so a privacy notice (UK GDPR) and plain terms come before testers.
+Written from what the code does, for the founder (sole trader, UK) to review; legal review recommended.
+Governing law is "the part of the UK where you live" rather than guessing a jurisdiction. Feedback is three
+optional questions stored in Postgres and read on the admin page: no third-party form tool.

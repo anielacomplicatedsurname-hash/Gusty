@@ -177,3 +177,17 @@ describe("bringing guest projects into an account", () => {
     expect(data).toHaveLength(1);
   });
 });
+
+describe("feedback", () => {
+  it("can be sent but never read back, and is limited per person", async () => {
+    const gina = client();
+    expect((await gina.auth.signInAnonymously()).error).toBeNull();
+    expect((await gina.from("feedback").insert({ worked: "Nice" })).error).toBeNull();
+    expect((await gina.from("feedback").select("worked")).error).not.toBeNull();
+    expect((await gina.from("feedback").insert({ worked: "", confusing: null })).error).not.toBeNull(); // empty
+    for (let i = 0; i < 19; i++) await gina.from("feedback").insert({ other: `note ${i}` });
+    expect((await gina.from("feedback").insert({ other: "one too many" })).error).not.toBeNull();
+    expect((await client().from("feedback").insert({ worked: "signed out" })).error).not.toBeNull();
+    expect((await gina.rpc("admin_feedback")).error?.code).toBe("42501");
+  });
+});

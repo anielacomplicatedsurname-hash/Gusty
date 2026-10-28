@@ -62,7 +62,10 @@
     }
   },
   "footer": {
-    "tagline": "People, ideas, places for a brighter tomorrow."
+    "tagline": "People, ideas, places for a brighter tomorrow.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "label": "More from Gusty"
   },
   "notFound": {
     "title": "This page wandered off.",
@@ -315,7 +318,7 @@
   },
   "admin": {
     "title": "Admin overview",
-    "intro": "Only you can see this page. It shows counts and costs, never anyone's ideas.",
+    "intro": "Only you can see this page. It shows counts and costs, never anyone's ideas, plus feedback people chose to send you.",
     "loading": "Loading the overview…",
     "unavailable": "The overview couldn't load. Please try again later.",
     "people": "People",
@@ -359,7 +362,13 @@
       "invalid": "Claude's answer was incomplete",
       "other": "Other error",
       "error": "Other error"
-    }
+    },
+    "feedback": "Feedback from testers",
+    "noFeedback": "No feedback yet.",
+    "feedbackWorked": "What worked",
+    "feedbackConfusing": "Confusing or tiring",
+    "feedbackOther": "Anything else",
+    "feedbackFrom": "From {page}"
   },
   "support": {
     "title": "Help Gusty take off!",
@@ -391,5 +400,174 @@
     },
     "helpLink": "Changed your mind? How to stop or get a refund",
     "thankYouReceipt": "Stripe has sent a receipt to your email."
+  },
+  "feedback": {
+    "link": "Tell us what you think",
+    "title": "Tell us what you think",
+    "intro": "Gusty is new, and your thoughts shape what comes next. Answer one question or all three. A few words is enough.",
+    "hint": "Everything here is optional.",
+    "worked": "What worked well?",
+    "confusing": "Was anything confusing or tiring?",
+    "other": "Anything else you'd like to tell us?",
+    "submit": "Send my thoughts",
+    "sending": "Sending…",
+    "sent": "Thank you. Your thoughts reached us, and we read every message.",
+    "errors": {
+      "empty": "Write a few words in any of the boxes, then send.",
+      "failed": "That didn't send. Please try again in a moment."
+    },
+    "privacy": "Your feedback is read only by the person who runs Gusty and is never shown publicly.",
+    "privacyLink": "Read our privacy notice"
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy notice",
+      "description": "What Gusty collects, why, who helps us run it, and your rights.",
+      "updated": "Last updated: 28 October 2026",
+      "intro": "This notice explains, in plain language, what happens to your information when you use Gusty at heygusty.com.",
+      "sections": [
+        {
+          "heading": "Who we are",
+          "paragraphs": [
+            "Gusty is run by Aniela Fidler-Wieruszewska, a sole trader based in the United Kingdom, trading as Gusty. She is responsible for your personal data (the \"controller\").",
+            "Questions about your data: hello@heygusty.com"
+          ]
+        },
+        {
+          "heading": "What we collect",
+          "items": [
+            "Your ideas and projects: what you write, and Gusty's readings, directions and next steps for them, plus the choices you make (for example, the mode you prefer).",
+            "Your email address, if you add one to keep your projects or to sign in.",
+            "Feedback you choose to send us.",
+            "A record of AI requests: which feature was used, when, and how much it cost to run. This record never includes what you wrote.",
+            "If you support Gusty: Stripe handles the payment. We can see your name, email address, the amount and the date in Stripe. We never see your card details.",
+            "Cookies: one to keep you signed in, and a short-lived one (one hour) when you bring guest projects into your account. We don't use advertising or tracking cookies, and we don't use analytics."
+          ]
+        },
+        {
+          "heading": "Why we use it",
+          "items": [
+            "To run Gusty for you: saving your projects, preparing readings and next steps, and sending sign-in emails. This is needed to provide the service you asked for.",
+            "To keep Gusty safe and affordable: daily limits, preventing misuse and fixing problems. This is in our legitimate interests.",
+            "To improve Gusty from the feedback you choose to send. This is in our legitimate interests.",
+            "To handle support payments and keep financial records, as the law requires."
+          ]
+        },
+        {
+          "heading": "How Gusty uses AI",
+          "paragraphs": [
+            "When Gusty reads your idea or suggests steps, the text of that project is sent to Anthropic, the company that makes the Claude AI, to prepare the answer. Under Anthropic's commercial terms, this text isn't used to train their models.",
+            "AI suggestions can be wrong. Please avoid including sensitive details, such as health information, about yourself or other people in your ideas."
+          ]
+        },
+        {
+          "heading": "Who helps us run Gusty",
+          "paragraphs": [
+            "These companies process data on our behalf, only to provide their service to us:"
+          ],
+          "items": [
+            "Supabase: database and sign-in (EU).",
+            "Render: hosting the website (Frankfurt, Germany).",
+            "Anthropic: AI readings and suggestions (United States).",
+            "Resend: sending sign-in emails.",
+            "Stripe: support payments and receipts.",
+            "ImprovMX: forwarding emails sent to hello@heygusty.com."
+          ],
+          "after": [
+            "Some of these providers are based in, or may process data in, the United States. Where they do, they rely on safeguards recognised under UK data protection law, such as the UK's data bridge or standard contractual clauses. We don't sell your data or share it for advertising."
+          ]
+        },
+        {
+          "heading": "How long we keep it",
+          "items": [
+            "Your projects and email address: until you delete them or your account.",
+            "The record of AI requests: deleted with your account.",
+            "Feedback: kept while it's useful for improving Gusty. It's no longer linked to you once you delete your account.",
+            "Payment records: kept by Stripe, and by us for as long as UK tax law requires."
+          ]
+        },
+        {
+          "heading": "Your rights",
+          "paragraphs": [
+            "You can ask to see, correct or delete your data, to receive a copy of it, or to object to or restrict how we use it. You can download your projects and delete your account yourself on My Projects. For anything else, email hello@heygusty.com and we'll reply within one month.",
+            "If you're unhappy with how we handle your data, you can complain to the Information Commissioner's Office (ico.org.uk). We'd appreciate the chance to put things right first."
+          ]
+        },
+        {
+          "heading": "Changes",
+          "paragraphs": [
+            "If we change how we use your data, we'll update this page and the date at the top."
+          ]
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of use",
+      "description": "The simple rules for using Gusty.",
+      "updated": "Last updated: 28 October 2026",
+      "intro": "These terms are an agreement between you and Gusty. We've kept them short and plain. By using Gusty, you agree to them.",
+      "sections": [
+        {
+          "heading": "Who we are",
+          "paragraphs": [
+            "Gusty is run by Aniela Fidler-Wieruszewska, a sole trader based in the United Kingdom, trading as Gusty. Contact: hello@heygusty.com"
+          ]
+        },
+        {
+          "heading": "Gusty is new",
+          "paragraphs": [
+            "Gusty is in early testing. Features may change, and things may sometimes go wrong or be unavailable. We'll always try to keep your work safe."
+          ]
+        },
+        {
+          "heading": "AI suggestions are suggestions",
+          "paragraphs": [
+            "Gusty's readings, directions and steps are prepared by AI. They can be wrong or incomplete, so please check anything important yourself. Gusty doesn't give legal, financial or other professional advice, and can't promise funding or results."
+          ]
+        },
+        {
+          "heading": "Your work stays yours",
+          "paragraphs": [
+            "What you write in Gusty belongs to you. You allow us to store and process it only to run Gusty for you, as described in our privacy notice. You can download or delete your projects at any time."
+          ]
+        },
+        {
+          "heading": "Using Gusty fairly",
+          "paragraphs": [
+            "Please don't use Gusty to break the law, to harm or harass anyone, to try to get around its security or limits, or to overload it. We may pause or close accounts that do."
+          ]
+        },
+        {
+          "heading": "Supporting Gusty",
+          "paragraphs": [
+            "Support payments are voluntary and are handled by Stripe. Gusty isn't a registered charity, so support isn't tax-deductible, and it doesn't unlock extra features. You can stop monthly support at any time. If you change your mind, email hello@heygusty.com within 14 days of a payment for a full refund."
+          ]
+        },
+        {
+          "heading": "Our responsibility to you",
+          "paragraphs": [
+            "We're responsible for loss or damage you suffer that is a foreseeable result of us breaking these terms or not taking reasonable care. We're not responsible for loss that wasn't foreseeable, or for business losses. Nothing in these terms limits your rights under consumer law, or our responsibility where the law doesn't allow it to be limited."
+          ]
+        },
+        {
+          "heading": "Leaving Gusty",
+          "paragraphs": [
+            "You can stop using Gusty and delete your account at any time on My Projects."
+          ]
+        },
+        {
+          "heading": "Law",
+          "paragraphs": [
+            "These terms are governed by the law of the part of the United Kingdom where you live, and you can bring any claim in your local courts."
+          ]
+        },
+        {
+          "heading": "Changes",
+          "paragraphs": [
+            "If we change these terms, we'll update this page and the date at the top."
+          ]
+        }
+      ]
+    }
   }
 }

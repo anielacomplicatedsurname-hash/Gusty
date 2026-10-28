@@ -3,7 +3,7 @@ import { brand } from "@/config/brand";
 import { locales } from "@/i18n/config";
 
 /** Public, indexable pages only. Add a path here when a public page becomes real. */
-const publicPaths = ["", "/support"];
+const publicPaths = ["", "/support", "/privacy", "/terms"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return publicPaths.flatMap((path) =>
