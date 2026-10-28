@@ -97,6 +97,14 @@ async function ProjectContent({
 
       <NextStepsSection projectId={project.id} lang={lang} t={t} />
 
+      <section aria-labelledby="feedback-card-title" className="rounded-(--radius-card) bg-sky/60 p-6 text-ink">
+        <h2 id="feedback-card-title" className="text-lg font-semibold">{t.feedback.cardTitle}</h2>
+        <p className="mt-1">{t.feedback.cardBody}</p>
+        <Link href={`/${lang}/feedback?from=${encodeURIComponent(`/${lang}/projects/${project.id}`)}`} className="btn-secondary mt-4">
+          {t.feedback.link}
+        </Link>
+      </section>
+
       <form action={deleteProject} className="self-start">
         <input type="hidden" name="projectId" value={project.id} />
         <input type="hidden" name="lang" value={lang} />

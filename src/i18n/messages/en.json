@@ -417,7 +417,11 @@
       "failed": "That didn't send. Please try again in a moment."
     },
     "privacy": "Your feedback is read only by the person who runs Gusty and is never shown publicly.",
-    "privacyLink": "Read our privacy notice"
+    "privacyLink": "Read our privacy notice",
+    "banner": "Gusty is in early testing. Your thoughts shape what we build next.",
+    "bannerLink": "Tell us what you think",
+    "cardTitle": "How is Gusty working for you?",
+    "cardBody": "A minute of your thoughts helps us make Gusty simpler and more useful, for you and for others."
   },
   "legal": {
     "privacy": {
@@ -457,6 +461,7 @@
           "heading": "How Gusty uses AI",
           "paragraphs": [
             "When Gusty reads your idea or suggests steps, the text of that project is sent to Anthropic, the company that makes the Claude AI, to prepare the answer. Under Anthropic's commercial terms, this text isn't used to train their models.",
+            "Your projects are private to you. We never show them to other people who use Gusty, and we never use one person's ideas to make suggestions for someone else: each request only includes the project you're working on.",
             "AI suggestions can be wrong. Please avoid including sensitive details, such as health information, about yourself or other people in your ideas."
           ]
         },
@@ -529,6 +534,13 @@
           "heading": "Your work stays yours",
           "paragraphs": [
             "What you write in Gusty belongs to you. You allow us to store and process it only to run Gusty for you, as described in our privacy notice. You can download or delete your projects at any time."
+          ]
+        },
+        {
+          "heading": "Your ideas stay private",
+          "paragraphs": [
+            "We never share your ideas or projects with other people who use Gusty, and we never use one person's ideas to make suggestions for someone else. When Gusty helps with a project, it works only from that project.",
+            "Many people have similar ideas on their own, and Gusty may suggest similar directions or steps to different people because its suggestions come from general knowledge. We can't be responsible for other people having, developing or launching ideas similar to yours. Gusty doesn't give your ideas legal protection; if that matters to you, you may want to look into it before sharing your idea widely."
           ]
         },
         {
