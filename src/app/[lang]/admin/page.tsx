@@ -146,7 +146,8 @@ function Table({ caption, head, rows, empty }: { caption: string; head: string[]
       {empty ? (
         <p className="mt-3 text-text-muted">{empty}</p>
       ) : (
-        <div className="mt-3 overflow-x-auto">
+        // Wide tables scroll sideways on phones, so the scroll area is reachable by keyboard too.
+        <div className="mt-3 overflow-x-auto" tabIndex={0} role="region" aria-label={caption}>
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-border">

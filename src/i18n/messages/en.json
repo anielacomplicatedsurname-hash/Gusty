@@ -208,7 +208,10 @@
     "setAside": "Set aside",
     "setAsideHint": "This step was set aside, so it can't be opened any more. Your answers are kept here.",
     "notesLabel": "Your notes",
-    "edit": "Edit your answers"
+    "edit": "Edit your answers",
+    "tidied": "Tidied by Gusty",
+    "showOriginal": "Show what I wrote",
+    "assisted": "Gusty added ideas"
   },
   "errorPage": {
     "title": "Something went wrong on our side.",
@@ -368,7 +371,9 @@
       "unstick_explain": "I'm stuck: explain differently",
       "unstick_start": "I'm stuck: help me start",
       "step_questions": "Step questions",
-      "step_rephrase": "Say it differently"
+      "step_rephrase": "Say it differently",
+      "tidy": "Tidying answers and notes",
+      "say_more": "Help me say more"
     },
     "reasons": {
       "key": "API key missing, expired or refused",
@@ -612,6 +617,17 @@
     "answerLabel": "Your answer",
     "saving": "Saving…",
     "saved": "Saved",
+    "sayMore": {
+      "button": "Help me say more",
+      "working": "Gusty is thinking of more to say…",
+      "label": "Gusty's suggestion",
+      "hint": "Your words, with a few more ideas from Gusty. If you use it, you can still change anything.",
+      "use": "Use this",
+      "keep": "Keep mine",
+      "assisted": "Gusty added ideas to this answer.",
+      "demoNotice": "Demo mode: Gusty's own ideas appear here once the AI key is set up. For now this is your answer plus a general example.",
+      "demoAddition": "Maybe I could also think about who else might like to help, what a very first small try could look like, and what I'd need for it."
+    },
     "notesTitle": "Your notes",
     "notesHint": "Anything that helps: ideas, links, a first draft. Only you can see this.",
     "done": "This step is done",

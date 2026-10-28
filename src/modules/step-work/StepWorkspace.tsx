@@ -4,7 +4,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import type en from "@/i18n/messages/en.json";
 import { setStepDone } from "@/modules/steps/actions";
-import { differentQuestions, prepareQuestions, rephraseQuestion, saveAnswer, saveNotes, type WorkResult } from "./actions";
+import {
+  applySayMore, differentQuestions, prepareQuestions, rephraseQuestion, saveAnswer, saveNotes, sayMore, tidyAnswer, tidyNotes,
+  type WorkResult,
+} from "./actions";
 import type { StepWork } from "./data";
 
 type Copy = typeof en.stepWork;
@@ -93,7 +96,9 @@ export function StepWorkspace({ work, lang, copy }: { work: StepWork; lang: stri
                 rows={3}
                 maxLength={2000}
                 save={(text) => saveAnswer(q.id, text)}
+                onFinished={() => tidyAnswer(q.id)}
                 copy={copy}
+                sayMore={{ questionId: q.id, assisted: q.assisted, lang }}
               />
             </li>
           ))}
@@ -114,7 +119,7 @@ export function StepWorkspace({ work, lang, copy }: { work: StepWork; lang: stri
         <h2 id="notes-title" className="text-xl font-semibold">{copy.notesTitle}</h2>
         <p id="notes-hint" className="mt-1 text-text-muted">{copy.notesHint}</p>
         <AutosaveText id="notes" label={copy.notesTitle} hideLabel describedBy="notes-hint" initial={work.step.notes} rows={6} maxLength={4000}
-          save={(text) => saveNotes(work.step.id, text)} copy={copy} />
+          save={(text) => saveNotes(work.step.id, text)} onFinished={() => tidyNotes(work.step.id)} copy={copy} />
       </section>
 
       {work.step.status !== "done" && (
@@ -129,25 +134,49 @@ export function StepWorkspace({ work, lang, copy }: { work: StepWork; lang: stri
   );
 }
 
-/** A text box that saves itself shortly after typing stops, and when it loses focus. */
+type Box = { id: string; value: string; replace: (text: string) => void };
+
+/**
+ * A text box that saves itself shortly after typing stops, and when it loses focus. `onFinished` runs
+ * once the person leaves the box with saved text (Gusty tidies it then, not on every pause in typing).
+ */
 function AutosaveText({
-  id, label, hideLabel = false, describedBy, initial, rows, maxLength, save, copy,
+  id, label, hideLabel = false, describedBy, initial, rows, maxLength, save, onFinished, copy, sayMore,
 }: {
   id: string; label: string; hideLabel?: boolean; describedBy?: string; initial: string; rows: number; maxLength: number;
-  save: (text: string) => Promise<{ ok: boolean }>; copy: Copy;
+  save: (text: string) => Promise<{ ok: boolean }>; onFinished?: () => Promise<void>; copy: Copy;
+  /** Offers "Help me say more" for this answer. */
+  sayMore?: { questionId: string; assisted: boolean; lang: string };
 }) {
   const [value, setValue] = useState(initial);
   const [status, setStatus] = useState<Status>("idle");
   const last = useRef(initial);
+  const finished = useRef("");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const flush = async (text: string) => {
     if (timer.current) clearTimeout(timer.current);
-    if (text === last.current) return;
+    if (text === last.current) return true;
     setStatus("saving");
     const result = await save(text);
     if (result.ok) last.current = text;
     setStatus(result.ok ? "saved" : "failed");
+    return result.ok;
+  };
+
+  const finish = async (text: string) => {
+    if (!(await flush(text)) || !text.trim() || text === finished.current) return;
+    finished.current = text;
+    void onFinished?.();
+  };
+
+  // "Use this" saves on the server; the box just shows the new text.
+  const replace = (text: string) => {
+    if (timer.current) clearTimeout(timer.current);
+    setValue(text);
+    last.current = text;
+    setStatus("saved");
+    void finish(text);
   };
 
   return (
@@ -165,12 +194,73 @@ function AutosaveText({
           if (timer.current) clearTimeout(timer.current);
           timer.current = setTimeout(() => void flush(text), 1200);
         }}
-        onBlur={() => void flush(value)}
+        onBlur={() => void finish(value)}
         className="mt-1 w-full rounded-xl border border-stone bg-paper p-3 text-base"
       />
       <p id={`${id}-status`} data-status={status} aria-live="polite" className="mt-1 h-5 text-sm text-text-muted">
         {status === "saving" ? copy.saving : status === "saved" ? copy.saved : status === "failed" ? copy.errors.failed : ""}
       </p>
+      {sayMore && <SayMore {...sayMore} box={{ id, value, replace }} copy={copy} />}
+    </div>
+  );
+}
+
+/** "Help me say more": Gusty suggests a longer version of the answer; the person chooses whether to use it. */
+function SayMore({ questionId, assisted: initiallyAssisted, lang, box, copy }: {
+  questionId: string; assisted: boolean; lang: string; box: Box; copy: Copy;
+}) {
+  const [suggestion, setSuggestion] = useState<{ text: string; demo: boolean } | null>(null);
+  const [assisted, setAssisted] = useState(initiallyAssisted);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+  const t = copy.sayMore;
+
+  const ask = () => {
+    setError(null);
+    startTransition(async () => {
+      const result = await sayMore(questionId, box.value, lang);
+      if (result.ok) setSuggestion({ text: result.text, demo: result.demo });
+      else setError(copy.errors[result.error]);
+    });
+  };
+
+  const use = (text: string) => {
+    setError(null);
+    startTransition(async () => {
+      const result = await applySayMore(questionId, text);
+      if (!result.ok) return setError(copy.errors.failed);
+      box.replace(text);
+      setSuggestion(null);
+      setAssisted(true);
+      document.getElementById(box.id)?.focus();
+    });
+  };
+
+  return (
+    <div className="flex flex-col items-start gap-3">
+      {assisted && <p className="text-sm text-text-muted">{t.assisted}</p>}
+      {!suggestion && box.value.trim() && (
+        <button type="button" className="btn-secondary" disabled={pending} onClick={ask}>
+          {pending ? t.working : t.button}
+        </button>
+      )}
+      {error && <p role="alert" className="text-sm font-medium">{error}</p>}
+      <div aria-live="polite" className="w-full">
+        {suggestion && (
+          <section aria-labelledby={`${box.id}-suggestion`} className="flex flex-col gap-3 rounded-xl border-2 border-lilac bg-paper p-4">
+            <div>
+              <h4 id={`${box.id}-suggestion`} className="font-semibold">{t.label}</h4>
+              <p className="text-sm text-text-muted">{t.hint}</p>
+            </div>
+            {suggestion.demo && <p className="rounded-lg bg-sky p-2 text-sm text-ink">{t.demoNotice}</p>}
+            <p className="whitespace-pre-line">{suggestion.text}</p>
+            <div className="flex flex-wrap gap-2">
+              <button type="button" className="btn-primary" disabled={pending} onClick={() => use(suggestion.text)}>{t.use}</button>
+              <button type="button" className="btn-secondary" disabled={pending} onClick={() => setSuggestion(null)}>{t.keep}</button>
+            </div>
+          </section>
+        )}
+      </div>
     </div>
   );
 }

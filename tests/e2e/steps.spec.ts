@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -17,6 +18,9 @@ async function projectWithSteps(page: Page) {
   await page.getByRole("button", { name: "Choose this: Shape the idea" }).click();
   await expect(page.getByText("Start here", { exact: true })).toBeVisible();
 }
+
+const sql = (query: string) =>
+  execFileSync("docker", ["exec", "supabase_db_gusty", "psql", "-U", "postgres", "-d", "postgres", "-qc", query]);
 
 const mode = (page: Page, name: string) => page.locator("label", { hasText: name });
 const stepTitle = (page: Page, name: string) => page.getByRole("heading", { level: 4, name });
@@ -154,4 +158,56 @@ test("working on a step with Gusty: questions, rewording, answers, notes, done",
   await page.locator("section[aria-labelledby=done-title]").getByRole("link", { name: "Write your idea in three sentences" }).click();
   await expect(page).toHaveURL(/\/steps\/[0-9a-f-]{36}$/);
   await expect(page.locator("textarea#notes")).toHaveValue("A place where neighbours fix things together.");
+});
+
+test("Help me say more suggests a longer answer the person can use or ignore; tidied words keep the original", async ({ page }) => {
+  await projectWithSteps(page);
+  const projectUrl = page.url();
+  await page.getByRole("link", { name: "Work on this with Gusty: Write your idea in three sentences" }).click();
+  const questions = page.locator("section[aria-labelledby=questions-title] ol > li");
+  await expect(questions).toHaveCount(3);
+  const first = questions.first();
+
+  // Only offered once there's something to build on.
+  await expect(first.getByRole("button", { name: "Help me say more" })).toHaveCount(0);
+  const answer = first.getByLabel("Your answer");
+  await answer.fill("a cafe were people fix stuff");
+  await answer.blur();
+  await expect(first.locator("[data-status=saved]")).toBeVisible();
+
+  // "Keep mine" leaves the answer alone.
+  await first.getByRole("button", { name: "Help me say more" }).click();
+  await expect(first.getByRole("heading", { name: "Gusty's suggestion" })).toBeVisible();
+  await expect(first.getByText("Demo mode: Gusty's own ideas appear here")).toBeVisible();
+  await first.getByRole("button", { name: "Keep mine" }).click();
+  await expect(first.getByRole("heading", { name: "Gusty's suggestion" })).toHaveCount(0);
+  await expect(answer).toHaveValue("a cafe were people fix stuff");
+
+  // "Use this" puts it in the box, still editable, and labels Gusty's help.
+  await first.getByRole("button", { name: "Help me say more" }).click();
+  const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+  await first.getByRole("button", { name: "Use this" }).click();
+  await expect(answer).toHaveValue(/^a cafe were people fix stuff\n\nMaybe I could also think about/);
+  await expect(answer).toBeFocused();
+  await expect(first.getByText("Gusty added ideas to this answer.")).toBeVisible();
+  await page.reload();
+  await expect(questions.first().getByLabel("Your answer")).toHaveValue(/Maybe I could also think about/);
+  await expect(questions.first().getByText("Gusty added ideas to this answer.")).toBeVisible();
+
+  // Without an AI key nothing is tidied, so the test stands in for Gusty here.
+  await questions.first().getByLabel("Your answer").fill("a cafe were people fix stuff");
+  await questions.first().getByLabel("Your answer").blur();
+  await expect(questions.first().locator("[data-status=saved]")).toBeVisible();
+  sql(`update public.step_questions set answer_tidied = 'A café where people fix things.' where answer = 'a cafe were people fix stuff'`);
+  await page.goto(projectUrl);
+  const worked = page.locator("section[aria-labelledby=worked-title]");
+  await worked.getByText("Write your idea in three sentences").click();
+  await expect(worked.getByText("A café where people fix things.")).toBeVisible();
+  await expect(worked.getByText("Gusty added ideas", { exact: true })).toBeVisible();
+  await expect(worked.getByText("a cafe were people fix stuff")).toBeHidden();
+  await worked.getByText("Show what I wrote").click();
+  await expect(worked.getByText("a cafe were people fix stuff")).toBeVisible();
+  const projectScan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(projectScan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 });
