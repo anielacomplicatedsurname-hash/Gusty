@@ -73,14 +73,14 @@ isOneToOne: false
                   ]
                 },"next_steps": {
                   Row: {
-                    "created_at": string,"detail": string,"direction_id": string | null,"done_at": string | null,"explanation": string | null,"id": string,"minutes": number | null,"owner_id": string,"position": number,"project_id": string,"source": string,"starter": string | null,"status": string,"title": string,"updated_at": string
+                    "created_at": string,"detail": string,"direction_id": string | null,"done_at": string | null,"explanation": string | null,"id": string,"minutes": number | null,"notes": string,"owner_id": string,"position": number,"project_id": string,"source": string,"starter": string | null,"status": string,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"owner_id"?: string,"position"?: number,"project_id": string,"source"?: string,"starter"?: string | null,"status"?: string,"title": string,"updated_at"?: string
+                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"notes"?: string,"owner_id"?: string,"position"?: number,"project_id": string,"source"?: string,"starter"?: string | null,"status"?: string,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"owner_id"?: string,"position"?: number,"project_id"?: string,"source"?: string,"starter"?: string | null,"status"?: string,"title"?: string,"updated_at"?: string
+                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"notes"?: string,"owner_id"?: string,"position"?: number,"project_id"?: string,"source"?: string,"starter"?: string | null,"status"?: string,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -182,6 +182,32 @@ isOneToOne: false
       columns: ["organisation_id"]
 isOneToOne: false
       referencedRelation: "organisations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"step_questions": {
+                  Row: {
+                    "answer": string,"created_at": string,"hint": string,"id": string,"owner_id": string,"position": number,"project_id": string,"question": string,"status": string,"step_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "answer"?: string,"created_at"?: string,"hint"?: string,"id"?: string,"owner_id"?: string,"position"?: number,"project_id": string,"question": string,"status"?: string,"step_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "answer"?: string,"created_at"?: string,"hint"?: string,"id"?: string,"owner_id"?: string,"position"?: number,"project_id"?: string,"question"?: string,"status"?: string,"step_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "step_questions_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "step_questions_step_id_fkey"
+      columns: ["step_id"]
+isOneToOne: false
+      referencedRelation: "next_steps"
       referencedColumns: ["id"]
     }
                   ]

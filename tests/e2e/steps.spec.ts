@@ -90,3 +90,48 @@ test("the full project page has no detectable accessibility violations", async (
   const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(results.violations.map((v) => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([]);
 });
+
+test("working on a step with Gusty: questions, rewording, answers, notes, done", async ({ page }) => {
+  await projectWithSteps(page);
+  const projectUrl = page.url();
+  await page.getByRole("link", { name: "Work on this with Gusty: Write your idea in three sentences" }).click();
+  await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}\/steps\/[0-9a-f-]{36}$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Write your idea in three sentences" })).toBeVisible();
+
+  // Up to three questions, labelled as demo examples here (no AI key in tests).
+  await expect(page.getByText("Demo mode: these are general example questions")).toBeVisible();
+  const questions = page.locator("section[aria-labelledby=questions-title] ol > li");
+  await expect(questions).toHaveCount(3);
+  await expect(page.getByRole("heading", { name: "What would \"done\" look like for this step?" })).toBeVisible();
+
+  // "Say it differently" rewords one question.
+  await questions.first().getByRole("button", { name: "Say it differently" }).click();
+  await expect(page.getByRole("heading", { name: "How will you know this step is finished?" })).toBeVisible();
+
+  // Answers and notes save themselves and survive a reload.
+  const firstAnswer = questions.first().getByLabel("Your answer");
+  await firstAnswer.fill("Three sentences in my notes");
+  await firstAnswer.blur();
+  await expect(questions.first().locator("[data-status=saved]")).toBeVisible();
+  const notes = page.locator("textarea#notes");
+  await notes.fill("A place where neighbours fix things together.");
+  await notes.blur();
+  await expect(page.locator("#notes-status[data-status=saved]")).toBeVisible();
+  await page.reload();
+  await expect(questions.first().getByLabel("Your answer")).toHaveValue("Three sentences in my notes");
+  await expect(page.locator("textarea#notes")).toHaveValue("A place where neighbours fix things together.");
+
+  // "Different questions" swaps only the unanswered ones; the answer stays.
+  const before = await questions.nth(1).getByRole("heading").textContent();
+  await page.getByRole("button", { name: "Different questions" }).click();
+  await expect(questions.nth(1).getByRole("heading")).not.toHaveText(before!);
+  await expect(questions.first().getByLabel("Your answer")).toHaveValue("Three sentences in my notes");
+
+  const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+
+  // Done: back to the project, step ticked off.
+  await page.getByRole("button", { name: "This step is done" }).click();
+  await expect(page).toHaveURL(projectUrl);
+  await expect(page.getByText("1 done so far")).toBeVisible();
+});

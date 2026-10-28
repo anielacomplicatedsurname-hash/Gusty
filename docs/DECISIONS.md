@@ -158,3 +158,9 @@ The founder wants feedback to be easy to give. A slim "early testing" strip on e
 of each project page link to it: always there, never a pop-up. The terms and privacy notice now promise that
 ideas are never shared between people or used for anyone else's suggestions (true: each AI request contains
 only that project), and say plainly that similar ideas happen independently and Gusty can't be responsible for them.
+
+## 2026-10-28 — "Work on this with Gusty": guided questions, not open chat
+From the first tester: people want help completing steps, not just a list. A focused page per step asks up to
+3 simple questions, each rewordable, with "Different questions" that never discards answers. An open chat box
+was rejected for now: a blank prompt is harder for many neurodivergent people than three clear questions.
+Drafting from the answers ("Help me write it") is the second slice.

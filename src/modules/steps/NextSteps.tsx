@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import type { UnstickKind } from "@/ai/tasks/steps";
@@ -132,9 +133,9 @@ export function NextSteps({
           {view.current ? (
             <ol className="flex flex-col gap-3" aria-label={copy.title}>
               {/* Keyed by step so a tick never carries over to the step that moves into this place. */}
-              <li key={view.current.id}><StepCard step={view.current} highlighted lang={lang} copy={copy} act={act} disabled={pending} /></li>
+              <li key={view.current.id}><StepCard step={view.current} highlighted projectId={projectId} lang={lang} copy={copy} act={act} disabled={pending} /></li>
               {view.upcoming.map((s) => (
-                <li key={s.id}><StepCard step={s} lang={lang} copy={copy} act={act} disabled={pending} /></li>
+                <li key={s.id}><StepCard step={s} projectId={projectId} lang={lang} copy={copy} act={act} disabled={pending} /></li>
               ))}
             </ol>
           ) : (
@@ -197,9 +198,9 @@ function ModeSwitch({ mode, copy, onChange }: { mode: Mode; copy: Copy; onChange
 }
 
 function StepCard({
-  step, highlighted = false, lang, copy, act, disabled,
+  step, highlighted = false, projectId, lang, copy, act, disabled,
 }: {
-  step: StepView; highlighted?: boolean; lang: string; copy: Copy; act: Act; disabled: boolean;
+  step: StepView; highlighted?: boolean; projectId: string; lang: string; copy: Copy; act: Act; disabled: boolean;
 }) {
   const [stuckOpen, setStuckOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -245,6 +246,10 @@ function StepCard({
       )}
 
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-medium">
+        <Link href={`/${lang}/projects/${projectId}/steps/${step.id}`} aria-label={`${copy.workOn}: ${step.title}`}
+          className={highlighted ? "btn-primary" : "underline underline-offset-4"}>
+          {copy.workOn}
+        </Link>
         <button type="button" className="underline underline-offset-4" disabled={disabled}
           aria-expanded={stuckOpen} onClick={() => setStuckOpen((o) => !o)}>
           {copy.stuck.button}

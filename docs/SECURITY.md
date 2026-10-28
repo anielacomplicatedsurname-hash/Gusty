@@ -56,6 +56,11 @@
   the signed-in account and deletes the empty guest account. It refuses unless the caller is a real (not guest)
   account, only ever moves from a guest account, and each secret works once.
 
+## Working on a step
+- `step_questions` follows the same rules as steps: owner-only, insertable only on the person's own step.
+- Questions and rewording go through the same AI provider, daily limit and usage log as other features;
+  the prompt receives only that project and step, inside tags it's told not to obey.
+
 ## Feedback
 - Anyone can send feedback (a guest session is created if needed); at most 20 messages per person per day.
 - Nobody can read feedback through the app except the admin (`admin_feedback()`); the page it came from is
