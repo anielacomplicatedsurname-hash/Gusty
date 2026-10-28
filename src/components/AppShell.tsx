@@ -4,6 +4,7 @@ import { supportChoices } from "@/config/support";
 import { getMessages } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import { AccountBadge } from "./AccountBadge";
+import { FeedbackLink } from "@/modules/feedback/FeedbackLink";
 import { Logo } from "./Logo";
 import { NavLinks, NavList, type NavItem } from "./NavLinks";
 
@@ -11,6 +12,8 @@ import { NavLinks, NavList, type NavItem } from "./NavLinks";
  * Responsive frame. Under 768px: compact header + fixed bottom bar with the three
  * destinations. From 768px (tablet and desktop): the same destinations in the header.
  */
+const footerLink = "font-medium text-ink underline underline-offset-4";
+
 export async function AppShell({ locale, children }: { locale: Locale; children: ReactNode }) {
   const t = await getMessages();
   const items: NavItem[] = [
@@ -57,11 +60,30 @@ export async function AppShell({ locale, children }: { locale: Locale; children:
         <div className="mx-auto flex max-w-(--content-max) flex-col gap-2 px-4 py-8 text-sm text-text-muted sm:px-6 md:flex-row md:items-center md:justify-between">
           <Logo variant="wordmark" height={22} />
           <p>{t.footer.tagline}</p>
-          {supportChoices() && (
-            <Link href={`/${locale}/support`} className="font-medium text-ink underline underline-offset-4">
-              {t.support.footerLink}
-            </Link>
-          )}
+          <ul aria-label={t.footer.label} className="flex flex-wrap gap-x-5 gap-y-2">
+            <li>
+              <Suspense fallback={<Link href={`/${locale}/feedback`} className={footerLink}>{t.feedback.link}</Link>}>
+                <FeedbackLink locale={locale} label={t.feedback.link} className={footerLink} />
+              </Suspense>
+            </li>
+            {supportChoices() && (
+              <li>
+                <Link href={`/${locale}/support`} className={footerLink}>
+                  {t.support.footerLink}
+                </Link>
+              </li>
+            )}
+            <li>
+              <Link href={`/${locale}/privacy`} className={footerLink}>
+                {t.footer.privacy}
+              </Link>
+            </li>
+            <li>
+              <Link href={`/${locale}/terms`} className={footerLink}>
+                {t.footer.terms}
+              </Link>
+            </li>
+          </ul>
         </div>
       </footer>
 

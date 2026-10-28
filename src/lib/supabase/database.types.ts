@@ -57,6 +57,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"feedback": {
+                  Row: {
+                    "confusing": string | null,"created_at": string,"id": string,"other": string | null,"owner_id": string | null,"page": string | null,"worked": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "confusing"?: string | null,"created_at"?: string,"id"?: string,"other"?: string | null,"owner_id"?: string | null,"page"?: string | null,"worked"?: string | null
+                  }
+                  Update: {
+                    "confusing"?: string | null,"created_at"?: string,"id"?: string,"other"?: string | null,"owner_id"?: string | null,"page"?: string | null,"worked"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"next_steps": {
                   Row: {
                     "created_at": string,"detail": string,"direction_id": string | null,"done_at": string | null,"explanation": string | null,"id": string,"minutes": number | null,"owner_id": string,"position": number,"project_id": string,"source": string,"starter": string | null,"status": string,"title": string,"updated_at": string
@@ -191,7 +205,10 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "admin_overview":
+            "admin_feedback":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"admin_overview":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },
 "claim_guest_projects":
@@ -199,6 +216,9 @@ isOneToOne: false
                            },
 "delete_my_account":
 { Args: Record<PropertyKey, never>; Returns: undefined
+                           },
+"feedback_sent_today":
+{ Args: Record<PropertyKey, never>; Returns: number
                            },
 "is_admin":
 { Args: Record<PropertyKey, never>; Returns: boolean

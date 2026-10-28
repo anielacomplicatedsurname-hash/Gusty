@@ -30,6 +30,7 @@
 - Signed-in badge on every page for people with an email, never for guests; a sign-in code landing on the home page is passed on to finish signing in (e2e).
 - Support (unit): only Stripe links accepted, card hidden without one-off links, order of amounts; (e2e): card with live Stripe links, monthly view, footer link and support page, axe scan, thank-you page noindex.
 - Sign-in code (e2e): a wrong code explains itself; the right code keeps a guest's projects, and brings guest projects into an existing account.
+- Testers (e2e): privacy notice and terms from the footer with axe scans; feedback from the footer remembers the page, explains an empty form, and shows on the admin page; (db) feedback can't be read back, is limited to 20 a day, and refused when signed out; (unit) feedback answers and page tidying.
 - Saving journey: save without an account, autosave, reload, private to the owner, empty-idea message, keeping projects via a real confirmation email in the local test inbox, sent with Gusty's own template, and "Welcome back" when the email already has an account: a different email clears the box, keeping projects moves them into the account (e2e, with axe scan); (db) only guests start a transfer, only real accounts claim one, the transfers list is closed.
 
 CI starts a local Supabase with the repo's migrations, checks the generated types are current, then runs all of the above.
