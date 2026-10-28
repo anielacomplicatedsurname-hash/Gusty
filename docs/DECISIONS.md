@@ -152,3 +152,9 @@ Gusty stores emails, ideas and payments, so a privacy notice (UK GDPR) and plain
 Written from what the code does, for the founder (sole trader, UK) to review; legal review recommended.
 Governing law is "the part of the UK where you live" rather than guessing a jurisdiction. Feedback is three
 optional questions stored in Postgres and read on the admin page: no third-party form tool.
+
+## 2026-10-28 — Feedback visible during testing; ideas stay private
+The founder wants feedback to be easy to give. A slim "early testing" strip on every page and a card at the end
+of each project page link to it: always there, never a pop-up. The terms and privacy notice now promise that
+ideas are never shared between people or used for anyone else's suggestions (true: each AI request contains
+only that project), and say plainly that similar ideas happen independently and Gusty can't be responsible for them.

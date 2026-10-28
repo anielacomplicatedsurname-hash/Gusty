@@ -14,8 +14,12 @@ test("the privacy notice and terms are reachable from every page and readable", 
   await expect(page.getByRole("link", { name: "ico.org.uk" })).toHaveAttribute("href", "https://ico.org.uk");
   expect((await axe(page)).violations).toEqual([]);
 
+  await expect(page.getByText("we never use one person's ideas to make suggestions for someone else").first()).toBeVisible();
+
   await page.getByRole("link", { name: "Terms", exact: true }).click();
   await expect(page.getByRole("heading", { level: 1, name: "Terms of use" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Your ideas stay private" })).toBeVisible();
+  await expect(page.getByText("We can't be responsible for other people having, developing or launching ideas similar to yours.", { exact: false })).toBeVisible();
   await expect(page.getByText("within 14 days of a payment for a full refund")).toBeVisible();
   expect((await axe(page)).violations).toEqual([]);
 });
@@ -26,7 +30,7 @@ test.describe("feedback", () => {
   test("anyone can send feedback, and only the admin reads it", async ({ page }) => {
     const note = `The steps felt kind ${Date.now()}`;
     await page.goto("/en/support");
-    await page.getByRole("link", { name: "Tell us what you think" }).click();
+    await page.locator("footer").getByRole("link", { name: "Tell us what you think" }).click();
     await expect(page).toHaveURL(/\/en\/feedback\?from=%2Fen%2Fsupport$/);
     expect((await axe(page)).violations).toEqual([]);
 
@@ -52,5 +56,25 @@ test.describe("feedback", () => {
     } finally {
       sql(`delete from public.admins where user_id = '${owner}'`);
     }
+  });
+});
+
+test("every page invites feedback without getting in the way", async ({ page }) => {
+  await page.goto("/en");
+  await expect(page.getByText("Gusty is in early testing.")).toBeVisible();
+  await page.getByText("Gusty is in early testing.").getByRole("link", { name: "Tell us what you think" }).click();
+  await expect(page).toHaveURL(/\/en\/feedback\?from=%2Fen$/);
+});
+
+test.describe("feedback on a project", () => {
+  test.skip(!process.env.E2E_SUPABASE, "set E2E_SUPABASE=1 with a local Supabase running");
+  test("the project page ends with an invitation to share thoughts", async ({ page }) => {
+    await page.goto("/en");
+    await page.getByLabel("What's your idea?").fill("A tool library for the street");
+    await page.getByRole("button", { name: "Start with my idea" }).click();
+    await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/);
+    await expect(page.getByRole("heading", { name: "How is Gusty working for you?" })).toBeVisible();
+    await page.locator("section[aria-labelledby=feedback-card-title]").getByRole("link", { name: "Tell us what you think" }).click();
+    await expect(page).toHaveURL(/\/en\/feedback\?from=%2Fen%2Fprojects%2F[0-9a-f-]{36}$/);
   });
 });
