@@ -16,9 +16,9 @@ export default async function SupportPage({ params }: PageProps<"/[lang]/support
   if (!choices) notFound();
   const t = await getMessages();
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-12 sm:px-6 md:py-16">
+    <div className="mx-auto flex max-w-2xl flex-col gap-12 px-4 py-12 sm:px-6 md:py-16">
       <SupportCard choices={choices} copy={t.support} lang={lang} />
-      <SupportHelp copy={t.support} manageHref={choices.manage} />
+      <SupportHelp copy={t.support} manageHref={choices.manage} stacked />
     </div>
   );
 }

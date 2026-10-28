@@ -127,9 +127,9 @@ test.describe("support", () => {
     const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
     expect(scan.violations).toEqual([]);
 
-    await card.getByRole("link", { name: "Changing your mind? How to stop or get a refund" }).click();
+    await card.getByRole("link", { name: "Changed your mind? How to stop or get a refund" }).click();
     await expect(page).toHaveURL(/\/en\/support#help$/);
-    await expect(page.getByRole("heading", { name: "Changing your mind" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Changed your mind? No worries." })).toBeVisible();
 
     await page.goto("/en");
     await page.getByRole("link", { name: "Support Gusty" }).click();
@@ -139,13 +139,16 @@ test.describe("support", () => {
 
   test("the thank-you page is calm and kept out of search engines", async ({ page }) => {
     await page.goto("/en/thank-you");
-    await expect(page.getByRole("heading", { level: 1, name: "Thank you for the lift." })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "Thanks for the lift!" })).toBeVisible();
+    await expect(page.getByText("Stripe has sent a receipt to your email.")).toBeVisible();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
     // How to stop or get a refund is right there after paying.
     const help = page.locator("#help");
-    await expect(help.getByText("within 14 days of the payment")).toBeVisible();
-    await expect(help.getByRole("link", { name: "hello@heygusty.com" })).toHaveAttribute("href", "mailto:hello@heygusty.com");
-    await expect(help.getByRole("link", { name: "Manage or stop a monthly contribution" })).toHaveAttribute("href", /^https:\/\/billing\.stripe\.com\//);
+    await expect(help.getByRole("heading", { name: "Changed your mind? No worries." })).toBeVisible();
+    await expect(help.getByText("within 14 days of your payment")).toBeVisible();
+    await expect(help.getByRole("link", { name: "hello@heygusty.com" })).toHaveAttribute("href", /^mailto:hello@heygusty\.com/);
+    await expect(help.getByRole("link", { name: "Email us about a refund" })).toHaveAttribute("href", /^mailto:hello@heygusty\.com/);
+    await expect(help.getByRole("link", { name: "Manage your monthly contribution" })).toHaveAttribute("href", /^https:\/\/billing\.stripe\.com\//);
     const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
     expect(scan.violations).toEqual([]);
   });

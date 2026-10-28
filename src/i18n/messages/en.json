@@ -375,17 +375,21 @@
     "footerLink": "Support Gusty",
     "pageTitle": "Support Gusty",
     "pageDescription": "Help Gusty take off. One-off or monthly support, handled securely by Stripe.",
-    "thankYouTitle": "Thank you for the lift.",
-    "thankYouBody": "Your support helps Gusty keep growing. Stripe has emailed you a receipt.",
+    "thankYouTitle": "Thanks for the lift!",
+    "thankYouBody": "You're helping Gusty set off, and we're so glad you're part of it.",
     "back": "Back to Gusty",
     "help": {
-      "title": "Changing your mind",
-      "monthlyTitle": "Stopping a monthly contribution",
-      "monthly": "You can stop any time, with no need to explain. Open {manage}, enter the email you paid with, and choose Cancel. It stops at the end of the month you've already paid for, and you won't be charged again.",
-      "refundTitle": "Getting a refund",
-      "refund": "If you'd like your money back, email {email} within {days} days of the payment, from the email address you paid with. We'll refund it in full, no questions asked. Refunds usually reach your account within 5 to 10 working days.",
-      "receipt": "Stripe emails you a receipt for every payment, with these details."
+      "title": "Changed your mind? No worries.",
+      "monthlyTitle": "Want to stop your monthly support?",
+      "monthlyLead": "You can cancel anytime, no questions asked.",
+      "monthly": "Use the email you paid with. Your support ends when your current paid month finishes, with no more charges.",
+      "monthlyButton": "Manage your monthly contribution",
+      "refundTitle": "Need a refund?",
+      "refund": "Just email {email} within {days} days of your payment, using the email you paid with.",
+      "refundDetail": "We'll refund you in full, no questions asked. It usually takes 5⁠–⁠10 working days to reach your account.",
+      "refundButton": "Email us about a refund"
     },
-    "helpLink": "Changing your mind? How to stop or get a refund"
+    "helpLink": "Changed your mind? How to stop or get a refund",
+    "thankYouReceipt": "Stripe has sent a receipt to your email."
   }
 }
