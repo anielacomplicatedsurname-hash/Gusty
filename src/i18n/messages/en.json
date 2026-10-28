@@ -309,7 +309,8 @@
       "error": "Something went wrong. Your work is saved. Please try again.",
       "limit": "You've reached today's limit for Gusty's suggestions. It resets within a day.",
       "failed": "That change didn't save. Please try again."
-    }
+    },
+    "workOn": "Work on this with Gusty"
   },
   "offline": {
     "title": "You're offline right now.",
@@ -353,7 +354,9 @@
       "plan_steps": "Next steps",
       "unstick_smaller": "I'm stuck: make it smaller",
       "unstick_explain": "I'm stuck: explain differently",
-      "unstick_start": "I'm stuck: help me start"
+      "unstick_start": "I'm stuck: help me start",
+      "step_questions": "Step questions",
+      "step_rephrase": "Say it differently"
     },
     "reasons": {
       "key": "API key missing, expired or refused",
@@ -580,6 +583,55 @@
           ]
         }
       ]
+    }
+  },
+  "stepWork": {
+    "open": "Work on this with Gusty",
+    "back": "Back to your project",
+    "eyebrow": "Working on a step",
+    "intro": "Gusty asks a few simple questions to help you do this step. Answer what you can, in a few words. Everything is optional and saved as you go.",
+    "questionsTitle": "Gusty's questions",
+    "questionsLabel": "A question from Gusty",
+    "preparing": "Gusty is thinking of a few simple questions…",
+    "rephrase": "Say it differently",
+    "rephrasing": "Rewording…",
+    "different": "Different questions",
+    "differentHint": "Swaps the questions you haven't answered. Your answers stay.",
+    "answerLabel": "Your answer",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "notesTitle": "Your notes",
+    "notesHint": "Anything that helps: ideas, links, a first draft. Only you can see this.",
+    "done": "This step is done",
+    "doneHint": "It will be ticked off, and you'll go back to your project.",
+    "alreadyDone": "You've already ticked this step off. You can still add to your answers and notes.",
+    "notFound": "We couldn't find this step. It may belong to another account or browser.",
+    "demoNotice": "Demo mode: these are general example questions, not written for your step yet. Gusty's own questions switch on once the AI key is set up.",
+    "demoQuestions": [
+      {
+        "question": "What would \"done\" look like for this step?",
+        "hint": "For example, a short paragraph saved in my notes",
+        "alt": "How will you know this step is finished?"
+      },
+      {
+        "question": "What do you already know that helps?",
+        "hint": "For example, who it's for, or why it matters to me",
+        "alt": "What can you write down right now without looking anything up?"
+      },
+      {
+        "question": "What's the smallest part you could do first?",
+        "hint": "For example, write one sentence",
+        "alt": "Which tiny piece could you start with in the next five minutes?"
+      }
+    ],
+    "errors": {
+      "unavailable": "Gusty can't suggest steps right now. Your work is saved. Please try again later.",
+      "busy": "Gusty is a little busy right now. Please try again in a minute.",
+      "declined": "Gusty couldn't help with this one. Your work is saved.",
+      "invalid": "Gusty's suggestion came back incomplete. Please try again.",
+      "error": "Something went wrong. Your work is saved. Please try again.",
+      "limit": "You've reached today's limit for Gusty's suggestions. It resets within a day.",
+      "failed": "That change didn't save. Please try again."
     }
   }
 }

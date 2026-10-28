@@ -191,3 +191,23 @@ describe("feedback", () => {
     expect((await gina.rpc("admin_feedback")).error?.code).toBe("42501");
   });
 });
+
+describe("step questions", () => {
+  it("belong only to the step's owner", async () => {
+    const owner = client();
+    const other = client();
+    expect((await owner.auth.signInAnonymously()).error).toBeNull();
+    expect((await other.auth.signInAnonymously()).error).toBeNull();
+    const { data: project } = await owner.from("projects").insert({ title: "Mine", idea: "Private" }).select("id").single();
+    const { data: step } = await owner.from("next_steps").insert({ project_id: project!.id, title: "Do a thing" }).select("id").single();
+    const { data: q, error } = await owner
+      .from("step_questions").insert({ step_id: step!.id, project_id: project!.id, question: "Who is it for?" }).select("id").single();
+    expect(error).toBeNull();
+
+    expect((await other.from("step_questions").select("id").eq("id", q!.id)).data).toEqual([]);
+    expect((await other.from("step_questions").insert({ step_id: step!.id, project_id: project!.id, question: "Sneaky" })).error).not.toBeNull();
+    const { data: changed } = await other.from("step_questions").update({ answer: "x" }).eq("id", q!.id).select("id");
+    expect(changed ?? []).toEqual([]);
+    expect((await owner.from("step_questions").update({ answer: "Neighbours" }).eq("id", q!.id).select("id")).data).toHaveLength(1);
+  });
+});
