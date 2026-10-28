@@ -37,6 +37,7 @@
 - Database changes are applied to production by hand (SQL Editor) before merging.
 - No always-available assistant button yet (deferred: the directive's first milestone doesn't need it; it fits better with Connections and Explore).
 - Directions, steps and "I'm stuck" help can't be fully tested without the AI key; automated tests use the labelled demo versions.
+- "What you've worked out" shows answers and notes but doesn't update "Here's what I understood"; the AI context keeps only about 4,000 characters of them (earliest steps first).
 - All AI calls share a limit of 60 per person per day (readings keep their own 30).
 - Tablet uses the desktop header navigation (no separate side rail).
 - Logo and symbols are traced from the images in the PDF; original vector artwork, if it exists, would be sharper at very large sizes.
@@ -45,5 +46,5 @@
 - Guest projects started on gusty-web.onrender.com before the move to heygusty.com stay with the old address's session; adding an email there and signing in on heygusty.com brings them back.
 - Support payments go through Stripe Payment Links (Managed Payments off for these links). Gusty doesn't record who supported it; Stripe's dashboard is the record. Monthly supporters change their amount by stopping and choosing a new one (Stripe's portal can't switch between same-interval prices of one product).
 - The privacy notice and terms are written from how Gusty works but haven't had a legal review. The founder may need to pay the ICO data protection fee as a sole trader handling personal data.
-- "Work on this with Gusty" (slice 1): up to 3 questions per step, "Say it differently", "Different questions", answers and notes. Next (slice 2): "Help me write it" drafts from the answers, and a calm "all done" moment with at most 3 next options.
+- "Work on this with Gusty" (slice 1): up to 3 questions per step, "Say it differently", "Different questions", answers and notes. Answers show in "What you've worked out" on the project page and feed later suggestions. Next (slice 2): "Help me write it" drafts from the answers, and a calm "all done" moment with at most 3 next options.
 - Render plan is set to `free` (sleeps when idle) until the founder decides to upgrade.

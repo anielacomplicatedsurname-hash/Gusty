@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { SHARED_RULES } from "./context";
 
-export const STEPS_PROMPT_VERSION = "plan-steps@1";
-export const UNSTICK_PROMPT_VERSION = "unstick@1";
+export const STEPS_PROMPT_VERSION = "plan-steps@2";
+export const UNSTICK_PROMPT_VERSION = "unstick@2";
 
 const step = z.object({ title: z.string(), detail: z.string(), minutes: z.number() });
 export const StepsSchema = z.object({ steps: z.array(step) });

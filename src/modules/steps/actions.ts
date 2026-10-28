@@ -15,6 +15,7 @@ import { logRun, withinDailyLimit } from "@/ai/usage";
 import { messagesFor } from "@/i18n/messages-for";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isProjectId } from "@/modules/projects/validation";
+import { loadWorkedOut } from "@/modules/step-work/data";
 import { isMode } from "./modes";
 
 export type StepsResult = { ok: true } | { ok: false; error: "unavailable" | "busy" | "declined" | "invalid" | "error" | "limit" };
@@ -22,11 +23,12 @@ export type StepsResult = { ok: true } | { ok: false; error: "unavailable" | "bu
 type Supabase = NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>>;
 
 async function loadProject(supabase: Supabase, projectId: string) {
-  const [{ data: project }, { data: facts }] = await Promise.all([
+  const [{ data: project }, { data: facts }, work] = await Promise.all([
     supabase.from("projects").select("id, title, idea").eq("id", projectId).maybeSingle(),
     supabase.from("project_facts").select("kind, value").eq("project_id", projectId).order("position"),
+    loadWorkedOut(supabase, projectId),
   ]);
-  return project ? { ...project, context: projectContext(project.title, project.idea, facts ?? []) } : null;
+  return project ? { ...project, context: projectContext(project.title, project.idea, facts ?? [], work) } : null;
 }
 
 const failed = (reason: string): StepsResult => ({

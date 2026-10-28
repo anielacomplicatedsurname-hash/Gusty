@@ -16,7 +16,7 @@ src/
 ├─ modules/projects/    data access, server actions, idea form, autosave editor, email link
 ├─ modules/interpretation/  Gusty's reading: data, actions (read, confirm, edit, add, remove), UI
 ├─ modules/steps/       directions, next steps, modes (visibleSteps), I'm stuck, UI
-├─ modules/step-work/   "Work on this with Gusty": per-step questions, rewording, answers, notes
+├─ modules/step-work/   "Work on this with Gusty": per-step questions, rewording, answers, notes; "What you've worked out"
 ├─ modules/admin/       founder overview (counts and costs only, via `admin_overview()`)
 ├─ ai/                  provider interface, Claude provider, prices, usage log + daily budget, tasks/ (prompts + schemas)
 ├─ i18n/                locale config, message dictionaries (messages/en.json)

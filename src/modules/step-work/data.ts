@@ -37,3 +37,54 @@ export async function getStepWork(projectId: string, stepId: string): Promise<St
     demo: lastRun.data?.[0]?.status === "demo",
   };
 }
+
+export type WorkedStep = {
+  id: string;
+  title: string;
+  done: boolean;
+  /** Replaced by smaller steps, a new direction, or removed. Its answers still count, but its page is gone. */
+  setAside: boolean;
+  answers: { question: string; answer: string }[];
+  notes: string;
+};
+
+/**
+ * Steps the person has worked on (answered a question or wrote notes), in plan order, including steps
+ * set aside later so no answer disappears. Shown on the project page and given to Gusty as context.
+ * RLS limits it to the owner.
+ */
+export async function getWorkedOut(projectId: string): Promise<WorkedStep[]> {
+  if (!isProjectId(projectId)) return [];
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return [];
+  return loadWorkedOut(supabase, projectId);
+}
+
+type Supabase = NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>>;
+
+export async function loadWorkedOut(supabase: Supabase, projectId: string): Promise<WorkedStep[]> {
+  const [steps, questions] = await Promise.all([
+    supabase.from("next_steps").select("id, title, status, notes").eq("project_id", projectId).order("position"),
+    supabase
+      .from("step_questions")
+      .select("step_id, question, answer")
+      .eq("project_id", projectId)
+      .eq("status", "active")
+      .neq("answer", "")
+      .order("position")
+      .order("created_at"),
+  ]);
+  return (steps.data ?? [])
+    .sort((a, b) => Number(a.status === "replaced") - Number(b.status === "replaced"))
+    .map((s) => ({
+      id: s.id,
+      title: s.title,
+      done: s.status === "done",
+      setAside: s.status === "replaced",
+      answers: (questions.data ?? [])
+        .filter((q) => q.step_id === s.id && q.answer.trim())
+        .map((q) => ({ question: q.question, answer: q.answer })),
+      notes: s.notes.trim(),
+    }))
+    .filter((s) => s.answers.length > 0 || s.notes);
+}

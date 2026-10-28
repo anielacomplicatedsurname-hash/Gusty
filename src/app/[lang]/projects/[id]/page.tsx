@@ -14,6 +14,8 @@ import { ConfirmButton } from "@/modules/projects/ConfirmButton";
 import { getStepsState } from "@/modules/steps/data";
 import { NextSteps } from "@/modules/steps/NextSteps";
 import { aiProvider } from "@/ai";
+import { getWorkedOut } from "@/modules/step-work/data";
+import { WorkedOut } from "@/modules/step-work/WorkedOut";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getMessages();
@@ -95,6 +97,8 @@ async function ProjectContent({
         </div>
       </section>
 
+      <WorkedOutSection projectId={project.id} lang={lang} t={t} />
+
       <NextStepsSection projectId={project.id} lang={lang} t={t} />
 
       <section aria-labelledby="feedback-card-title" className="rounded-(--radius-card) bg-sky/60 p-6 text-ink">
@@ -133,6 +137,11 @@ async function ReadingSection({ projectId, lang, t }: { projectId: string; lang:
       copy={t.interpretation}
     />
   );
+}
+
+/** Answers and notes from the steps, once there are any. */
+async function WorkedOutSection({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
+  return <WorkedOut steps={await getWorkedOut(projectId)} projectId={projectId} lang={lang} copy={t.workedOut} />;
 }
 
 /** Next steps appear once Gusty has read the idea. */
