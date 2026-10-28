@@ -377,6 +377,15 @@
     "pageDescription": "Help Gusty take off. One-off or monthly support, handled securely by Stripe.",
     "thankYouTitle": "Thank you for the lift.",
     "thankYouBody": "Your support helps Gusty keep growing. Stripe has emailed you a receipt.",
-    "back": "Back to Gusty"
+    "back": "Back to Gusty",
+    "help": {
+      "title": "Changing your mind",
+      "monthlyTitle": "Stopping a monthly contribution",
+      "monthly": "You can stop any time, with no need to explain. Open {manage}, enter the email you paid with, and choose Cancel. It stops at the end of the month you've already paid for, and you won't be charged again.",
+      "refundTitle": "Getting a refund",
+      "refund": "If you'd like your money back, email {email} within {days} days of the payment, from the email address you paid with. We'll refund it in full, no questions asked. Refunds usually reach your account within 5 to 10 working days.",
+      "receipt": "Stripe emails you a receipt for every payment, with these details."
+    },
+    "helpLink": "Changing your mind? How to stop or get a refund"
   }
 }

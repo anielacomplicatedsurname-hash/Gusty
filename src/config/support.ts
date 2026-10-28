@@ -20,6 +20,9 @@ export const supportLinks: SupportLinks = {
   manage: "https://billing.stripe.com/p/login/00weVc4QCaA77MR1fN8so00",
 };
 
+/** Where supporters write about refunds, and the refund promise shown on the site and in Stripe. */
+export const supportContact = { email: "hello@heygusty.com", refundDays: 14 } as const;
+
 export type SupportLinks = {
   /** The currency the Stripe prices are in (ISO code), shown on the card. */
   currency: string;

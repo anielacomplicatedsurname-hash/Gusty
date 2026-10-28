@@ -26,3 +26,10 @@ the "change or stop" link appear only when monthly links exist.
 - The first euro links (2026-10-27, metadata `gusty=support_once_…`/`support_monthly_…`) were switched off when
   the card moved to pounds; their prices are kept for the record.
 - Customer portal "Gusty supporters": cancel at period end, update card, see receipts; login link enabled.
+
+## Changing your mind (founder's policy, 2026-10-27)
+- Monthly: stop any time in the Stripe portal; it ends at the end of the paid month, no further charges.
+- Refunds: full refund, no questions, if asked within 14 days of a payment, by email to hello@heygusty.com
+  (forwarded to the founder). The founder refunds in Stripe → Payments → the payment → Refund.
+- Shown on the support page (`#help`), the thank-you page, Stripe's payment page and Stripe's receipts
+  (business support email and URL, receipt/invoice footer). Settings in `src/config/support.ts` (`supportContact`).

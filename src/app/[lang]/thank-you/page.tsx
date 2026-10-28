@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BrandSymbol } from "@/components/BrandSymbol";
+import { supportChoices } from "@/config/support";
 import { getMessages } from "@/i18n/dictionaries";
+import { SupportHelp } from "@/modules/support/SupportHelp";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getMessages();
@@ -20,6 +22,9 @@ export default async function ThankYouPage({ params }: PageProps<"/[lang]/thank-
       <Link href={`/${lang}`} className="btn-primary">
         {t.support.back}
       </Link>
+      <div className="mt-6 w-full">
+        <SupportHelp copy={t.support} manageHref={supportChoices()?.manage ?? null} />
+      </div>
     </section>
   );
 }

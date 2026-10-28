@@ -14,6 +14,7 @@ type Copy = {
   other: string;
   note: string;
   manage: string;
+  helpLink: string;
 };
 
 /** "Help Gusty take off!": a calm, optional way to support Gusty through Stripe. No pressure, no totals. */
@@ -71,6 +72,11 @@ export function SupportCard({ choices, copy, lang }: { choices: SupportChoices; 
       </ul>
 
       <p className="mt-5 text-sm text-text-muted">{copy.note}</p>
+      <p className="mt-2 text-sm">
+        <a href={`/${lang}/support#help`} className="underline underline-offset-4">
+          {copy.helpLink}
+        </a>
+      </p>
       {frequency === "monthly" && choices.manage && (
         <p className="mt-2 text-sm">
           <a href={choices.manage} className="underline underline-offset-4">
