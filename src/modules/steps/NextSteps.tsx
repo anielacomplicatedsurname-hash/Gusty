@@ -131,7 +131,8 @@ export function NextSteps({
 
           {view.current ? (
             <ol className="flex flex-col gap-3" aria-label={copy.title}>
-              <li><StepCard step={view.current} highlighted lang={lang} copy={copy} act={act} disabled={pending} /></li>
+              {/* Keyed by step so a tick never carries over to the step that moves into this place. */}
+              <li key={view.current.id}><StepCard step={view.current} highlighted lang={lang} copy={copy} act={act} disabled={pending} /></li>
               {view.upcoming.map((s) => (
                 <li key={s.id}><StepCard step={s} lang={lang} copy={copy} act={act} disabled={pending} /></li>
               ))}
