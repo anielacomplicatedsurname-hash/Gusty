@@ -23,6 +23,7 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 9. `20261028120000_feedback.sql` ("Tell us what you think" feedback, read on the admin page)
 10. `20261028140000_step_work.sql` ("Work on this with Gusty": step questions, answers and notes)
 11. `20261029120000_tidy_and_say_more.sql` (tidied answers and notes, "Help me say more" label)
+12. `20261029140000_growing_plan.sql` (plans grow one stage at a time; guest step answers move with their projects)
 
 ## Making yourself an admin
 Sign in to Gusty with your email first, then in the SQL Editor run (with your own email):

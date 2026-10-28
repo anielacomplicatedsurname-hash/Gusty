@@ -162,6 +162,7 @@ async function NextStepsSection({ projectId, lang, t }: { projectId: string; lan
           projectId={projectId}
           lang={lang}
           directions={state.directions}
+          stages={state.stages}
           steps={state.steps}
           initialMode={state.mode}
           demo={state.demo}

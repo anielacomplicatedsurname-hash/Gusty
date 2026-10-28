@@ -73,14 +73,14 @@ isOneToOne: false
                   ]
                 },"next_steps": {
                   Row: {
-                    "created_at": string,"detail": string,"direction_id": string | null,"done_at": string | null,"explanation": string | null,"id": string,"minutes": number | null,"notes": string,"notes_tidied": string,"owner_id": string,"position": number,"project_id": string,"source": string,"starter": string | null,"status": string,"title": string,"updated_at": string
+                    "created_at": string,"detail": string,"direction_id": string | null,"done_at": string | null,"explanation": string | null,"id": string,"minutes": number | null,"notes": string,"notes_tidied": string,"owner_id": string,"position": number,"project_id": string,"source": string,"stage_id": string | null,"starter": string | null,"status": string,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"notes"?: string,"notes_tidied"?: string,"owner_id"?: string,"position"?: number,"project_id": string,"source"?: string,"starter"?: string | null,"status"?: string,"title": string,"updated_at"?: string
+                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"notes"?: string,"notes_tidied"?: string,"owner_id"?: string,"position"?: number,"project_id": string,"source"?: string,"stage_id"?: string | null,"starter"?: string | null,"status"?: string,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"notes"?: string,"notes_tidied"?: string,"owner_id"?: string,"position"?: number,"project_id"?: string,"source"?: string,"starter"?: string | null,"status"?: string,"title"?: string,"updated_at"?: string
+                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"notes"?: string,"notes_tidied"?: string,"owner_id"?: string,"position"?: number,"project_id"?: string,"source"?: string,"stage_id"?: string | null,"starter"?: string | null,"status"?: string,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -94,6 +94,12 @@ isOneToOne: false
       columns: ["project_id"]
 isOneToOne: false
       referencedRelation: "projects"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "next_steps_stage_id_fkey"
+      columns: ["stage_id"]
+isOneToOne: false
+      referencedRelation: "project_stages"
       referencedColumns: ["id"]
     }
                   ]
@@ -145,6 +151,32 @@ isOneToOne: false
                   Relationships: [
                     {
       foreignKeyName: "project_facts_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"project_stages": {
+                  Row: {
+                    "created_at": string,"direction_id": string | null,"done_at": string | null,"id": string,"later": (string)[],"owner_id": string,"position": number,"project_id": string,"status": string,"title": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"direction_id"?: string | null,"done_at"?: string | null,"id"?: string,"later"?: (string)[],"owner_id"?: string,"position"?: number,"project_id": string,"status"?: string,"title": string
+                  }
+                  Update: {
+                    "created_at"?: string,"direction_id"?: string | null,"done_at"?: string | null,"id"?: string,"later"?: (string)[],"owner_id"?: string,"position"?: number,"project_id"?: string,"status"?: string,"title"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "project_stages_direction_id_fkey"
+      columns: ["direction_id"]
+isOneToOne: false
+      referencedRelation: "project_directions"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "project_stages_project_id_fkey"
       columns: ["project_id"]
 isOneToOne: false
       referencedRelation: "projects"
