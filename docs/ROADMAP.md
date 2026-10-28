@@ -39,6 +39,8 @@
 - Directions, steps and "I'm stuck" help can't be fully tested without the AI key; automated tests use the labelled demo versions.
 - "What you've worked out" shows answers and notes but doesn't update "Here's what I understood"; the AI context keeps only about 4,000 characters of them (earliest steps first).
 - Tidying only happens with the AI key set (in demo mode the person's words are shown as written), runs when an answer box is left rather than as they type, and has its own allowance of 150 a day. Answers written before this change are tidied the next time their box is used.
+- The plan grows one stage at a time; there's no timeline yet. When one comes, it will only use dates the person sets (no deadlines from Gusty).
+- Unticking a step in a finished stage isn't offered: past stages are kept as they were (their steps can still be opened and edited).
 - All AI calls share a limit of 60 per person per day (readings keep their own 30).
 - Tablet uses the desktop header navigation (no separate side rail).
 - Logo and symbols are traced from the images in the PDF; original vector artwork, if it exists, would be sharper at very large sizes.

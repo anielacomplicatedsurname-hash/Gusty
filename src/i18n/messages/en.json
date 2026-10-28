@@ -228,8 +228,8 @@
       "simpleHint": "Just the one next thing",
       "guide": "Guide me through",
       "guideHint": "Up to three steps",
-      "everything": "Let me see everything",
-      "everythingHint": "The full plan"
+      "everything": "Show me the whole journey",
+      "everythingHint": "Where you've been, and what's next"
     },
     "start": "Show me where I could go next",
     "starting": "Gusty is thinking about directions…",
@@ -246,9 +246,19 @@
     "markNotDone": "Not done yet",
     "doneLabel": "Done",
     "doneCount": "{n} done so far",
-    "moreHidden": "{n} more steps are waiting. Switch to “Let me see everything” to see them.",
-    "allDone": "That's everything for now. Nice work.",
-    "more": "Suggest the next few steps",
+    "moreHidden": "{n} more steps are waiting in this stage. Switch to “Show me the whole journey” to see them.",
+    "stageLabel": "Stage {n}",
+    "finished": {
+      "title": "You finished this stage",
+      "body": "“{stage}” is done. That's real progress, at your own pace.",
+      "next": "Plan the next stage",
+      "nextHint": "Gusty plans a few new steps from everything you've done and worked out.",
+      "lookBack": "Look back at this stage",
+      "rest": "Take a break",
+      "resting": "Your project is saved just as it is. Come back whenever you like: nothing here has a deadline.",
+      "backToProjects": "Back to my projects"
+    },
+    "more": "Plan the next stage",
     "addOwn": "Add your own step",
     "addPlaceholder": "Write a step in your own words",
     "add": "Add",
@@ -283,23 +293,6 @@
         "reason": "Example: find one or two people who could help."
       }
     ],
-    "demoSteps": [
-      {
-        "title": "Write your idea in three sentences",
-        "detail": "Example step: what it is, who it's for, and why it matters to you.",
-        "minutes": 10
-      },
-      {
-        "title": "List three people you could tell about it",
-        "detail": "Example step: friends, neighbours or people who'd care.",
-        "minutes": 10
-      },
-      {
-        "title": "Choose one small thing to try this week",
-        "detail": "Example step: something you could do in under an hour.",
-        "minutes": 15
-      }
-    ],
     "demoUnstick": {
       "smaller": [
         {
@@ -325,7 +318,63 @@
       "limit": "You've reached today's limit for Gusty's suggestions. It resets within a day.",
       "failed": "That change didn't save. Please try again."
     },
-    "workOn": "Work on this with Gusty"
+    "workOn": "Work on this with Gusty",
+    "journey": {
+      "past": "Where you've been",
+      "stageDone": "{n} done",
+      "later": "Maybe later",
+      "laterHint": "Gusty's loose ideas for after this stage. Not a plan: they'll change as your idea grows."
+    },
+    "demoStages": [
+      {
+        "title": "Getting clear on the idea",
+        "steps": [
+          {
+            "title": "Write your idea in three sentences",
+            "detail": "Example step: what it is, who it's for, and why it matters to you.",
+            "minutes": 10
+          },
+          {
+            "title": "List three people you could tell about it",
+            "detail": "Example step: friends, neighbours or people who'd care.",
+            "minutes": 10
+          },
+          {
+            "title": "Choose one small thing to try this week",
+            "detail": "Example step: something you could do in under an hour.",
+            "minutes": 15
+          }
+        ],
+        "later": [
+          "Example: ask a few people what they think",
+          "Example: try a very small version"
+        ]
+      },
+      {
+        "title": "Sharing it with a few people",
+        "steps": [
+          {
+            "title": "Pick one person to tell about your idea",
+            "detail": "Example step: someone kind who'll listen.",
+            "minutes": 5
+          },
+          {
+            "title": "Write two questions you'd like to ask them",
+            "detail": "Example step: what they like, and what's unclear.",
+            "minutes": 10
+          },
+          {
+            "title": "Note what they said in your own words",
+            "detail": "Example step: a few lines is enough.",
+            "minutes": 10
+          }
+        ],
+        "later": [
+          "Example: plan a first small try",
+          "Example: find one place it could happen"
+        ]
+      }
+    ]
   },
   "offline": {
     "title": "You're offline right now.",

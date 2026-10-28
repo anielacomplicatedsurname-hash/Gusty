@@ -41,7 +41,7 @@ test("modes change how much is shown, never the steps", async ({ page }) => {
   await page.reload();
   await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(1);
 
-  await mode(page, "Let me see everything").click();
+  await mode(page, "Show me the whole journey").click();
   await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(3);
 });
 
@@ -56,7 +56,7 @@ test("ticking a step off keeps it, and progress survives a reload", async ({ pag
 
   await page.reload();
   await expect(page.getByText("1 done so far")).toBeVisible();
-  await mode(page, "Let me see everything").click();
+  await mode(page, "Show me the whole journey").click();
   await expect(page.getByLabel("Not done yet: Write your idea in three sentences")).toBeChecked();
 });
 
@@ -80,7 +80,7 @@ test("I'm stuck: help me start and explain it differently add help to the step",
 
 test("people can add their own step", async ({ page }) => {
   await projectWithSteps(page);
-  await mode(page, "Let me see everything").click();
+  await mode(page, "Show me the whole journey").click();
   await page.getByRole("button", { name: "+ Add your own step" }).click();
   await page.getByLabel("Add your own step").fill("Ask the librarian about Saturdays");
   await page.getByRole("button", { name: "Add", exact: true }).click();
@@ -154,7 +154,7 @@ test("working on a step with Gusty: questions, rewording, answers, notes, done",
 
   // Done steps stay reachable from the full plan too.
   await page.goto(projectUrl);
-  await mode(page, "Let me see everything").click();
+  await mode(page, "Show me the whole journey").click();
   await page.locator("section[aria-labelledby=done-title]").getByRole("link", { name: "Write your idea in three sentences" }).click();
   await expect(page).toHaveURL(/\/steps\/[0-9a-f-]{36}$/);
   await expect(page.locator("textarea#notes")).toHaveValue("A place where neighbours fix things together.");
@@ -210,4 +210,47 @@ test("Help me say more suggests a longer answer the person can use or ignore; ti
   await expect(worked.getByText("a cafe were people fix stuff")).toBeVisible();
   const projectScan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(projectScan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+});
+
+test("the plan grows one stage at a time, with a calm moment when a stage is done", async ({ page }) => {
+  await projectWithSteps(page);
+  await expect(page.getByText("Stage 1", { exact: true })).toBeVisible();
+  await expect(page.getByText("Getting clear on the idea")).toBeVisible();
+
+  for (const title of ["Write your idea in three sentences", "List three people you could tell about it", "Choose one small thing to try this week"]) {
+    await page.getByLabel(`Done: ${title}`).check();
+    await expect(page.getByLabel(`Done: ${title}`)).toHaveCount(0);
+  }
+
+  // At most three choices, and no pressure.
+  const finished = page.locator("section[aria-labelledby=finished-title]");
+  await expect(finished.getByRole("heading", { name: "You finished this stage" })).toBeVisible();
+  await expect(finished.getByRole("button")).toHaveCount(2);
+  await expect(finished.locator("summary")).toHaveText("Look back at this stage");
+  await finished.getByText("Look back at this stage").click();
+  await expect(finished.getByRole("link", { name: "Write your idea in three sentences" })).toBeVisible();
+  const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+  await finished.getByRole("button", { name: "Take a break" }).click();
+  await expect(finished.getByText("nothing here has a deadline")).toBeVisible();
+
+  // Still there after a reload; then Gusty plans the next stage only.
+  await page.reload();
+  await page.locator("section[aria-labelledby=finished-title]").getByRole("button", { name: "Plan the next stage" }).click();
+  await expect(page.getByText("Stage 2", { exact: true })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByText("Sharing it with a few people")).toBeVisible();
+  await expect(stepTitle(page, "Pick one person to tell about your idea")).toBeVisible();
+  await expect(page.getByText("3 done so far")).toBeVisible();
+
+  // The whole journey: where you've been, what's now, and loose ideas for later.
+  await mode(page, "Show me the whole journey").click();
+  const past = page.locator("section[aria-labelledby=past-title]");
+  await expect(past.getByText("Stage 1: Getting clear on the idea")).toBeVisible();
+  await past.getByText("Stage 1: Getting clear on the idea").click();
+  await expect(past.getByRole("link", { name: "List three people you could tell about it" })).toBeVisible();
+  const later = page.locator("section[aria-labelledby=later-title]");
+  await expect(later.getByText("Not a plan: they'll change as your idea grows.")).toBeVisible();
+  await expect(later.getByText("Example: plan a first small try")).toBeVisible();
+  const journeyScan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(journeyScan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 });

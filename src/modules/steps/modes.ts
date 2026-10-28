@@ -9,6 +9,7 @@ export type StepView = {
   minutes: number | null;
   status: "open" | "done";
   source: "ai" | "user";
+  stage_id: string | null;
   position: number;
   explanation: string | null;
   starter: string | null;

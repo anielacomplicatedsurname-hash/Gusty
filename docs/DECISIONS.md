@@ -185,3 +185,15 @@ with its own daily allowance (150) so it never uses up their suggestions; it use
 tasks at low effort (a cheaper model is a later option for the founder to decide). "Help me say more"
 returns a suggestion about three times longer that the person can use or ignore; using it marks the
 answer "Gusty added ideas", so AI additions stay distinguishable from their own words.
+
+## 2026-10-29 — A plan that grows, one stage at a time
+The founder pointed out that a "full plan" up front isn't realistic: plans change as an idea develops.
+Gusty now plans one stage (3 to 5 steps) at a time. When every step in a stage is done, a calm moment
+offers at most three choices: plan the next stage (planned from everything done and worked out so far),
+look back at this stage, or take a break. "Let me see everything" became "Show me the whole journey":
+finished stages, the current one, and up to three "Maybe later" ideas clearly labelled as loose
+possibilities, not a plan. Existing projects' steps were put into a first stage named after their
+direction. A timeline is deferred, and when it comes, dates will only be ones the person chooses.
+The same change fixed two gaps found on the way: guest step answers now move with "bring my projects"
+(before, they were removed with the guest account), and the data download now includes stages, notes
+and step answers.

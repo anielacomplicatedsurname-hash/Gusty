@@ -7,10 +7,10 @@ import type { UnstickKind } from "@/ai/tasks/steps";
 import { fill } from "@/i18n/format";
 import type en from "@/i18n/messages/en.json";
 import {
-  addOwnStep, chooseDirection, removeStep, setMode, setStepDone, suggestDirections, suggestMoreSteps, unstick,
+  addOwnStep, chooseDirection, planNextStage, removeStep, setMode, setStepDone, suggestDirections, unstick,
   type StepsResult,
 } from "./actions";
-import type { DirectionView } from "./data";
+import type { DirectionView, StageView } from "./data";
 import { MODES, visibleSteps, type Mode, type StepView } from "./modes";
 
 type Copy = typeof en.steps;
@@ -21,6 +21,7 @@ export function NextSteps({
   projectId,
   lang,
   directions,
+  stages,
   steps,
   initialMode,
   demo,
@@ -29,6 +30,7 @@ export function NextSteps({
   projectId: string;
   lang: string;
   directions: DirectionView[];
+  stages: StageView[];
   steps: StepView[];
   initialMode: Mode;
   demo: boolean;
@@ -57,7 +59,14 @@ export function NextSteps({
   };
 
   const chosen = directions.find((d) => d.chosen) ?? null;
-  const view = visibleSteps(steps, mode);
+  // Only the current stage's steps are planned out; earlier stages are history.
+  const current = stages.find((st) => st.status === "current") ?? null;
+  const stageSteps = current ? steps.filter((st) => st.stage_id === current.id) : steps;
+  const view = visibleSteps(stageSteps, mode);
+  const totalDone = steps.filter((st) => st.status === "done").length;
+  const stageFinished = stageSteps.length > 0 && stageSteps.every((st) => st.status === "done");
+  const past = stages.filter((st) => st.status === "done");
+  const stageNumber = past.length + 1;
   const showDirections = directions.length > 0 && (!chosen || changing);
 
   return (
@@ -130,7 +139,21 @@ export function NextSteps({
             </button>
           </p>
 
-          {view.current ? (
+          {mode === "everything" && past.length > 0 && (
+            <PastStages stages={past} steps={steps} projectId={projectId} lang={lang} copy={copy} />
+          )}
+
+          {current && (
+            <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="type-label text-text-muted">{fill(copy.stageLabel, { n: String(stageNumber) })}</span>
+              <span className="font-semibold">{current.title}</span>
+            </p>
+          )}
+
+          {stageFinished && current ? (
+            <StageFinished stage={current} steps={stageSteps} projectId={projectId} lang={lang} copy={copy}
+              disabled={pending} onNext={() => act(() => planNextStage(projectId, lang), copy.planning)} />
+          ) : view.current ? (
             <ol className="flex flex-col gap-3" aria-label={copy.title}>
               {/* Keyed by step so a tick never carries over to the step that moves into this place. */}
               <li key={view.current.id}><StepCard step={view.current} highlighted projectId={projectId} lang={lang} copy={copy} act={act} disabled={pending} /></li>
@@ -139,13 +162,10 @@ export function NextSteps({
               ))}
             </ol>
           ) : (
-            <div className="flex flex-col items-start gap-3">
-              <p>{copy.allDone}</p>
-              <button type="button" className="btn-primary" disabled={pending}
-                onClick={() => act(() => suggestMoreSteps(projectId, lang), copy.planning)}>
-                {copy.more}
-              </button>
-            </div>
+            <button type="button" className="btn-primary self-start" disabled={pending}
+              onClick={() => act(() => planNextStage(projectId, lang), copy.planning)}>
+              {copy.more}
+            </button>
           )}
 
           {view.hiddenCount > 0 && (
@@ -154,16 +174,26 @@ export function NextSteps({
 
           {mode !== "simple" && <AddStep copy={copy} disabled={pending} onAdd={(t) => act(() => addOwnStep(projectId, t))} />}
 
-          {view.doneCount > 0 && mode !== "everything" && (
-            <p className="text-sm text-text-muted">✓ {fill(copy.doneCount, { n: String(view.doneCount) })}</p>
+          {totalDone > 0 && mode !== "everything" && (
+            <p className="text-sm text-text-muted">✓ {fill(copy.doneCount, { n: String(totalDone) })}</p>
           )}
-          {view.done.length > 0 && (
+          {view.done.length > 0 && !stageFinished && (
             <section aria-labelledby="done-title">
               <h3 id="done-title" className="type-label text-text-muted">{copy.doneLabel}</h3>
               <ul className="mt-2 flex flex-col gap-2">
                 {view.done.map((s) => (
                   <DoneItem key={s.id} step={s} projectId={projectId} lang={lang} copy={copy} disabled={pending} act={act} />
                 ))}
+              </ul>
+            </section>
+          )}
+
+          {mode === "everything" && current && current.later.length > 0 && (
+            <section aria-labelledby="later-title" className="rounded-xl border border-dashed border-border p-4">
+              <h3 id="later-title" className="font-semibold">{copy.journey.later}</h3>
+              <p className="text-sm text-text-muted">{copy.journey.laterHint}</p>
+              <ul className="mt-2 list-disc pl-5 text-text-muted">
+                {current.later.map((l) => <li key={l}>{l}</li>)}
               </ul>
             </section>
           )}
@@ -323,5 +353,85 @@ function DoneItem({
         {step.title}
       </Link>
     </li>
+  );
+}
+
+/** Finished stages, folded up: the steps done in each, still reachable. */
+function PastStages({ stages, steps, projectId, lang, copy }: {
+  stages: StageView[]; steps: StepView[]; projectId: string; lang: string; copy: Copy;
+}) {
+  return (
+    <section aria-labelledby="past-title" className="flex flex-col gap-2">
+      <h3 id="past-title" className="type-label text-text-muted">{copy.journey.past}</h3>
+      <ol className="flex flex-col gap-2">
+        {stages.map((st, i) => {
+          const done = steps.filter((s) => s.stage_id === st.id && s.status === "done");
+          return (
+            <li key={st.id}>
+              <details className="rounded-xl border border-border">
+                <summary className="flex min-h-11 cursor-pointer items-center gap-2 p-3">
+                  <span aria-hidden="true">✓</span>
+                  <span>
+                    <span className="font-semibold">{fill(copy.stageLabel, { n: String(i + 1) })}: {st.title}</span>
+                    <span className="text-sm text-text-muted"> · {fill(copy.journey.stageDone, { n: String(done.length) })}</span>
+                  </span>
+                </summary>
+                <StepLinks steps={done} projectId={projectId} lang={lang} />
+              </details>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
+
+function StepLinks({ steps, projectId, lang }: { steps: StepView[]; projectId: string; lang: string }) {
+  return (
+    <ul className="flex flex-col gap-1 border-t border-border p-3">
+      {steps.map((s) => (
+        <li key={s.id}>
+          <Link href={`/${lang}/projects/${projectId}/steps/${s.id}`} className="underline underline-offset-4">{s.title}</Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/**
+ * The calm "all done" moment when a stage is finished: three choices at most, no streaks, no pressure.
+ */
+function StageFinished({ stage, steps, projectId, lang, copy, disabled, onNext }: {
+  stage: StageView; steps: StepView[]; projectId: string; lang: string; copy: Copy; disabled: boolean; onNext: () => void;
+}) {
+  const [resting, setResting] = useState(false);
+  const t = copy.finished;
+  return (
+    <section aria-labelledby="finished-title" className="flex flex-col gap-4 rounded-xl bg-confirmed/60 p-5 text-ink">
+      <div>
+        <h3 id="finished-title" className="text-lg font-semibold">{t.title}</h3>
+        <p className="mt-1">{fill(t.body, { stage: stage.title })}</p>
+      </div>
+      {resting ? (
+        <div role="status" className="flex flex-col items-start gap-3">
+          <p>{t.resting}</p>
+          <Link href={`/${lang}/projects`} className="btn-secondary">{t.backToProjects}</Link>
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-col items-start gap-1">
+            <button type="button" className="btn-primary" disabled={disabled} onClick={onNext}>{t.next}</button>
+            <span className="text-sm">{t.nextHint}</span>
+          </div>
+          <details className="rounded-xl bg-paper text-ink">
+            <summary className="flex min-h-11 cursor-pointer items-center px-3 font-medium">{t.lookBack}</summary>
+            <StepLinks steps={steps} projectId={projectId} lang={lang} />
+          </details>
+          <button type="button" className="self-start font-medium underline underline-offset-4" onClick={() => setResting(true)}>
+            {t.rest}
+          </button>
+        </>
+      )}
+    </section>
   );
 }

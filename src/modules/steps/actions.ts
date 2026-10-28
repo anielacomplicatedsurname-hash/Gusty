@@ -8,8 +8,9 @@ import {
   DIRECTIONS_PROMPT_VERSION, DIRECTIONS_SYSTEM_PROMPT, DirectionsSchema, normaliseDirections,
 } from "@/ai/tasks/directions";
 import {
-  clip, ExplainSchema, normaliseSteps, SmallerSchema, StartSchema, STEPS_PROMPT_VERSION, STEPS_SYSTEM_PROMPT,
-  StepsSchema, stepUserMessage, UNSTICK_PROMPT_VERSION, UNSTICK_PROMPTS, unstickUserMessage, type UnstickKind,
+  clip, ExplainSchema, normaliseStage, normaliseSteps, SmallerSchema, StartSchema, STEPS_PROMPT_VERSION,
+  STEPS_SYSTEM_PROMPT, StepsSchema, stepUserMessage, UNSTICK_PROMPT_VERSION, UNSTICK_PROMPTS, unstickUserMessage,
+  type UnstickKind,
 } from "@/ai/tasks/steps";
 import { logRun, withinDailyLimit } from "@/ai/usage";
 import { messagesFor } from "@/i18n/messages-for";
@@ -72,8 +73,8 @@ export async function suggestDirections(projectId: string, lang: string): Promis
 }
 
 /**
- * The person picks a direction; Gusty plans small steps for it. Done steps are always kept; open steps
- * from an earlier direction are set aside ("replaced"), never deleted.
+ * The person picks a direction; Gusty plans the first stage for it. Done steps are always kept; open
+ * steps Gusty suggested for an earlier direction are set aside ("replaced"), never deleted.
  */
 export async function chooseDirection(projectId: string, directionId: string, lang: string): Promise<StepsResult> {
   if (!isProjectId(projectId) || !isProjectId(directionId)) return { ok: false, error: "error" };
@@ -85,36 +86,59 @@ export async function chooseDirection(projectId: string, directionId: string, la
   if (!direction) return { ok: false, error: "error" };
   await supabase.from("project_directions").update({ chosen: false }).eq("project_id", projectId).neq("id", directionId);
   await supabase.from("project_directions").update({ chosen: true }).eq("id", directionId);
-  return planSteps(supabase, projectId, direction.id, direction.label, lang);
+  return planStage(supabase, projectId, direction.id, direction.label, lang);
 }
 
-/** More steps for the chosen direction, e.g. when everything shown is done. */
-export async function suggestMoreSteps(projectId: string, lang: string): Promise<StepsResult> {
+/**
+ * "Plan the next stage", offered once every step in the current stage is done. Gusty plans it from
+ * everything done and worked out so far, so the plan can change as the idea grows.
+ */
+export async function planNextStage(projectId: string, lang: string): Promise<StepsResult> {
   if (!isProjectId(projectId)) return { ok: false, error: "error" };
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { ok: false, error: "unavailable" };
   const { data: direction } = await supabase
     .from("project_directions").select("id, label").eq("project_id", projectId).eq("chosen", true).maybeSingle();
   if (!direction) return { ok: false, error: "error" };
-  return planSteps(supabase, projectId, direction.id, direction.label, lang);
+  const { data: current } = await supabase
+    .from("project_stages").select("id").eq("project_id", projectId).eq("status", "current").maybeSingle();
+  if (current) {
+    const { count } = await supabase
+      .from("next_steps").select("id", { count: "exact", head: true }).eq("stage_id", current.id).eq("status", "open");
+    if ((count ?? 0) > 0) return { ok: false, error: "error" };
+  }
+  return planStage(supabase, projectId, direction.id, direction.label, lang);
 }
 
-async function planSteps(supabase: Supabase, projectId: string, directionId: string, label: string, lang: string): Promise<StepsResult> {
+async function planStage(supabase: Supabase, projectId: string, directionId: string, label: string, lang: string): Promise<StepsResult> {
   const project = await loadProject(supabase, projectId);
   if (!project) return { ok: false, error: "error" };
-  const { data: existing } = await supabase.from("next_steps").select("title, status, position").eq("project_id", projectId);
-  const done = (existing ?? []).filter((s) => s.status === "done").map((s) => s.title);
-  const nextPosition = Math.max(0, ...(existing ?? []).map((s) => s.position + 1));
+  const [{ data: stages }, { data: existing }] = await Promise.all([
+    supabase.from("project_stages").select("id, title, status, position").eq("project_id", projectId).order("position"),
+    supabase.from("next_steps").select("title, status, position, stage_id").eq("project_id", projectId),
+  ]);
+  const steps = existing ?? [];
+  const doneIn = (stageId: string) => steps.filter((st) => st.stage_id === stageId && st.status === "done").map((st) => st.title);
+  const current = (stages ?? []).find((st) => st.status === "current");
+  // The stage being left counts as done if anything in it was done; otherwise it's set aside.
+  const leaving = current ? { id: current.id, finished: doneIn(current.id).length > 0 } : null;
+  const earlier = (stages ?? [])
+    .filter((st) => st.status === "done" || (st.id === leaving?.id && leaving.finished))
+    .map((st) => ({ title: st.title, done: doneIn(st.id) }));
+  const nextPosition = Math.max(0, ...steps.map((st) => st.position + 1));
+  const stagePosition = Math.max(0, ...(stages ?? []).map((st) => st.position + 1));
 
   const provider = aiProvider();
-  let steps;
+  let stage;
   if (!provider) {
-    steps = messagesFor(lang).steps.demoSteps.map((s) => ({ ...s }));
+    const demo = messagesFor(lang).steps.demoStages;
+    const d = demo[Math.min(earlier.length, demo.length - 1)];
+    stage = { title: d.title, steps: d.steps.map((st) => ({ ...st })), later: [...d.later] };
     await logRun(supabase, { projectId, task: "plan_steps", promptVersion: STEPS_PROMPT_VERSION, model: "demo", status: "demo" });
   } else {
     if (!(await withinDailyLimit(supabase))) return { ok: false, error: "limit" };
     const result = await provider.generate({
-      system: STEPS_SYSTEM_PROMPT, user: stepUserMessage(project.context, label, done), schema: StepsSchema, effort: "medium",
+      system: STEPS_SYSTEM_PROMPT, user: stepUserMessage(project.context, label, earlier), schema: StepsSchema, effort: "medium",
     });
     await logRun(supabase, {
       projectId, task: "plan_steps", promptVersion: STEPS_PROMPT_VERSION, model: result.model,
@@ -122,13 +146,29 @@ async function planSteps(supabase: Supabase, projectId: string, directionId: str
       inputTokens: result.inputTokens, outputTokens: result.outputTokens, failure: result.ok ? undefined : result.reason,
     });
     if (!result.ok) return failed(result.reason);
-    steps = normaliseSteps(result.data.steps, 7, 120);
+    stage = normaliseStage(result.data, label);
   }
-  if (steps.length === 0) return { ok: false, error: "invalid" };
+  if (stage.steps.length === 0) return { ok: false, error: "invalid" };
 
+  // Only now that the new stage is ready does anything change.
+  if (leaving) {
+    await supabase.from("project_stages")
+      .update(leaving.finished ? { status: "done", done_at: new Date().toISOString() } : { status: "set_aside" })
+      .eq("id", leaving.id);
+  }
   await supabase.from("next_steps").update({ status: "replaced" }).eq("project_id", projectId).eq("status", "open").eq("source", "ai");
+  const { data: created, error: stageError } = await supabase
+    .from("project_stages")
+    .insert({ project_id: projectId, direction_id: directionId, title: stage.title, later: stage.later, position: stagePosition })
+    .select("id")
+    .single();
+  if (stageError || !created) return { ok: false, error: "error" };
+  // The person's own open steps come along to the new stage.
+  await supabase.from("next_steps").update({ stage_id: created.id }).eq("project_id", projectId).eq("status", "open").eq("source", "user");
   const { error } = await supabase.from("next_steps").insert(
-    steps.map((s, i) => ({ project_id: projectId, direction_id: directionId, ...s, source: "ai", position: nextPosition + i })),
+    stage.steps.map((st, i) => ({
+      project_id: projectId, direction_id: directionId, stage_id: created.id, ...st, source: "ai", position: nextPosition + i,
+    })),
   );
   return error ? { ok: false, error: "error" } : { ok: true };
 }
@@ -139,7 +179,7 @@ export async function unstick(stepId: string, kind: UnstickKind, lang: string): 
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { ok: false, error: "unavailable" };
   const { data: step } = await supabase
-    .from("next_steps").select("id, project_id, direction_id, title, detail, position, status").eq("id", stepId).maybeSingle();
+    .from("next_steps").select("id, project_id, direction_id, stage_id, title, detail, position, status").eq("id", stepId).maybeSingle();
   if (!step || step.status !== "open") return { ok: false, error: "error" };
   const project = await loadProject(supabase, step.project_id);
   if (!project) return { ok: false, error: "error" };
@@ -187,7 +227,8 @@ export async function unstick(stepId: string, kind: UnstickKind, lang: string): 
     await supabase.from("next_steps").update({ status: "replaced" }).eq("id", step.id);
     const { error } = await supabase.from("next_steps").insert(
       smaller.map((s, i) => ({
-        project_id: step.project_id, direction_id: step.direction_id, ...s, source: "ai", position: step.position + i,
+        project_id: step.project_id, direction_id: step.direction_id, stage_id: step.stage_id, ...s, source: "ai",
+        position: step.position + i,
       })),
     );
     return error ? { ok: false, error: "error" } : { ok: true };
@@ -238,9 +279,13 @@ export async function addOwnStep(projectId: string, rawTitle: string): Promise<S
   if (!isProjectId(projectId) || !title) return { ok: false };
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { ok: false };
-  const { data: existing } = await supabase.from("next_steps").select("position").eq("project_id", projectId);
+  const [{ data: existing }, { data: stage }] = await Promise.all([
+    supabase.from("next_steps").select("position").eq("project_id", projectId),
+    supabase.from("project_stages").select("id").eq("project_id", projectId).eq("status", "current").maybeSingle(),
+  ]);
   const position = Math.max(0, ...(existing ?? []).map((s) => s.position + 1));
-  const { error } = await supabase.from("next_steps").insert({ project_id: projectId, title, source: "user", position });
+  const { error } = await supabase
+    .from("next_steps").insert({ project_id: projectId, stage_id: stage?.id ?? null, title, source: "user", position });
   return { ok: !error };
 }
 
