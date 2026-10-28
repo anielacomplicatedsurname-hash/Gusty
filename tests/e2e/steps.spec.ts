@@ -47,6 +47,8 @@ test("ticking a step off keeps it, and progress survives a reload", async ({ pag
   await expect(page.getByText("1 done so far")).toBeVisible();
   await expect(page.getByText("Start here", { exact: true })).toBeVisible();
   await expect(stepTitle(page, "List three people you could tell about it")).toBeVisible();
+  // The next step starts unticked: a tick never carries over (tester report, 2026-10-28).
+  await expect(page.getByLabel("Done: List three people you could tell about it")).not.toBeChecked();
 
   await page.reload();
   await expect(page.getByText("1 done so far")).toBeVisible();
