@@ -162,7 +162,7 @@ export function NextSteps({
               <h3 id="done-title" className="type-label text-text-muted">{copy.doneLabel}</h3>
               <ul className="mt-2 flex flex-col gap-2">
                 {view.done.map((s) => (
-                  <DoneItem key={s.id} step={s} copy={copy} disabled={pending} act={act} />
+                  <DoneItem key={s.id} step={s} projectId={projectId} lang={lang} copy={copy} disabled={pending} act={act} />
                 ))}
               </ul>
             </section>
@@ -306,14 +306,22 @@ function AddStep({ copy, disabled, onAdd }: { copy: Copy; disabled: boolean; onA
   );
 }
 
-function DoneItem({ step, copy, disabled, act }: { step: StepView; copy: Copy; disabled: boolean; act: Act }) {
+function DoneItem({
+  step, projectId, lang, copy, disabled, act,
+}: {
+  step: StepView; projectId: string; lang: string; copy: Copy; disabled: boolean; act: Act;
+}) {
   const [unticked, setUnticked] = useState(false);
   return (
     <li className="flex items-start gap-3">
       <input type="checkbox" checked={!unticked} disabled={disabled}
         className="mt-1 h-5 w-5 accent-ink" aria-label={`${copy.markNotDone}: ${step.title}`}
         onChange={() => { setUnticked(true); act(() => setStepDone(step.id, false)); }} />
-      <span className="text-text-muted line-through decoration-1">{step.title}</span>
+      {/* Done steps stay reachable, so answers and notes can be read or changed later. */}
+      <Link href={`/${lang}/projects/${projectId}/steps/${step.id}`}
+        className="text-text-muted line-through decoration-1 hover:text-text">
+        {step.title}
+      </Link>
     </li>
   );
 }

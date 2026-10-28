@@ -164,3 +164,13 @@ From the first tester: people want help completing steps, not just a list. A foc
 3 simple questions, each rewordable, with "Different questions" that never discards answers. An open chat box
 was rejected for now: a blank prompt is harder for many neurodivergent people than three clear questions.
 Drafting from the answers ("Help me write it") is the second slice.
+
+## 2026-10-28 — Answers live in "What you've worked out" and feed Gusty's context
+Tester question: "where do my answers go?" They now appear in their own section on the project page, below
+"Here's what I understood", each step folded up by default with an Edit link back to it. Done steps link to
+their page too. They are not merged into "Here's what I understood": that section is Gusty's reading, which
+the person confirms; mixing in raw answers would blur whose words are whose. A later option is Gusty
+suggesting reading updates from the answers, for the person to confirm. Answers and notes are added to every
+later AI request for that project (capped at about 4,000 characters, earliest steps first, marked as the
+person's own thinking, not facts), so Gusty builds on them instead of asking again. Answers on steps that are
+later set aside stay visible, labelled "Set aside", so no work disappears. No new tables or migrations.

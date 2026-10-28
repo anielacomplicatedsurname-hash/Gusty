@@ -134,4 +134,24 @@ test("working on a step with Gusty: questions, rewording, answers, notes, done",
   await page.getByRole("button", { name: "This step is done" }).click();
   await expect(page).toHaveURL(projectUrl);
   await expect(page.getByText("1 done so far")).toBeVisible();
+
+  // The answers are kept on the project page, folded up until opened.
+  const worked = page.locator("section[aria-labelledby=worked-title]");
+  await expect(worked.getByRole("heading", { name: "What you've worked out" })).toBeVisible();
+  await expect(worked.getByText("Done · 1 answer · notes")).toBeVisible();
+  await expect(worked.getByText("Three sentences in my notes")).toBeHidden();
+  await worked.getByText("Write your idea in three sentences").click();
+  await expect(worked.getByText("Three sentences in my notes")).toBeVisible();
+  await expect(worked.getByText("A place where neighbours fix things together.")).toBeVisible();
+  const projectScan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(projectScan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+  await worked.getByRole("link", { name: "Edit your answers: Write your idea in three sentences" }).click();
+  await expect(page.getByText("You've already ticked this step off.")).toBeVisible();
+
+  // Done steps stay reachable from the full plan too.
+  await page.goto(projectUrl);
+  await mode(page, "Let me see everything").click();
+  await page.locator("section[aria-labelledby=done-title]").getByRole("link", { name: "Write your idea in three sentences" }).click();
+  await expect(page).toHaveURL(/\/steps\/[0-9a-f-]{36}$/);
+  await expect(page.locator("textarea#notes")).toHaveValue("A place where neighbours fix things together.");
 });

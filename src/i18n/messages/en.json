@@ -198,6 +198,18 @@
     },
     "demoNoticeReady": "This reading was made in demo mode, before Gusty's AI was switched on. Press “Read my idea again” for Gusty's real reading."
   },
+  "workedOut": {
+    "title": "What you've worked out",
+    "intro": "Your answers and notes from the steps you've worked on. Gusty keeps these in mind when it suggests what's next. Tap a step to see them.",
+    "answers": "{n} answers",
+    "oneAnswer": "1 answer",
+    "notes": "notes",
+    "done": "Done",
+    "setAside": "Set aside",
+    "setAsideHint": "This step was set aside, so it can't be opened any more. Your answers are kept here.",
+    "notesLabel": "Your notes",
+    "edit": "Edit your answers"
+  },
   "errorPage": {
     "title": "Something went wrong on our side.",
     "body": "Your work is saved. Please try again in a moment.",

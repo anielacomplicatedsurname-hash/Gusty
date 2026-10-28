@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { SHARED_RULES } from "./context";
 
-export const DIRECTIONS_PROMPT_VERSION = "suggest-directions@1";
+export const DIRECTIONS_PROMPT_VERSION = "suggest-directions@2";
 
 export const DirectionsSchema = z.object({
   directions: z.array(z.object({ label: z.string(), reason: z.string(), recommended: z.boolean() })),

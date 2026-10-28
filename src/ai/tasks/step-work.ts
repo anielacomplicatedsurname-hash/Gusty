@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { SHARED_RULES } from "./context";
 
-export const STEP_QUESTIONS_PROMPT_VERSION = "step-questions@1";
-export const STEP_REPHRASE_PROMPT_VERSION = "step-rephrase@1";
+export const STEP_QUESTIONS_PROMPT_VERSION = "step-questions@2";
+export const STEP_REPHRASE_PROMPT_VERSION = "step-rephrase@2";
 export const MAX_QUESTIONS = 3;
 
 const question = z.object({ question: z.string(), hint: z.string() });
