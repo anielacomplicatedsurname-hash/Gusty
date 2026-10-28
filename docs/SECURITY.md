@@ -7,7 +7,7 @@
   or the system. AI outputs are schema-validated before anything is saved; actions need user approval.
 - Log errors and usage (tokens, cost), not the content of people's ideas (`ai_runs` stores no content).
 - The idea is passed to the model inside `<idea>` tags with an instruction to treat it as text, not instructions; closing tags inside it are neutralised. Model output is schema-validated and length-limited before it is saved.
-- AI calls run only on the server; the key never reaches the browser. 30 readings and 60 AI calls in total per person per day.
+- AI calls run only on the server; the key never reaches the browser. 30 readings and 60 AI calls in total per person per day, plus up to 150 background tidy-ups of their own answers and notes.
 
 ## Secrets
 - Never committed. `.env*` is git-ignored except `.env.example`, which holds names only.

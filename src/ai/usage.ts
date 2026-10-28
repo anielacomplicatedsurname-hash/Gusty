@@ -14,8 +14,25 @@ export async function withinDailyLimit(supabase: Client): Promise<boolean> {
     .from("ai_runs")
     .select("id", { count: "exact", head: true })
     .neq("status", "demo")
+    .neq("task", "tidy")
     .gte("created_at", since);
   return (count ?? 0) < DAILY_AI_LIMIT;
+}
+
+/**
+ * Tidying runs in the background when an answer is finished, so it has its own allowance and never
+ * uses up the person's suggestions. When it runs out, their own words are simply shown untidied.
+ */
+export const DAILY_TIDY_LIMIT = 150;
+
+export async function withinTidyLimit(supabase: Client): Promise<boolean> {
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const { count } = await supabase
+    .from("ai_runs")
+    .select("id", { count: "exact", head: true })
+    .eq("task", "tidy")
+    .gte("created_at", since);
+  return (count ?? 0) < DAILY_TIDY_LIMIT;
 }
 
 export type RunLog = {

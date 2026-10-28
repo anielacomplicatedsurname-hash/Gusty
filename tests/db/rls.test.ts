@@ -210,4 +210,29 @@ describe("step questions", () => {
     expect(changed ?? []).toEqual([]);
     expect((await owner.from("step_questions").update({ answer: "Neighbours" }).eq("id", q!.id).select("id")).data).toHaveLength(1);
   });
+
+  it("forget Gusty's tidied copy when the person changes their words", async () => {
+    const owner = client();
+    expect((await owner.auth.signInAnonymously()).error).toBeNull();
+    const { data: project } = await owner.from("projects").insert({ title: "Mine", idea: "Private" }).select("id").single();
+    const { data: step } = await owner.from("next_steps").insert({ project_id: project!.id, title: "Do a thing" }).select("id").single();
+    const { data: q } = await owner
+      .from("step_questions").insert({ step_id: step!.id, project_id: project!.id, question: "Who is it for?" }).select("id").single();
+    const tidiedOf = async () =>
+      (await owner.from("step_questions").select("answer_tidied").eq("id", q!.id).single()).data!.answer_tidied;
+
+    await owner.from("step_questions").update({ answer: "nieghbours" }).eq("id", q!.id);
+    await owner.from("step_questions").update({ answer_tidied: "Neighbours" }).eq("id", q!.id);
+    expect(await tidiedOf()).toBe("Neighbours");
+    // Setting both together keeps the new copy; changing only the words clears it.
+    await owner.from("step_questions").update({ answer: "nieghbours, freinds", answer_tidied: "Neighbours, friends" }).eq("id", q!.id);
+    expect(await tidiedOf()).toBe("Neighbours, friends");
+    await owner.from("step_questions").update({ answer: "my street" }).eq("id", q!.id);
+    expect(await tidiedOf()).toBe("");
+
+    await owner.from("next_steps").update({ notes: "sum notes" }).eq("id", step!.id);
+    await owner.from("next_steps").update({ notes_tidied: "Some notes" }).eq("id", step!.id);
+    await owner.from("next_steps").update({ notes: "other notes" }).eq("id", step!.id);
+    expect((await owner.from("next_steps").select("notes_tidied").eq("id", step!.id).single()).data!.notes_tidied).toBe("");
+  });
 });

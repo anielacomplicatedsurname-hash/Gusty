@@ -43,7 +43,10 @@ export function WorkedOut({ steps, projectId, lang, copy }: { steps: WorkedStep[
                     {s.answers.map((a) => (
                       <div key={a.question}>
                         <dt className="text-sm font-semibold">{a.question}</dt>
-                        <dd className="mt-1 whitespace-pre-line">{a.answer}</dd>
+                        <dd className="mt-1">
+                          <Words own={a.answer} tidied={a.tidied} copy={copy} />
+                          {a.assisted && <p className="mt-1 text-sm text-text-muted">{copy.assisted}</p>}
+                        </dd>
                       </div>
                     ))}
                   </dl>
@@ -51,7 +54,9 @@ export function WorkedOut({ steps, projectId, lang, copy }: { steps: WorkedStep[
                 {s.notes && (
                   <div>
                     <h3 className="text-sm font-semibold">{copy.notesLabel}</h3>
-                    <p className="mt-1 whitespace-pre-line">{s.notes}</p>
+                    <div className="mt-1">
+                      <Words own={s.notes} tidied={s.notesTidied} copy={copy} />
+                    </div>
                   </div>
                 )}
                 {s.setAside ? (
@@ -71,5 +76,24 @@ export function WorkedOut({ steps, projectId, lang, copy }: { steps: WorkedStep[
         ))}
       </ul>
     </section>
+  );
+}
+
+/**
+ * The person's words, or Gusty's tidied copy with the original one tap away. Both stay clearly labelled:
+ * the original is never replaced.
+ */
+function Words({ own, tidied, copy }: { own: string; tidied: string; copy: Messages["workedOut"] }) {
+  if (!tidied || tidied === own) return <p className="whitespace-pre-line">{own}</p>;
+  return (
+    <>
+      <p className="whitespace-pre-line">{tidied}</p>
+      <details className="mt-1 text-sm">
+        <summary className="cursor-pointer text-text-muted">
+          {copy.tidied} · <span className="underline underline-offset-4">{copy.showOriginal}</span>
+        </summary>
+        <p className="mt-1 whitespace-pre-line border-l-2 border-border pl-3">{own}</p>
+      </details>
+    </>
   );
 }

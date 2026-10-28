@@ -174,3 +174,14 @@ suggesting reading updates from the answers, for the person to confirm. Answers 
 later AI request for that project (capped at about 4,000 characters, earliest steps first, marked as the
 person's own thinking, not facts), so Gusty builds on them instead of asking again. Answers on steps that are
 later set aside stay visible, labelled "Set aside", so no work disappears. No new tables or migrations.
+
+## 2026-10-29 — Tidied words and "Help me say more", always labelled
+The founder asked for answers in "What you've worked out" to read well, and for a way to grow a short
+answer. Gusty keeps a tidied copy (spelling, grammar, phrasing; no new ideas) next to the person's own
+words, which are never overwritten: the tidied copy is shown with "Tidied by Gusty · Show what I wrote".
+A database trigger clears a tidied copy as soon as the words change, so it can never describe an older
+version. Tidying runs when the person leaves an answer box (not on every autosave), after the response,
+with its own daily allowance (150) so it never uses up their suggestions; it uses the same model as other
+tasks at low effort (a cheaper model is a later option for the founder to decide). "Help me say more"
+returns a suggestion about three times longer that the person can use or ignore; using it marks the
+answer "Gusty added ideas", so AI additions stay distinguishable from their own words.
