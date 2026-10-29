@@ -7,7 +7,8 @@ import {
   clipWords, MAX_QUESTIONS, normaliseQuestions, REPHRASE_PROMPT, RephraseSchema, rephraseMessage, SAY_MORE_PROMPT,
   SAY_MORE_PROMPT_VERSION, SayMoreSchema, sayMoreMessage, STEP_QUESTIONS_PROMPT, STEP_QUESTIONS_PROMPT_VERSION,
   STEP_REPHRASE_PROMPT_VERSION, StepQuestionsSchema, stepQuestionsMessage, TIDY_PROMPT, TIDY_PROMPT_VERSION, TidySchema,
-  tidyMessage, type StepQuestion,
+  tidyMessage, type StepQuestion, DraftSchema, REVISE_PROMPT, reviseMessage, REVISIONS, type Revision, WRITE_PROMPT,
+  WRITE_PROMPT_VERSION, writeMessage,
 } from "@/ai/tasks/step-work";
 import { logRun, withinDailyLimit, withinTidyLimit } from "@/ai/usage";
 import { messagesFor } from "@/i18n/messages-for";
@@ -24,7 +25,7 @@ const failed = (reason: string): WorkResult => ({
 });
 
 async function loadStep(supabase: Supabase, stepId: string) {
-  const { data: step } = await supabase.from("next_steps").select("id, project_id, title, detail, status").eq("id", stepId).maybeSingle();
+  const { data: step } = await supabase.from("next_steps").select("id, project_id, title, detail, status, notes").eq("id", stepId).maybeSingle();
   if (!step || step.status === "replaced") return null;
   const [{ data: project }, { data: facts }, { data: questions }, work] = await Promise.all([
     supabase.from("projects").select("title, idea").eq("id", step.project_id).maybeSingle(),
@@ -250,5 +251,77 @@ export async function applySayMore(questionId: string, raw: string): Promise<Sav
   if (!supabase) return { ok: false };
   const { data, error } = await supabase
     .from("step_questions").update({ answer, assisted: true }).eq("id", questionId).select("id").maybeSingle();
+  return { ok: !error && !!data };
+}
+
+export type DraftResult = { ok: true; text: string; demo: boolean } | Exclude<WorkResult, { ok: true }> | { ok: false; error: "empty" };
+
+/** "Help me write it": a first draft of what the step asks for, from the person's answers and notes. A suggestion only. */
+export async function writeDraft(stepId: string): Promise<DraftResult> {
+  if (!isProjectId(stepId)) return { ok: false, error: "error" };
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { ok: false, error: "unavailable" };
+  const loaded = await loadStep(supabase, stepId);
+  if (!loaded) return { ok: false, error: "error" };
+  const { step, context, questions } = loaded;
+  const answered = questions.filter((q) => q.status === "active" && q.answer.trim()).map((q) => ({ question: q.question, answer: q.answer }));
+  if (answered.length === 0 && !step.notes.trim()) return { ok: false, error: "empty" };
+
+  const provider = aiProvider();
+  if (!provider) {
+    await logRun(supabase, { projectId: step.project_id, task: "write_draft", promptVersion: WRITE_PROMPT_VERSION, model: "demo", status: "demo" });
+    // Demo: only puts their own words together, so nothing is presented as Gusty's writing.
+    const text = [...answered.map((a) => a.answer), step.notes.trim()].filter(Boolean).join("\n\n");
+    return { ok: true, text: clipWords(text, 4000), demo: true };
+  }
+  if (!(await withinDailyLimit(supabase))) return { ok: false, error: "limit" };
+  const result = await provider.generate({
+    system: WRITE_PROMPT, user: writeMessage(context, step, answered, step.notes), schema: DraftSchema, effort: "medium",
+  });
+  await logRun(supabase, {
+    projectId: step.project_id, task: "write_draft", promptVersion: WRITE_PROMPT_VERSION, model: result.model,
+    status: result.ok ? "ok" : result.reason === "declined" ? "declined" : "error",
+    inputTokens: result.inputTokens, outputTokens: result.outputTokens, failure: result.ok ? undefined : result.reason,
+  });
+  if (!result.ok) return failed(result.reason) as Exclude<WorkResult, { ok: true }>;
+  const text = clipWords(result.data.text, 4000);
+  return text ? { ok: true, text, demo: false } : { ok: false, error: "invalid" };
+}
+
+/** Shorter, simpler or warmer: a new version of a draft. A suggestion only. */
+export async function reviseDraft(stepId: string, raw: string, kind: string): Promise<DraftResult> {
+  const draft = raw.trim().slice(0, 4000);
+  if (!isProjectId(stepId) || !draft || !(REVISIONS as readonly string[]).includes(kind)) return { ok: false, error: "error" };
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { ok: false, error: "unavailable" };
+  const loaded = await loadStep(supabase, stepId);
+  if (!loaded) return { ok: false, error: "error" };
+
+  const provider = aiProvider();
+  if (!provider) {
+    await logRun(supabase, { projectId: loaded.step.project_id, task: "revise_draft", promptVersion: WRITE_PROMPT_VERSION, model: "demo", status: "demo" });
+    return { ok: true, text: draft, demo: true };
+  }
+  if (!(await withinDailyLimit(supabase))) return { ok: false, error: "limit" };
+  const result = await provider.generate({
+    system: REVISE_PROMPT, user: reviseMessage(loaded.context, loaded.step.title, draft, kind as Revision), schema: DraftSchema, effort: "low",
+  });
+  await logRun(supabase, {
+    projectId: loaded.step.project_id, task: "revise_draft", promptVersion: WRITE_PROMPT_VERSION, model: result.model,
+    status: result.ok ? "ok" : result.reason === "declined" ? "declined" : "error",
+    inputTokens: result.inputTokens, outputTokens: result.outputTokens, failure: result.ok ? undefined : result.reason,
+  });
+  if (!result.ok) return failed(result.reason) as Exclude<WorkResult, { ok: true }>;
+  const text = clipWords(result.data.text, 4000);
+  return text ? { ok: true, text, demo: false } : { ok: false, error: "invalid" };
+}
+
+/** Keeps a draft, or saves the person's changes to it. An empty draft removes it. */
+export async function saveDraft(stepId: string, raw: string): Promise<SaveResult> {
+  if (!isProjectId(stepId)) return { ok: false };
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { ok: false };
+  const { data, error } = await supabase
+    .from("next_steps").update({ draft: raw.slice(0, 4000) }).eq("id", stepId).select("id").maybeSingle();
   return { ok: !error && !!data };
 }

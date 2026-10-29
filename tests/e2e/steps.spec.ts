@@ -254,3 +254,47 @@ test("the plan grows one stage at a time, with a calm moment when a stage is don
   const journeyScan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(journeyScan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 });
+
+test("Help me write it drafts from the answers, and a kept draft stays the person's to change", async ({ page }) => {
+  await projectWithSteps(page);
+  const projectUrl = page.url();
+  await page.getByRole("link", { name: "Work on this with Gusty: Write your idea in three sentences" }).click();
+  const write = page.locator("section[aria-labelledby=write-title]");
+  await expect(page.locator("section[aria-labelledby=questions-title] ol > li")).toHaveCount(3);
+
+  // Nothing to draft from yet.
+  await write.getByRole("button", { name: "Help me write it" }).click();
+  await expect(write.getByText("Answer a question or add a note first")).toBeVisible();
+
+  const answer = page.locator("section[aria-labelledby=questions-title] ol > li").first().getByLabel("Your answer");
+  await answer.fill("A café where neighbours fix things together");
+  await answer.blur();
+  await expect(page.locator("[data-status=saved]").first()).toBeVisible();
+
+  await write.getByRole("button", { name: "Help me write it" }).click();
+  const draft = write.locator("section[aria-labelledby=draft-suggestion]");
+  await expect(draft.getByRole("heading", { name: "Gusty's draft" })).toBeVisible();
+  await expect(draft.getByText("Demo mode: this only puts your own answers together.")).toBeVisible();
+  await expect(draft.getByText("A café where neighbours fix things together")).toBeVisible();
+  await draft.getByRole("button", { name: "Shorter" }).click();
+  await expect(draft.getByRole("button", { name: "Shorter" })).toBeEnabled();
+  const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+
+  // Keeping it makes it an editable draft, marked as started by Gusty.
+  await draft.getByRole("button", { name: "Keep this draft" }).click();
+  const yours = write.getByLabel("Your draft");
+  await expect(yours).toHaveValue("A café where neighbours fix things together");
+  await expect(write.getByText("Started by Gusty, kept by you.")).toBeVisible();
+  await yours.fill("A café where neighbours fix things together, every Saturday.");
+  await yours.blur();
+  await expect(write.locator("#draft-status[data-status=saved]")).toBeVisible();
+  await page.reload();
+  await expect(page.getByLabel("Your draft")).toHaveValue("A café where neighbours fix things together, every Saturday.");
+
+  await page.goto(projectUrl);
+  const worked = page.locator("section[aria-labelledby=worked-title]");
+  await worked.getByText("Write your idea in three sentences").click();
+  await expect(worked.getByRole("heading", { name: "Draft (started by Gusty)" })).toBeVisible();
+  await expect(worked.getByText("every Saturday.")).toBeVisible();
+});

@@ -31,6 +31,7 @@ export function WorkedOut({ steps, projectId, lang, copy }: { steps: WorkedStep[
                       s.done ? copy.done : s.setAside ? copy.setAside : null,
                       s.answers.length === 1 ? copy.oneAnswer : s.answers.length > 1 ? fill(copy.answers, { n: String(s.answers.length) }) : null,
                       s.notes ? copy.notes : null,
+                      s.draft ? copy.draftCount : null,
                     ]
                       .filter(Boolean)
                       .join(" · ")}
@@ -57,6 +58,12 @@ export function WorkedOut({ steps, projectId, lang, copy }: { steps: WorkedStep[
                     <div className="mt-1">
                       <Words own={s.notes} tidied={s.notesTidied} copy={copy} />
                     </div>
+                  </div>
+                )}
+                {s.draft && (
+                  <div>
+                    <h3 className="text-sm font-semibold">{copy.draft}</h3>
+                    <p className="mt-1 whitespace-pre-line rounded-lg bg-paper p-3">{s.draft}</p>
                   </div>
                 )}
                 {s.setAside ? (

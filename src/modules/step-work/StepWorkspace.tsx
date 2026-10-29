@@ -5,8 +5,8 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import type en from "@/i18n/messages/en.json";
 import { setStepDone } from "@/modules/steps/actions";
 import {
-  applySayMore, differentQuestions, prepareQuestions, rephraseQuestion, saveAnswer, saveNotes, sayMore, tidyAnswer, tidyNotes,
-  type WorkResult,
+  applySayMore, differentQuestions, prepareQuestions, rephraseQuestion, reviseDraft, saveAnswer, saveDraft, saveNotes, sayMore,
+  tidyAnswer, tidyNotes, writeDraft, type DraftResult, type WorkResult,
 } from "./actions";
 import type { StepWork } from "./data";
 
@@ -121,6 +121,8 @@ export function StepWorkspace({ work, lang, copy }: { work: StepWork; lang: stri
         <AutosaveText id="notes" label={copy.notesTitle} hideLabel describedBy="notes-hint" initial={work.step.notes} rows={6} maxLength={4000}
           save={(text) => saveNotes(work.step.id, text)} onFinished={() => tidyNotes(work.step.id)} copy={copy} />
       </section>
+
+      <WriteIt stepId={work.step.id} initial={work.step.draft} copy={copy} />
 
       {work.step.status !== "done" && (
         <div className="flex flex-col items-start gap-2">
@@ -262,5 +264,109 @@ function SayMore({ questionId, assisted: initiallyAssisted, lang, box, copy }: {
         )}
       </div>
     </div>
+  );
+}
+
+const REVISIONS = ["shorter", "simpler", "warmer"] as const;
+
+/**
+ * "Help me write it": Gusty drafts what the step asks for from the answers and notes. The draft is a
+ * suggestion until the person keeps it; after that it's theirs to change, still marked as started by Gusty.
+ */
+function WriteIt({ stepId, initial, copy }: { stepId: string; initial: string; copy: Copy }) {
+  const t = copy.write;
+  const [saved, setSaved] = useState(initial);
+  const [version, setVersion] = useState(0);
+  const [suggestion, setSuggestion] = useState<{ text: string; demo: boolean } | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+  const latest = useRef(initial);
+
+  const run = (key: string, call: () => Promise<DraftResult>) => {
+    setError(null);
+    setBusy(key);
+    startTransition(async () => {
+      const result = await call();
+      setBusy(null);
+      if (result.ok) setSuggestion({ text: result.text, demo: result.demo });
+      else setError(result.error === "empty" ? t.needsAnswers : copy.errors[result.error]);
+    });
+  };
+
+  const keep = (text: string) => {
+    setError(null);
+    startTransition(async () => {
+      const result = await saveDraft(stepId, text);
+      if (!result.ok) return setError(copy.errors.failed);
+      latest.current = text;
+      setSaved(text);
+      setVersion((v) => v + 1);
+      setSuggestion(null);
+    });
+  };
+
+  const label = (key: string, text: string) => (busy === key ? t.working : text);
+
+  return (
+    <section aria-labelledby="write-title" className="flex flex-col gap-4 rounded-(--radius-card) bg-surface-raised p-5">
+      <div>
+        <h2 id="write-title" className="text-xl font-semibold">{t.title}</h2>
+        <p className="mt-1 text-text-muted">{t.intro}</p>
+      </div>
+
+      {saved.trim() && (
+        <div>
+          <AutosaveText key={version} id="draft" label={t.yours} describedBy="draft-hint" initial={saved} rows={8} maxLength={4000}
+            save={(text) => { latest.current = text; return saveDraft(stepId, text); }} copy={copy} />
+          <p id="draft-hint" className="-mt-1 text-sm text-text-muted">{t.yoursHint}</p>
+          {!suggestion && (
+            <div className="mt-3 flex flex-wrap items-center gap-2" role="group" aria-label={t.changeIt}>
+              {REVISIONS.map((k) => (
+                <button key={k} type="button" className="btn-secondary min-h-11 px-4 text-sm" disabled={pending}
+                  onClick={() => run(k, () => reviseDraft(stepId, latest.current, k))}>
+                  {label(k, t[k])}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {!suggestion && (
+        <button type="button" className={`${saved.trim() ? "btn-secondary" : "btn-primary"} self-start`} disabled={pending}
+          onClick={() => run("write", () => writeDraft(stepId))}>
+          {label("write", saved.trim() ? t.again : t.button)}
+        </button>
+      )}
+      {error && <p role="alert" className="font-medium">{error}</p>}
+
+      <div aria-live="polite">
+        {suggestion && (
+          <section aria-labelledby="draft-suggestion" className="flex flex-col gap-3 rounded-xl border-2 border-lilac bg-paper p-4">
+            <div>
+              <h3 id="draft-suggestion" className="font-semibold">{t.suggestion}</h3>
+              <p className="text-sm text-text-muted">{t.suggestionHint}</p>
+            </div>
+            {suggestion.demo && <p className="rounded-lg bg-sky p-2 text-sm text-ink">{t.demoNotice}</p>}
+            <p className="whitespace-pre-line">{suggestion.text}</p>
+            <div className="flex flex-wrap gap-2">
+              {REVISIONS.map((k) => (
+                <button key={k} type="button" className="btn-secondary min-h-11 px-4 text-sm" disabled={pending}
+                  onClick={() => run(k, () => reviseDraft(stepId, suggestion.text, k))}>
+                  {label(k, t[k])}
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button type="button" className="btn-primary" disabled={pending} onClick={() => keep(suggestion.text)}>
+                {saved.trim() ? t.useVersion : t.keep}
+              </button>
+              <button type="button" className="btn-secondary" disabled={pending} onClick={() => setSuggestion(null)}>{t.notNow}</button>
+            </div>
+          </section>
+        )}
+      </div>
+    </section>
   );
 }

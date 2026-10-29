@@ -211,7 +211,9 @@
     "edit": "Edit your answers",
     "tidied": "Tidied by Gusty",
     "showOriginal": "Show what I wrote",
-    "assisted": "Gusty added ideas"
+    "assisted": "Gusty added ideas",
+    "draft": "Draft (started by Gusty)",
+    "draftCount": "draft"
   },
   "errorPage": {
     "title": "Something went wrong on our side.",
@@ -422,7 +424,9 @@
       "step_questions": "Step questions",
       "step_rephrase": "Say it differently",
       "tidy": "Tidying answers and notes",
-      "say_more": "Help me say more"
+      "say_more": "Help me say more",
+      "write_draft": "Help me write it",
+      "revise_draft": "Shorter, simpler, warmer"
     },
     "reasons": {
       "key": "API key missing, expired or refused",
@@ -709,6 +713,26 @@
       "error": "Something went wrong. Your work is saved. Please try again.",
       "limit": "You've reached today's limit for Gusty's suggestions. It resets within a day.",
       "failed": "That change didn't save. Please try again."
+    },
+    "write": {
+      "title": "Help me write it",
+      "intro": "Gusty turns your answers and notes into a short first draft. You choose whether to keep it.",
+      "needsAnswers": "Answer a question or add a note first, and Gusty can draft something from it.",
+      "button": "Help me write it",
+      "again": "Write a new draft",
+      "working": "Gusty is writing…",
+      "suggestion": "Gusty's draft",
+      "suggestionHint": "A suggestion from your answers. [Square brackets] mark things only you can fill in.",
+      "shorter": "Shorter",
+      "simpler": "Simpler",
+      "warmer": "Warmer",
+      "keep": "Keep this draft",
+      "useVersion": "Use this version",
+      "notNow": "Not now",
+      "yours": "Your draft",
+      "yoursHint": "Started by Gusty, kept by you. Change anything.",
+      "changeIt": "Change it with Gusty",
+      "demoNotice": "Demo mode: this only puts your own answers together. Gusty's own drafts, and Shorter, Simpler and Warmer, work once the AI key is set up."
     }
   }
 }
