@@ -212,8 +212,8 @@
     "tidied": "Tidied by Gusty",
     "showOriginal": "Show what I wrote",
     "assisted": "Gusty added ideas",
-    "draft": "Draft (started by Gusty)",
-    "draftCount": "draft"
+    "draft": "Summary (started by Gusty)",
+    "draftCount": "summary"
   },
   "errorPage": {
     "title": "Something went wrong on our side.",
@@ -429,7 +429,7 @@
       "step_rephrase": "Say it differently",
       "tidy": "Tidying answers and notes",
       "say_more": "Help me say more",
-      "write_draft": "Help me write it",
+      "write_draft": "Help me summarise it",
       "revise_draft": "Shorter, simpler, warmer"
     },
     "reasons": {
@@ -719,24 +719,24 @@
       "failed": "That change didn't save. Please try again."
     },
     "write": {
-      "title": "Help me write it",
-      "intro": "Gusty turns your answers and notes into a short first draft. You choose whether to keep it.",
-      "needsAnswers": "Answer a question or add a note first, and Gusty can draft something from it.",
-      "button": "Help me write it",
-      "again": "Write a new draft",
-      "working": "Gusty is writing…",
-      "suggestion": "Gusty's draft",
-      "suggestionHint": "A suggestion from your answers. [Square brackets] mark things only you can fill in.",
+      "title": "Help me summarise it",
+      "intro": "Gusty pulls your answers and notes together into a short summary. You choose whether to keep it.",
+      "needsAnswers": "Answer a question or add a note first, and Gusty can summarise it.",
+      "button": "Help me summarise it",
+      "again": "Summarise again",
+      "working": "Gusty is summarising…",
+      "suggestion": "Gusty's summary",
+      "suggestionHint": "A suggestion from what you wrote. [Square brackets] mark things only you can fill in.",
       "shorter": "Shorter",
       "simpler": "Simpler",
       "warmer": "Warmer",
-      "keep": "Keep this draft",
+      "keep": "Keep this summary",
       "useVersion": "Use this version",
       "notNow": "Not now",
-      "yours": "Your draft",
+      "yours": "Your summary",
       "yoursHint": "Started by Gusty, kept by you. Change anything.",
       "changeIt": "Change it with Gusty",
-      "demoNotice": "Demo mode: this only puts your own answers together. Gusty's own drafts, and Shorter, Simpler and Warmer, work once the AI key is set up."
+      "demoNotice": "Demo mode: this only puts your own answers together. Gusty's own summaries, and Shorter, Simpler and Warmer, work once the AI key is set up."
     }
   }
 }

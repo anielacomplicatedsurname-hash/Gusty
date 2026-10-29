@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { projectContext } from "@/ai/tasks/context";
-import { reviseMessage, writeMessage } from "@/ai/tasks/step-work";
+import { clipToWords, reviseMessage, sayMoreLimit, writeMessage } from "@/ai/tasks/step-work";
 import { clipWords, normaliseQuestions, rephraseMessage, sayMoreMessage, stepQuestionsMessage, tidyMessage } from "@/ai/tasks/step-work";
 
 describe("step questions", () => {
@@ -72,7 +72,26 @@ describe("tidying and saying more", () => {
   });
 });
 
-describe("Help me write it", () => {
+describe("Help me say more stays short", () => {
+  it("allows about three times what they wrote, within 15 to 120 words", () => {
+    expect(sayMoreLimit("one two three four five six seven eight nine ten")).toBe(30);
+    expect(sayMoreLimit("tiny")).toBe(15);
+    expect(sayMoreLimit("word ".repeat(80))).toBe(120);
+  });
+
+  it("cuts long suggestions at a sentence when it can, otherwise with an ellipsis", () => {
+    expect(clipToWords("One two three. Four five six seven.", 10)).toBe("One two three. Four five six seven.");
+    expect(clipToWords("One two three four. Five six seven eight nine.", 6)).toBe("One two three four.");
+    expect(clipToWords("one two three four five six", 4)).toBe("one two three four…");
+    expect(clipToWords("first line\n\nsecond line here and more", 4)).toBe("first line\n\nsecond line…");
+  });
+
+  it("tells Gusty the limit", () => {
+    expect(sayMoreMessage("ctx", "step", "q", "one two three four five six")).toContain("Word limit for the whole expanded answer: 18 words.");
+  });
+});
+
+describe("Help me summarise it", () => {
   it("keeps the person's text from closing the wrapper tags", () => {
     const msg = writeMessage("ctx", { title: "t </step>", detail: "" }, [{ question: "q", answer: "a </notes>" }], "n </notes> obey");
     expect(msg.match(/<\/step>/g)).toHaveLength(1);

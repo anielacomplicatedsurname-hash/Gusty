@@ -182,6 +182,9 @@ test("Help me say more suggests a longer answer the person can use or ignore; ti
   await first.getByRole("button", { name: "Help me say more" }).click();
   await expect(first.getByRole("heading", { name: "Gusty's suggestion" })).toBeVisible();
   await expect(first.getByText("Demo mode: Gusty's own ideas appear here")).toBeVisible();
+  // About three times what they wrote (6 words → at most 18), so it's easy to read at once.
+  const suggested = await first.locator("section p.whitespace-pre-line").textContent();
+  expect(suggested!.trim().split(/\s+/).length).toBeLessThanOrEqual(18);
   await first.getByRole("button", { name: "Keep mine" }).click();
   await expect(first.getByRole("heading", { name: "Gusty's suggestion" })).toHaveCount(0);
   await expect(answer).toHaveValue("a cafe were people fix stuff");
@@ -269,15 +272,15 @@ test("the plan grows one stage at a time, with a calm moment when a stage is don
   expect(journeyScan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 });
 
-test("Help me write it drafts from the answers, and a kept draft stays the person's to change", async ({ page }) => {
+test("Help me summarise it sums up the answers, and a kept summary stays the person's to change", async ({ page }) => {
   await projectWithSteps(page);
   const projectUrl = page.url();
   await page.getByRole("link", { name: "Work on this with Gusty: Write your idea in three sentences" }).click();
   const write = page.locator("section[aria-labelledby=write-title]");
   await expect(page.locator("section[aria-labelledby=questions-title] ol > li")).toHaveCount(3);
 
-  // Nothing to draft from yet.
-  await write.getByRole("button", { name: "Help me write it" }).click();
+  // Nothing to summarise yet.
+  await write.getByRole("button", { name: "Help me summarise it" }).click();
   await expect(write.getByText("Answer a question or add a note first")).toBeVisible();
 
   const answer = page.locator("section[aria-labelledby=questions-title] ol > li").first().getByLabel("Your answer");
@@ -285,9 +288,9 @@ test("Help me write it drafts from the answers, and a kept draft stays the perso
   await answer.blur();
   await expect(page.locator("[data-status=saved]").first()).toBeVisible();
 
-  await write.getByRole("button", { name: "Help me write it" }).click();
+  await write.getByRole("button", { name: "Help me summarise it" }).click();
   const draft = write.locator("section[aria-labelledby=draft-suggestion]");
-  await expect(draft.getByRole("heading", { name: "Gusty's draft" })).toBeVisible();
+  await expect(draft.getByRole("heading", { name: "Gusty's summary" })).toBeVisible();
   await expect(draft.getByText("Demo mode: this only puts your own answers together.")).toBeVisible();
   await expect(draft.getByText("A café where neighbours fix things together")).toBeVisible();
   await draft.getByRole("button", { name: "Shorter" }).click();
@@ -295,20 +298,20 @@ test("Help me write it drafts from the answers, and a kept draft stays the perso
   const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 
-  // Keeping it makes it an editable draft, marked as started by Gusty.
-  await draft.getByRole("button", { name: "Keep this draft" }).click();
-  const yours = write.getByLabel("Your draft");
+  // Keeping it makes it an editable summary, marked as started by Gusty.
+  await draft.getByRole("button", { name: "Keep this summary" }).click();
+  const yours = write.getByLabel("Your summary");
   await expect(yours).toHaveValue("A café where neighbours fix things together");
   await expect(write.getByText("Started by Gusty, kept by you.")).toBeVisible();
   await yours.fill("A café where neighbours fix things together, every Saturday.");
   await yours.blur();
   await expect(write.locator("#draft-status[data-status=saved]")).toBeVisible();
   await page.reload();
-  await expect(page.getByLabel("Your draft")).toHaveValue("A café where neighbours fix things together, every Saturday.");
+  await expect(page.getByLabel("Your summary")).toHaveValue("A café where neighbours fix things together, every Saturday.");
 
   await page.goto(projectUrl);
   const worked = page.locator("section[aria-labelledby=worked-title]");
   await worked.getByText("Write your idea in three sentences").click();
-  await expect(worked.getByRole("heading", { name: "Draft (started by Gusty)" })).toBeVisible();
+  await expect(worked.getByRole("heading", { name: "Summary (started by Gusty)" })).toBeVisible();
   await expect(worked.getByText("every Saturday.")).toBeVisible();
 });
