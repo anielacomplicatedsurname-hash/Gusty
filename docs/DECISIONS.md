@@ -241,3 +241,18 @@ project" as a step); live web search may follow as clearly-labelled "Search furt
 The founder needs to reach the admin area without remembering addresses. Admins now see an "Admin" link in
 the footer of every page and an "Add an opportunity" button on Explore. For everyone else these render
 nothing (checked in the database on each page), so the admin area still isn't advertised.
+
+## 2026-10-29 — Explore becomes a project-specific online search (curated list removed)
+The founder found the curated list too manual ("still pretty analogue") and wants Explore to work from each
+project. Explore now starts from one of the person's projects: Gusty runs a deep online search (Claude's web
+search and web fetch, on Anthropic's side) from the project's neighbourhood outwards to local, regional,
+national, continental and international opportunities, from council pots and local sponsorship to big funds.
+Every result has its source link, is labelled "Found online on [date]. Not checked by Gusty", states only what
+its page says (unknown deadlines read "check with the funder"), and carries Gusty's estimate of how hard it is
+to apply (light, moderate, involved) and why it might fit, both labelled as Gusty's. Three "best places to
+start" come first; the rest are folded away by scale. A search costs roughly £0.50 to £1, so it's limited to
+one per project and three per person per day; results are kept. It runs after the response and the page
+checks back. Search words describe the idea's theme and area only, never names or emails (privacy notice
+updated). The founder-curated opportunities table and admin page were removed. Explore is no longer indexed.
+Next: "Save to my project" turns a result into a step.
+

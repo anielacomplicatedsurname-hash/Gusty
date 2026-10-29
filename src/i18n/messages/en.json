@@ -111,7 +111,10 @@
     "download": "Download my projects",
     "deleteAccount": "Delete my account",
     "deleteAccountConfirm": "Delete your account and every project in it? This can't be undone. You may want to download your projects first.",
-    "deleteAccountYes": "Yes, delete everything"
+    "deleteAccountYes": "Yes, delete everything",
+    "exploreTitle": "Opportunities for this project",
+    "exploreBody": "Gusty can search online for funding and support that fit this idea, from your neighbourhood to international funds.",
+    "exploreLink": "Find opportunities"
   },
   "emailLink": {
     "label": "Email address",
@@ -429,7 +432,7 @@
       "say_more": "Help me say more",
       "write_draft": "Help me summarise it",
       "revise_draft": "Shorter, simpler, warmer",
-      "extract_opportunity": "Reading a funder's page"
+      "opportunity_search": "Searching for opportunities"
     },
     "reasons": {
       "key": "API key missing, expired or refused",
@@ -444,59 +447,7 @@
     "feedbackWorked": "What worked",
     "feedbackConfusing": "Confusing or tiring",
     "feedbackOther": "Anything else",
-    "feedbackFrom": "From {page}",
-    "opportunitiesLink": "Manage opportunities",
-    "opportunities": {
-      "title": "Opportunities",
-      "intro": "Add funding opportunities for Explore. Gusty can read the funder's page and fill in the details, but nothing is shown until you've checked it and chosen Publish.",
-      "back": "Back to the admin overview",
-      "addTitle": "Add an opportunity",
-      "urlLabel": "Link to the funder's page",
-      "urlHint": "The page that describes this opportunity, starting with https://",
-      "readPage": "Let Gusty fill it in",
-      "reading": "Gusty is reading the page…",
-      "manual": "Fill it in myself",
-      "filledByGusty": "Gusty filled this in from the page. Check every field against the page before publishing: anything the page didn't say is left empty.",
-      "fields": {
-        "title": "Name of the opportunity",
-        "funder": "Funder",
-        "summary": "What it funds",
-        "whoFor": "Who can apply",
-        "amount": "Amount (as the funder writes it)",
-        "deadline": "Closing date",
-        "deadlineNote": "Or, if there's no single date",
-        "deadlineNoteHint": "For example “Rolling” or “Opens in spring”",
-        "regions": "Where applicants must be"
-      },
-      "saveDraft": "Save as draft",
-      "publish": "I've checked it: publish",
-      "saving": "Saving…",
-      "savedDraft": "Saved as a draft. It isn't shown on Explore yet.",
-      "published": "Published. It's on Explore now, marked as checked today.",
-      "cancel": "Cancel",
-      "edit": "Edit",
-      "takeDown": "Take down",
-      "bringBack": "Publish again",
-      "listTitle": "All opportunities",
-      "none": "No opportunities yet.",
-      "status": {
-        "draft": "Draft",
-        "published": "Published",
-        "archived": "Taken down"
-      },
-      "checkedOn": "Checked {date}",
-      "closesOn": "Closes {date}",
-      "errors": {
-        "url": "That link doesn't look right. Use the full https:// address of the funder's page.",
-        "unavailable": "Gusty can't read pages without the AI key. You can fill it in yourself.",
-        "unreadable": "Gusty couldn't read that page. Try another link, or fill it in yourself.",
-        "notFunding": "That page doesn't seem to describe a funding opportunity. Check the link, or fill it in yourself.",
-        "busy": "Gusty is busy right now. Please try again in a minute.",
-        "error": "Something went wrong. Please try again, or fill it in yourself.",
-        "missing": "Add at least the name of the opportunity.",
-        "failed": "That didn't save. Please try again."
-      }
-    }
+    "feedbackFrom": "From {page}"
   },
   "support": {
     "title": "Help Gusty take off!",
@@ -555,7 +506,7 @@
     "privacy": {
       "title": "Privacy notice",
       "description": "What Gusty collects, why, who helps us run it, and your rights.",
-      "updated": "Last updated: 28 October 2026",
+      "updated": "Last updated: 29 October 2026",
       "intro": "This notice explains, in plain language, what happens to your information when you use Gusty at heygusty.com.",
       "sections": [
         {
@@ -589,6 +540,7 @@
           "heading": "How Gusty uses AI",
           "paragraphs": [
             "When Gusty reads your idea or suggests steps, the text of that project is sent to Anthropic, the company that makes the Claude AI, to prepare the answer. Under Anthropic's commercial terms, this text isn't used to train their models.",
+            "When you ask Gusty to search for opportunities, Claude searches the web for you. The search words describe your idea's theme and the area you gave (for example “community repair café, Hackney”), and go to the search engine Anthropic uses. They never include your name or email. What Gusty finds is saved with your project, only for you.",
             "Your projects are private to you. We never show them to other people who use Gusty, and we never use one person's ideas to make suggestions for someone else: each request only includes the project you're working on.",
             "AI suggestions can be wrong. Please avoid including sensitive details, such as health information, about yourself or other people in your ideas."
           ]
@@ -601,7 +553,7 @@
           "items": [
             "Supabase: database and sign-in (EU).",
             "Render: hosting the website (Frankfurt, Germany).",
-            "Anthropic: AI readings and suggestions (United States).",
+            "Anthropic: AI readings, suggestions and web searches for opportunities (United States).",
             "Resend: sending sign-in emails.",
             "Stripe: support payments and receipts.",
             "ImprovMX: forwarding emails sent to hello@heygusty.com."
@@ -792,33 +744,109 @@
   },
   "explore": {
     "title": "Explore",
-    "intro": "Funding you could apply for, checked by the Gusty team. More kinds of opportunities will follow.",
-    "metaDescription": "Funding opportunities for people with project ideas in the UK and Europe, each checked against the funder's own page.",
-    "trust": "We check each one against the funder's own page and show the date we checked. Details can change, so always confirm on the funder's website before you apply.",
-    "filterLabel": "Where",
-    "regions": {
-      "all": "Everywhere",
-      "uk": "UK",
-      "europe": "Europe",
-      "international": "Open worldwide"
+    "metaDescription": "Find funding and opportunities for your project, from your neighbourhood to international funds.",
+    "intro": "Gusty searches online for funding and opportunities that fit one of your projects: from your neighbourhood to international funds, and from small council pots to big foundations.",
+    "noProjects": "Explore works from one of your projects. Start with your idea, and Gusty can search for opportunities that fit it.",
+    "startIdea": "Start with your idea",
+    "chooseTitle": "Which project?",
+    "chooseAnother": "Choose another project",
+    "forProject": "Opportunities for {title}",
+    "placeLabel": "Where is the project?",
+    "placeHint": "A neighbourhood, town or city, and country. For example “Hackney, London, UK”. No addresses.",
+    "search": "Search online for this project",
+    "searchAgain": "Search again",
+    "searchHint": "Gusty looks from your neighbourhood outwards, then nationally, across Europe and internationally. It takes a minute or two: you can leave this page and come back.",
+    "privacy": "Gusty searches using your idea's theme and area, never your name or email.",
+    "starting": "Starting the search…",
+    "running": "Gusty is searching online. This can take a couple of minutes, and you can leave this page: the results will be here when you come back.",
+    "failed": "The last search didn't finish. Please try again.",
+    "limitProject": "You can search again for this project tomorrow. Your results are kept here.",
+    "limitPerson": "You've used today's 3 searches. They reset within a day, and your results are kept.",
+    "foundOn": "Found online on {date}{place}. Not checked by Gusty: always confirm details with the funder before you apply.",
+    "around": " around {place}",
+    "none": "Gusty didn't find anything that clearly fits this time. Try a wider area, or add more about your idea in “Here's what I understood” and search again tomorrow.",
+    "bestTitle": "Best places to start",
+    "bestHint": "A good fit, and lighter to apply for where possible.",
+    "moreTitle": "More options",
+    "scales": {
+      "neighbourhood": "Neighbourhood",
+      "local": "Local",
+      "regional": "Regional",
+      "national": "National",
+      "continental": "Europe and continent-wide",
+      "international": "International"
     },
-    "count": "{n} open now",
-    "oneCount": "1 open now",
-    "funder": "From",
+    "complexity": {
+      "light": "Light to apply",
+      "moderate": "Moderate to apply",
+      "involved": "Involved to apply"
+    },
+    "complexityNote": "Gusty's estimate",
+    "from": "From {funder}",
     "amount": "Amount",
     "whoFor": "Who can apply",
-    "where": "Where",
     "closes": "Closes {date}",
-    "noDate": "No fixed closing date",
-    "checked": "Checked by the Gusty team on {date}",
-    "source": "See the funder's page",
+    "checkDeadline": "Closing date: check with the funder",
+    "fit": "Why it might fit",
+    "fitNote": "Gusty's suggestion",
+    "source": "Read more on their site",
     "opensNewTab": "(opens in a new tab)",
-    "showMore": "Show {n} more",
-    "empty": "Nothing here yet. We're adding opportunities one by one, after checking each with the funder.",
-    "emptyFilter": "Nothing open for this area right now. Try “Everywhere”.",
-    "unavailable": "We couldn't load opportunities just now. Please try again later.",
-    "comingTitle": "Later in Explore",
-    "comingBody": "Matching opportunities to your projects, then people, organisations and events.",
-    "addOpportunity": "Add an opportunity"
+    "count": "{n} found",
+    "demoNotice": "Demo mode: these are made-up examples to show how results look. They are not real opportunities. Real searches work once the AI key is set up.",
+    "errors": {
+      "unavailable": "Online search isn't available right now. Please try again later.",
+      "limit": "You've reached today's limit for Gusty's suggestions. It resets within a day.",
+      "error": "Something went wrong. Please try again."
+    },
+    "demoResults": [
+      {
+        "title": "Example: neighbourhood small grant",
+        "funder": "Example residents' fund",
+        "url": "https://example.org/neighbourhood-grant",
+        "summary": "Example only: small amounts for local activities run by neighbours.",
+        "whoFor": "Example only: residents and small groups",
+        "amount": "Example: up to £500",
+        "deadlineNote": "Example: rolling",
+        "scale": "neighbourhood",
+        "complexity": "light",
+        "complexityReason": "Example: short online form",
+        "fit": "Example only: shows how Gusty explains a fit."
+      },
+      {
+        "title": "Example: council community fund",
+        "funder": "Example borough council",
+        "url": "https://example.org/council-fund",
+        "summary": "Example only: support for community projects in the borough.",
+        "whoFor": "Example only: community groups",
+        "amount": "Example: up to £5,000",
+        "scale": "local",
+        "complexity": "moderate",
+        "complexityReason": "Example: written form and simple budget",
+        "fit": "Example only: shows how Gusty explains a fit."
+      },
+      {
+        "title": "Example: national arts fund",
+        "funder": "Example foundation",
+        "url": "https://example.org/national-fund",
+        "summary": "Example only: larger grants for projects with a public benefit.",
+        "whoFor": "Example only: organisations and individuals",
+        "amount": "Example: £10,000 to £50,000",
+        "scale": "national",
+        "complexity": "involved",
+        "complexityReason": "Example: full proposal, budget and reporting",
+        "fit": "Example only: shows how Gusty explains a fit."
+      },
+      {
+        "title": "Example: international open call",
+        "funder": "Example international programme",
+        "url": "https://example.org/open-call",
+        "summary": "Example only: an open call for projects from many countries.",
+        "whoFor": "Example only: anyone",
+        "scale": "international",
+        "complexity": "moderate",
+        "complexityReason": "Example: online application",
+        "fit": "Example only: shows how Gusty explains a fit."
+      }
+    ]
   }
 }

@@ -71,6 +71,32 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"found_opportunities": {
+                  Row: {
+                    "amount": string,"complexity": string,"complexity_reason": string,"created_at": string,"deadline": string | null,"deadline_note": string,"fit": string,"funder": string,"id": string,"owner_id": string,"project_id": string,"rank": number,"scale": string,"search_id": string,"summary": string,"title": string,"url": string,"who_for": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount"?: string,"complexity": string,"complexity_reason"?: string,"created_at"?: string,"deadline"?: string | null,"deadline_note"?: string,"fit"?: string,"funder"?: string,"id"?: string,"owner_id"?: string,"project_id": string,"rank"?: number,"scale": string,"search_id": string,"summary"?: string,"title": string,"url": string,"who_for"?: string
+                  }
+                  Update: {
+                    "amount"?: string,"complexity"?: string,"complexity_reason"?: string,"created_at"?: string,"deadline"?: string | null,"deadline_note"?: string,"fit"?: string,"funder"?: string,"id"?: string,"owner_id"?: string,"project_id"?: string,"rank"?: number,"scale"?: string,"search_id"?: string,"summary"?: string,"title"?: string,"url"?: string,"who_for"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "found_opportunities_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "found_opportunities_search_id_fkey"
+      columns: ["search_id"]
+isOneToOne: false
+      referencedRelation: "opportunity_searches"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"next_steps": {
                   Row: {
                     "created_at": string,"detail": string,"direction_id": string | null,"done_at": string | null,"draft": string,"explanation": string | null,"id": string,"minutes": number | null,"notes": string,"notes_tidied": string,"owner_id": string,"position": number,"project_id": string,"source": string,"stage_id": string | null,"starter": string | null,"status": string,"title": string,"updated_at": string
@@ -103,19 +129,25 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
-                },"opportunities": {
+                },"opportunity_searches": {
                   Row: {
-                    "amount": string,"checked_at": string,"created_at": string,"deadline": string | null,"deadline_note": string,"funder": string,"id": string,"kind": string,"regions": (string)[],"status": string,"summary": string,"title": string,"updated_at": string,"url": string,"who_for": string
+                    "created_at": string,"finished_at": string | null,"id": string,"owner_id": string,"place": string,"project_id": string,"status": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "amount"?: string,"checked_at"?: string,"created_at"?: string,"deadline"?: string | null,"deadline_note"?: string,"funder"?: string,"id"?: string,"kind"?: string,"regions"?: (string)[],"status"?: string,"summary"?: string,"title": string,"updated_at"?: string,"url": string,"who_for"?: string
+                    "created_at"?: string,"finished_at"?: string | null,"id"?: string,"owner_id"?: string,"place"?: string,"project_id": string,"status"?: string
                   }
                   Update: {
-                    "amount"?: string,"checked_at"?: string,"created_at"?: string,"deadline"?: string | null,"deadline_note"?: string,"funder"?: string,"id"?: string,"kind"?: string,"regions"?: (string)[],"status"?: string,"summary"?: string,"title"?: string,"updated_at"?: string,"url"?: string,"who_for"?: string
+                    "created_at"?: string,"finished_at"?: string | null,"id"?: string,"owner_id"?: string,"place"?: string,"project_id"?: string,"status"?: string
                   }
                   Relationships: [
-                    
+                    {
+      foreignKeyName: "opportunity_searches_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"organisations": {
                   Row: {

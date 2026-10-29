@@ -1,99 +1,56 @@
-import { execFileSync } from "node:child_process";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-// Needs the local Supabase: opportunities are added directly in the database, or by an admin.
+// Demo mode (no AI key in tests): the results are labelled made-up examples, but the whole journey runs.
 test.skip(!process.env.E2E_SUPABASE, "set E2E_SUPABASE=1 with a local Supabase running");
 test.beforeEach(({}, testInfo) => {
-  test.skip(testInfo.project.name !== "desktop", "viewport-independent");
+  test.skip(testInfo.project.name === "tablet", "covered by phone and desktop");
 });
 
-const sql = (query: string) =>
-  execFileSync("docker", ["exec", "supabase_db_gusty", "psql", "-U", "postgres", "-d", "postgres", "-qtAc", query]).toString().trim();
-
-test("Explore shows checked, published funding with its source, and only what's still open", async ({ page }) => {
-  const run = Date.now();
-  const add = (title: string, status: string, deadline: string, regions: string) =>
-    sql(`insert into public.opportunities (title, funder, url, summary, who_for, amount, deadline, regions, status, checked_at)
-         values ('${title}', 'Example Trust', 'https://www.example.org/fund', 'Small grants for community arts.',
-                 'Groups and individuals', 'Up to £2,000', ${deadline}, '{${regions}}', '${status}', '2026-10-20')`);
-  add(`Open UK fund ${run}`, "published", "current_date + 30", "uk");
-  add(`Open Europe fund ${run}`, "published", "null", "europe");
-  add(`Draft fund ${run}`, "draft", "null", "uk");
-  add(`Closed fund ${run}`, "published", "current_date - 1", "uk");
-
-  // The full list: earlier test runs may have added more than the first few shown.
-  await page.goto("/en/explore?more=1");
+test("Explore starts from a project and isn't indexed", async ({ page }) => {
+  await page.goto("/en/explore");
   await expect(page.getByRole("heading", { level: 1, name: "Explore" })).toBeVisible();
-  await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
-  const uk = page.getByRole("article", { name: `Open UK fund ${run}` });
-  await expect(uk).toBeVisible();
-  await expect(uk.getByText("Up to £2,000")).toBeVisible();
-  await expect(uk.getByText(/^Closes /)).toBeVisible();
-  await expect(uk.getByText("Checked by the Gusty team on 20 October 2026")).toBeVisible();
-  await expect(uk.getByRole("link", { name: /See the funder's page/ })).toHaveAttribute("href", "https://www.example.org/fund");
-  await expect(page.getByText(`Draft fund ${run}`)).toHaveCount(0);
-  await expect(page.getByText(`Closed fund ${run}`)).toHaveCount(0);
+  await expect(page.getByText("Explore works from one of your projects.")).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await page.getByRole("link", { name: "Start with your idea" }).click();
+  await expect(page).toHaveURL(/\/en$/);
+});
 
-  // Filtering by area.
-  await page.getByRole("navigation", { name: "Where" }).getByRole("link", { name: "Europe" }).click();
-  await expect(page).toHaveURL(/region=europe/);
-  await page.goto("/en/explore?region=europe&more=1");
-  await expect(page.getByRole("article", { name: `Open Europe fund ${run}` })).toBeVisible();
-  await expect(page.getByRole("article", { name: `Open UK fund ${run}` })).toHaveCount(0);
+test("searching for a project's opportunities: best places first, the rest by scale, honestly labelled", async ({ page }) => {
+  await page.goto("/en");
+  await page.getByLabel("What's your idea?").fill("A repair café in the old library. Volunteers fix things.");
+  await page.getByRole("button", { name: "Start with my idea" }).click();
+  await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/);
+
+  await page.getByRole("link", { name: "Find opportunities" }).click();
+  await expect(page).toHaveURL(/\/en\/explore\?project=[0-9a-f-]{36}$/);
+  await expect(page.getByRole("heading", { level: 2, name: /^Opportunities for / })).toBeVisible();
+  await expect(page.getByText("never your name or email")).toBeVisible();
+  await page.getByLabel("Where is the project?").fill("Hackney, London, UK");
+  await page.getByRole("button", { name: "Search online for this project" }).click();
+
+  // The search runs in the background; the page checks back by itself.
+  const best = page.locator("section[aria-labelledby=best-title]");
+  await expect(best.getByRole("article")).toHaveCount(3, { timeout: 20_000 });
+  await expect(page.getByText("Demo mode: these are made-up examples")).toBeVisible();
+  await expect(page.getByText(/Found online on .* around Hackney, London, UK\. Not checked by Gusty/)).toBeVisible();
+  const first = best.getByRole("article").first();
+  await expect(first.getByText("Neighbourhood", { exact: true })).toBeVisible();
+  await expect(first.getByText("Light to apply", { exact: false }).first()).toBeVisible();
+  await expect(first.getByText("Why it might fit")).toBeVisible();
+  await expect(first.getByRole("link", { name: /Read more on their site/ })).toHaveAttribute("href", /^https:\/\//);
+
+  // Everything else is folded away by scale.
+  const more = page.locator("section[aria-labelledby=more-title]");
+  await expect(more.getByRole("article")).toBeHidden();
+  await more.locator("summary", { hasText: "International" }).click();
+  await expect(more.getByRole("article")).toHaveCount(1);
 
   const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
-});
 
-test("the founder adds, publishes and takes down an opportunity", async ({ page }) => {
-  const run = Date.now();
-  await page.goto("/en/admin/opportunities");
-  await expect(page.getByRole("heading", { name: "This page wandered off." })).toBeVisible();
-  // Nobody else sees a way into the admin area.
-  await page.goto("/en/explore");
-  await expect(page.getByRole("link", { name: "Add an opportunity" })).toHaveCount(0);
-  await expect(page.getByRole("contentinfo").getByRole("link", { name: "Admin", exact: true })).toHaveCount(0);
-
-  // Become an admin (a guest account is created by starting a project).
-  await page.goto("/en");
-  await page.getByLabel("What's your idea?").fill("An idea so I have an account");
-  await page.getByRole("button", { name: "Start with my idea" }).click();
-  await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/);
-  const id = page.url().split("/").pop();
-  sql(`insert into public.admins (user_id) select owner_id from public.projects where id = '${id}' on conflict do nothing`);
-  try {
-    // The founder can find her way in without typing an address: from the footer, and from Explore.
-    await page.goto("/en/projects");
-    await page.getByRole("contentinfo").getByRole("link", { name: "Admin", exact: true }).click();
-    await expect(page).toHaveURL(/\/en\/admin$/);
-    await expect(page.getByRole("link", { name: "Manage opportunities" })).toBeVisible();
-    await page.goto("/en/explore");
-    await page.getByRole("link", { name: "Add an opportunity" }).click();
-    await expect(page.getByRole("heading", { level: 1, name: "Opportunities" })).toBeVisible();
-
-    // Without an AI key Gusty says so, and the founder can fill it in by hand.
-    await page.getByLabel("Link to the funder's page").fill("https://www.example.org/new-fund");
-    await page.getByRole("button", { name: "Let Gusty fill it in" }).click();
-    await expect(page.getByText("Gusty can't read pages without the AI key.")).toBeVisible();
-    await page.getByRole("button", { name: "Fill it in myself" }).click();
-    await page.getByLabel("Name of the opportunity").fill(`Founder fund ${run}`);
-    await page.getByLabel("Funder", { exact: true }).fill("Example Foundation");
-    await page.getByLabel("UK", { exact: true }).check();
-    const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
-    expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
-    await page.getByRole("button", { name: "I've checked it: publish" }).click();
-    await expect(page.getByText("Published. It's on Explore now")).toBeVisible();
-
-    await page.goto("/en/explore?more=1");
-    await expect(page.getByRole("article", { name: `Founder fund ${run}` })).toBeVisible();
-
-    await page.goto("/en/admin/opportunities");
-    await page.getByRole("button", { name: `Take down: Founder fund ${run}` }).click();
-    await expect(page.getByRole("button", { name: `Publish again: Founder fund ${run}` })).toBeVisible();
-    await page.goto("/en/explore?more=1");
-    await expect(page.getByText(`Founder fund ${run}`)).toHaveCount(0);
-  } finally {
-    sql(`delete from public.admins where user_id = (select owner_id from public.projects where id = '${id}')`);
-  }
+  // One search per project per day; the results stay.
+  await page.reload();
+  await expect(page.getByText("You can search again for this project tomorrow.")).toBeVisible();
+  await expect(best.getByRole("article")).toHaveCount(3);
 });

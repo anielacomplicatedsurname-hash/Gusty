@@ -16,7 +16,7 @@ src/
 ├─ modules/projects/    data access, server actions, idea form, autosave editor, email link
 ├─ modules/interpretation/  Gusty's reading: data, actions (read, confirm, edit, add, remove), UI
 ├─ modules/steps/       directions, stages (one planned at a time), next steps, modes, I'm stuck, UI
-├─ modules/opportunities/ Explore: curated funding opportunities, the founder's admin tools
+├─ modules/explore/     Explore: per-project online search for opportunities, results by scale
 ├─ modules/step-work/   "Work on this with Gusty": per-step questions, rewording, answers, notes; "What you've worked out"
 ├─ modules/admin/       founder overview (counts and costs only, via `admin_overview()`)
 ├─ ai/                  provider interface, Claude provider, prices, usage log + daily budget, tasks/ (prompts + schemas)

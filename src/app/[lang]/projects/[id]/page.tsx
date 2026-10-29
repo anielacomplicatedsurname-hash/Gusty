@@ -101,6 +101,15 @@ async function ProjectContent({
 
       <NextStepsSection projectId={project.id} lang={lang} t={t} />
 
+      <section aria-labelledby="explore-card-title" className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
+        <div className="flex items-center gap-3">
+          <BrandSymbol name="horizon-hill" size={28} />
+          <h2 id="explore-card-title" className="text-xl font-semibold">{t.projects.exploreTitle}</h2>
+        </div>
+        <p className="mt-1 text-text-muted">{t.projects.exploreBody}</p>
+        <Link href={`/${lang}/explore?project=${project.id}`} className="btn-secondary mt-4">{t.projects.exploreLink}</Link>
+      </section>
+
       <section aria-labelledby="feedback-card-title" className="rounded-(--radius-card) bg-sky/60 p-6 text-ink">
         <h2 id="feedback-card-title" className="text-lg font-semibold">{t.feedback.cardTitle}</h2>
         <p className="mt-1">{t.feedback.cardBody}</p>

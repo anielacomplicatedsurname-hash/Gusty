@@ -19,9 +19,10 @@ export function anthropicProvider(apiKey: string): AiProvider {
       try {
         type Params = Parameters<typeof client.beta.messages.parse>[0];
         const messages: Anthropic.Beta.Messages.BetaMessageParam[] = [{ role: "user", content: request.user }];
-        const tools: Params["tools"] = request.webFetch
-          ? [{ type: "web_fetch_20260209", name: "web_fetch", max_uses: request.webFetch.maxUses }]
-          : undefined;
+        const toolList: NonNullable<Params["tools"]> = [];
+        if (request.webSearch) toolList.push({ type: "web_search_20260209", name: "web_search", max_uses: request.webSearch.maxUses });
+        if (request.webFetch) toolList.push({ type: "web_fetch_20260209", name: "web_fetch", max_uses: request.webFetch.maxUses });
+        const tools = toolList.length ? toolList : undefined;
         const send = () =>
           client.beta.messages.parse({
             model,
@@ -32,18 +33,20 @@ export function anthropicProvider(apiKey: string): AiProvider {
             messages,
             tools,
             output_config: { effort: request.effort ?? "medium", format: betaZodOutputFormat(request.schema) },
-          });
+          }, request.timeoutMs ? { timeout: request.timeoutMs } : undefined);
         let response = await send();
         let inputTokens = response.usage.input_tokens;
         let outputTokens = response.usage.output_tokens;
-        // A long server-side tool loop can pause; resending the turn lets it carry on (at most twice).
-        for (let i = 0; i < 2 && response.stop_reason === "pause_turn"; i++) {
+        let webSearches = response.usage.server_tool_use?.web_search_requests ?? 0;
+        // A long server-side tool loop can pause; resending the turn lets it carry on (twice, unless asked otherwise).
+        for (let i = 0; i < (request.maxContinuations ?? 2) && response.stop_reason === "pause_turn"; i++) {
           messages.push({ role: "assistant", content: response.content as Anthropic.Beta.Messages.BetaContentBlockParam[] });
           response = await send();
           inputTokens += response.usage.input_tokens;
           outputTokens += response.usage.output_tokens;
+          webSearches += response.usage.server_tool_use?.web_search_requests ?? 0;
         }
-        const usage = { model: response.model, inputTokens, outputTokens };
+        const usage = { model: response.model, inputTokens, outputTokens, webSearches };
         if (response.stop_reason === "refusal") return { ok: false, reason: "declined", ...usage };
         if (response.stop_reason === "max_tokens" || response.stop_reason === "pause_turn" || !response.parsed_output) {
           return { ok: false, reason: "invalid", ...usage };
