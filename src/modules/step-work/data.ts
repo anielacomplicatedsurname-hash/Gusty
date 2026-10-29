@@ -3,7 +3,7 @@ import { isProjectId } from "@/modules/projects/validation";
 
 export type WorkQuestion = { id: string; question: string; hint: string; answer: string; assisted: boolean };
 export type StepWork = {
-  step: { id: string; projectId: string; title: string; detail: string; status: string; notes: string };
+  step: { id: string; projectId: string; title: string; detail: string; status: string; notes: string; draft: string };
   projectTitle: string;
   questions: WorkQuestion[];
   demo: boolean;
@@ -18,7 +18,7 @@ export async function getStepWork(projectId: string, stepId: string): Promise<St
   if (!claims?.claims) return null;
 
   const [step, project, questions, lastRun] = await Promise.all([
-    supabase.from("next_steps").select("id, project_id, title, detail, status, notes").eq("id", stepId).eq("project_id", projectId).maybeSingle(),
+    supabase.from("next_steps").select("id, project_id, title, detail, status, notes, draft").eq("id", stepId).eq("project_id", projectId).maybeSingle(),
     supabase.from("projects").select("title").eq("id", projectId).maybeSingle(),
     supabase
       .from("step_questions")
@@ -31,7 +31,7 @@ export async function getStepWork(projectId: string, stepId: string): Promise<St
   ]);
   if (!step.data || !project.data || step.data.status === "replaced") return null;
   return {
-    step: { id: step.data.id, projectId: step.data.project_id, title: step.data.title, detail: step.data.detail, status: step.data.status, notes: step.data.notes },
+    step: { id: step.data.id, projectId: step.data.project_id, title: step.data.title, detail: step.data.detail, status: step.data.status, notes: step.data.notes, draft: step.data.draft },
     projectTitle: project.data.title,
     questions: questions.data ?? [],
     demo: lastRun.data?.[0]?.status === "demo",
@@ -48,6 +48,8 @@ export type WorkedStep = {
   answers: { question: string; answer: string; tidied: string; assisted: boolean }[];
   notes: string;
   notesTidied: string;
+  /** A draft Gusty started ("Help me write it") that the person kept and may have changed. */
+  draft: string;
 };
 
 /**
@@ -66,7 +68,7 @@ type Supabase = NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient
 
 export async function loadWorkedOut(supabase: Supabase, projectId: string): Promise<WorkedStep[]> {
   const [steps, questions] = await Promise.all([
-    supabase.from("next_steps").select("id, title, status, notes, notes_tidied").eq("project_id", projectId).order("position"),
+    supabase.from("next_steps").select("id, title, status, notes, notes_tidied, draft").eq("project_id", projectId).order("position"),
     supabase
       .from("step_questions")
       .select("step_id, question, answer, answer_tidied, assisted")
@@ -88,6 +90,7 @@ export async function loadWorkedOut(supabase: Supabase, projectId: string): Prom
         .map((q) => ({ question: q.question, answer: q.answer, tidied: q.answer_tidied.trim(), assisted: q.assisted })),
       notes: s.notes.trim(),
       notesTidied: s.notes_tidied.trim(),
+      draft: s.draft.trim(),
     }))
-    .filter((s) => s.answers.length > 0 || s.notes);
+    .filter((s) => s.answers.length > 0 || s.notes || s.draft);
 }

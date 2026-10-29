@@ -16,7 +16,7 @@ export async function GET() {
     supabase.from("project_stages").select("project_id, title, status, later, done_at").order("position"),
     supabase
       .from("next_steps")
-      .select("id, project_id, title, detail, minutes, status, source, explanation, starter, notes, notes_tidied, done_at")
+      .select("id, project_id, title, detail, minutes, status, source, explanation, starter, notes, notes_tidied, draft, done_at")
       .order("position"),
     supabase
       .from("step_questions")

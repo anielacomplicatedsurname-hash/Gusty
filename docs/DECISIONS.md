@@ -197,3 +197,11 @@ direction. A timeline is deferred, and when it comes, dates will only be ones th
 The same change fixed two gaps found on the way: guest step answers now move with "bring my projects"
 (before, they were removed with the guest account), and the data download now includes stages, notes
 and step answers.
+
+## 2026-10-29 — "Help me write it": drafts are suggestions until kept
+On a step page, Gusty drafts what the step asks for from the person's answers and notes, with Shorter,
+Simpler and Warmer to reshape it. Nothing is saved until they choose "Keep this draft"; after that it's
+an ordinary editable text, always labelled "started by Gusty" (on the step and in "What you've worked
+out"), so AI writing is never mistaken for their own words. The prompt forbids inventing facts and uses
+[square brackets] for anything only the person can fill in. In demo mode the "draft" only joins their own
+answers, and says so. Kept drafts are part of the AI context for later suggestions and of the data download.

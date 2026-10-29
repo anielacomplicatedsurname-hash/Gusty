@@ -12,7 +12,7 @@ const LABELS: Record<string, string> = {
 const neutralise = (text: string) => text.replaceAll("</", "< /");
 
 /** What the person worked out while doing a step: their answers to Gusty's questions and their notes. */
-export type ContextWork = { title: string; answers: { question: string; answer: string }[]; notes: string };
+export type ContextWork = { title: string; answers: { question: string; answer: string }[]; notes: string; draft?: string };
 
 const MAX_ANSWER = 400;
 const MAX_NOTES = 600;
@@ -30,6 +30,7 @@ function workedOut(work: ContextWork[]): string {
       `- Step: ${cut(w.title, 200)}`,
       ...w.answers.map((a) => `  - Q: ${cut(a.question, 200)}\n    A: ${cut(a.answer, MAX_ANSWER)}`),
       ...(w.notes ? [`  - Their notes: ${cut(w.notes, MAX_NOTES)}`] : []),
+      ...(w.draft ? [`  - Draft they kept (started by Gusty): ${cut(w.draft, MAX_NOTES)}`] : []),
     ].join("\n");
     // Earlier steps come first; once the budget is used, later ones are left out whole.
     if (out.length + lines.length > MAX_WORK) break;

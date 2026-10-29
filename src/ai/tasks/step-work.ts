@@ -128,3 +128,62 @@ export function clipWords(text: string, max: number): string {
   const space = cut.lastIndexOf(" ");
   return (space > max * 0.8 ? cut.slice(0, space) : cut).trimEnd();
 }
+
+export const WRITE_PROMPT_VERSION = "write-draft@1";
+export const DraftSchema = z.object({ text: z.string() });
+export const REVISIONS = ["shorter", "simpler", "warmer"] as const;
+export type Revision = (typeof REVISIONS)[number];
+
+export const WRITE_PROMPT = `You are Gusty, a calm, warm companion that helps people turn ideas into real projects.
+Many people you help are neurodivergent, tired, or new to project work.
+
+Write a first draft of what this step asks for (for example the three sentences, the message, the short
+list), using the person's answers and notes. It is their draft: their voice, first person, plain everyday
+words, under 200 words unless the step clearly needs less.
+
+- Use what they said. Connect it and fill small gaps with ordinary wording, but don't invent facts about
+  them, their plans, people, places or numbers. Where something important is missing, leave a short
+  placeholder in square brackets, like [who it's for].
+- No headings, no preamble, no sign-off from you: just the draft.
+
+${SHARED_RULES}`;
+
+const REVISION_ASKS: Record<Revision, string> = {
+  shorter: "Make it about half as long. Keep the most important points and their voice.",
+  simpler: "Use simpler, everyday words and short sentences. Keep the same meaning and length or less.",
+  warmer: "Make it a little warmer and more personal. Stay honest: no hype, no exclamation marks.",
+};
+
+export const REVISE_PROMPT = `You are Gusty, a calm, warm companion. You rewrite a short draft the way the person
+asks, keeping their voice and meaning. Keep any [placeholders] as they are. Don't add facts. Return only the
+new draft.
+
+${SHARED_RULES}`;
+
+export function writeMessage(
+  context: string,
+  step: { title: string; detail: string },
+  answered: { question: string; answer: string }[],
+  notes: string,
+): string {
+  return `${context}
+
+The step:
+<step>
+${neutralise(step.title)}
+${neutralise(step.detail)}
+</step>
+${answered.length ? `Their answers:\n${answered.map((a) => `- ${neutralise(a.question)} → ${neutralise(a.answer)}`).join("\n")}` : "No answers yet."}
+${notes.trim() ? `Their notes:\n<notes>\n${neutralise(notes.trim())}\n</notes>` : ""}`;
+}
+
+export function reviseMessage(context: string, stepTitle: string, draft: string, kind: Revision): string {
+  return `${context}
+
+The step: ${neutralise(stepTitle)}
+The draft:
+<draft>
+${neutralise(draft)}
+</draft>
+What they'd like: ${REVISION_ASKS[kind]}`;
+}
