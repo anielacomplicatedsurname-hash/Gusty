@@ -28,8 +28,10 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         <div>
           <p className="type-accent-hand text-lg">{t.home.overline}</p>
           <HandUnderline className="mt-1" />
-          <h1 className="type-display mt-6 text-[3.25rem] sm:text-7xl lg:text-[5.5rem]">
-            {t.home.headline}
+          <h1 className="type-display mt-6 text-[3.75rem] sm:text-8xl lg:text-[6.5rem]">
+            {t.home.headline}{" "}
+            <br />
+            <em className="italic">{t.home.headlineItalic}</em>
           </h1>
           <p className="mt-6 max-w-xl text-lg text-text-muted">{t.home.lead}</p>
 

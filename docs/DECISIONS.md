@@ -220,3 +220,9 @@ grows." It shows the same three steps as "Guide me through" under "Your immediat
 "A little further ahead" list (the rest of this stage's steps as links, then Gusty's "Maybe later" ideas).
 Ten items at most in total: a display limit, not a planning limit. Choosing it never asks Gusty for more
 steps; it only shows what's already planned (Big possibilities, small steps).
+
+## 2026-10-29 — Instrument Serif for page titles
+The founder chose Instrument Serif for headlines, with the home headline's second line in italic
+("Good ideas / deserve to move."), and asked for it on all big titles so the site stays consistent.
+Caveat Brush stays for the small hand-lettered overline ("Big possibilities. Small steps.") and its
+hand-drawn underline. Self-hosted via next/font like the other fonts; no new dependency.

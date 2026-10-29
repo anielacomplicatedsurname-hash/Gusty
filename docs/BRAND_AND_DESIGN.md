@@ -26,17 +26,17 @@ All SVGs use `fill="currentColor"`. Logos are shown as images (always Ink). Symb
 `<BrandSymbol>` (a CSS mask), so they take the surrounding text colour.
 
 ## Typography
-The fonts in the reference sheet were suggestions without names, so these are the closest free matches
-(both SIL Open Font License, self-hosted at build time via `next/font`):
+Free fonts (all SIL Open Font License, self-hosted at build time via `next/font`). The display serif was
+chosen by the founder on 2026-10-29; the others are the closest matches to the original reference sheet:
 
 | Role | Font | Usage |
 |---|---|---|
-| Display hand | **Caveat Brush**, uppercase, bolded with a 0.035em stroke and a −5° slant (`.type-display`) | Headlines and key brand moments only |
+| Display serif | **Instrument Serif**, regular, slightly tight tracking (`.type-display`). The home headline sets its second line in italic ("Good ideas / *deserve to move.*") | Page titles and key brand moments only |
 | Hand accent | Caveat Brush, uppercase, spaced (`.type-accent-hand`) | Short overlines and brand messages |
 | UI sans | **Google Sans Flex** | Everything functional: body, forms, navigation |
 | Label | Google Sans Flex, uppercase, 0.2em tracking (`.type-label`) | Section labels, metadata |
 
-Both fonts cover Latin and Latin Extended (most European languages). Neither covers Cyrillic, Greek,
+All three fonts cover Latin and Latin Extended (most European languages). None covers Cyrillic, Greek,
 Arabic or Hebrew: when such a language is added, choose fallbacks then.
 
 ## Colour

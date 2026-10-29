@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Caveat_Brush, Google_Sans_Flex } from "next/font/google";
+import { Caveat_Brush, Google_Sans_Flex, Instrument_Serif } from "next/font/google";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { ServiceWorker } from "@/components/ServiceWorker";
@@ -16,6 +16,13 @@ const uiSans = Google_Sans_Flex({
   // next/font has no metrics for this family yet, so use a plain system fallback.
   adjustFontFallback: false,
   fallback: ["system-ui", "sans-serif"],
+});
+const displaySerif = Instrument_Serif({
+  weight: "400",
+  style: ["normal", "italic"],
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-serif",
+  display: "swap",
 });
 const displayHand = Caveat_Brush({
   weight: "400",
@@ -64,7 +71,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
     <html
       lang={lang}
       dir={textDirection(lang)}
-      className={`${uiSans.variable} ${displayHand.variable} h-full antialiased`}
+      className={`${uiSans.variable} ${displaySerif.variable} ${displayHand.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <AppShell locale={lang}>{children}</AppShell>
