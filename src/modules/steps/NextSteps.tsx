@@ -11,7 +11,7 @@ import {
   type StepsResult,
 } from "./actions";
 import type { DirectionView, StageView } from "./data";
-import { MODES, visibleSteps, type Mode, type StepView } from "./modes";
+import { BIGGER_PICTURE_LIMIT, MODES, visibleSteps, type Mode, type StepView } from "./modes";
 
 type Copy = typeof en.steps;
 type Act = (run: () => Promise<StepsResult | { ok: boolean }>, busyText?: string) => void;
@@ -154,13 +154,16 @@ export function NextSteps({
             <StageFinished stage={current} steps={stageSteps} projectId={projectId} lang={lang} copy={copy}
               disabled={pending} onNext={() => act(() => planNextStage(projectId, lang), copy.planning)} />
           ) : view.current ? (
-            <ol className="flex flex-col gap-3" aria-label={copy.title}>
-              {/* Keyed by step so a tick never carries over to the step that moves into this place. */}
-              <li key={view.current.id}><StepCard step={view.current} highlighted projectId={projectId} lang={lang} copy={copy} act={act} disabled={pending} /></li>
-              {view.upcoming.map((s) => (
-                <li key={s.id}><StepCard step={s} projectId={projectId} lang={lang} copy={copy} act={act} disabled={pending} /></li>
-              ))}
-            </ol>
+            <>
+              {mode === "everything" && <h3 className="type-label -mb-3 text-text-muted">{copy.journey.focus}</h3>}
+              <ol className="flex flex-col gap-3" aria-label={copy.title}>
+                {/* Keyed by step so a tick never carries over to the step that moves into this place. */}
+                <li key={view.current.id}><StepCard step={view.current} highlighted projectId={projectId} lang={lang} copy={copy} act={act} disabled={pending} /></li>
+                {view.upcoming.map((s) => (
+                  <li key={s.id}><StepCard step={s} projectId={projectId} lang={lang} copy={copy} act={act} disabled={pending} /></li>
+                ))}
+              </ol>
+            </>
           ) : (
             <button type="button" className="btn-primary self-start" disabled={pending}
               onClick={() => act(() => planNextStage(projectId, lang), copy.planning)}>
@@ -168,8 +171,16 @@ export function NextSteps({
             </button>
           )}
 
-          {view.hiddenCount > 0 && (
-            <p className="text-sm text-text-muted">{fill(copy.moreHidden, { n: String(view.hiddenCount) })}</p>
+          {mode === "everything" && (
+            <FurtherAhead steps={stageFinished ? [] : view.ahead} ideas={current?.later ?? []}
+              room={BIGGER_PICTURE_LIMIT - (stageFinished || !view.current ? 0 : 1 + view.upcoming.length)}
+              projectId={projectId} lang={lang} copy={copy} />
+          )}
+
+          {view.hiddenCount > 0 && !stageFinished && (
+            <p className="text-sm text-text-muted">
+              {fill(mode === "everything" ? copy.moreBeyond : copy.moreHidden, { n: String(view.hiddenCount) })}
+            </p>
           )}
 
           {mode !== "simple" && <AddStep copy={copy} disabled={pending} onAdd={(t) => act(() => addOwnStep(projectId, t))} />}
@@ -188,15 +199,6 @@ export function NextSteps({
             </section>
           )}
 
-          {mode === "everything" && current && current.later.length > 0 && (
-            <section aria-labelledby="later-title" className="rounded-xl border border-dashed border-border p-4">
-              <h3 id="later-title" className="font-semibold">{copy.journey.later}</h3>
-              <p className="text-sm text-text-muted">{copy.journey.laterHint}</p>
-              <ul className="mt-2 list-disc pl-5 text-text-muted">
-                {current.later.map((l) => <li key={l}>{l}</li>)}
-              </ul>
-            </section>
-          )}
         </>
       )}
     </div>
@@ -431,6 +433,53 @@ function StageFinished({ stage, steps, projectId, lang, copy, disabled, onNext }
             {t.rest}
           </button>
         </>
+      )}
+    </section>
+  );
+}
+
+/**
+ * "A little further ahead" in The Bigger Picture: the rest of this stage's steps, then Gusty's loose
+ * ideas for later, quieter than the steps in focus. Shows only what's already planned, within `room`.
+ */
+function FurtherAhead({ steps, ideas, room, projectId, lang, copy }: {
+  steps: StepView[]; ideas: string[]; room: number; projectId: string; lang: string; copy: Copy;
+}) {
+  const shownSteps = steps.slice(0, Math.max(0, room));
+  const shownIdeas = ideas.slice(0, Math.max(0, room - shownSteps.length));
+  const count = shownSteps.length + shownIdeas.length;
+  if (count === 0) return null;
+  return (
+    <section aria-labelledby="ahead-title" className="flex flex-col gap-3 rounded-xl border border-border p-4">
+      <div className="flex items-center justify-between gap-3">
+        <h3 id="ahead-title" className="type-label text-text-muted">{copy.journey.ahead}</h3>
+        <span className="rounded-full bg-surface-muted px-3 py-0.5 text-sm">{fill(copy.journey.aheadCount, { n: String(count) })}</span>
+      </div>
+      {shownSteps.length > 0 && (
+        <ul className="flex flex-col">
+          {shownSteps.map((s) => (
+            <li key={s.id}>
+              <Link href={`/${lang}/projects/${projectId}/steps/${s.id}`} className="flex min-h-11 items-center gap-3 underline-offset-4 hover:underline">
+                <span aria-hidden="true" className="text-text-muted">›</span>
+                {s.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+      {shownIdeas.length > 0 && (
+        <div>
+          <h4 className="text-sm font-semibold">{copy.journey.later}</h4>
+          <p className="text-sm text-text-muted">{copy.journey.laterHint}</p>
+          <ul className="mt-1 flex flex-col text-text-muted">
+            {shownIdeas.map((idea) => (
+              <li key={idea} className="flex min-h-9 items-start gap-3 py-1">
+                <span aria-hidden="true">·</span>
+                {idea}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </section>
   );

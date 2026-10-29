@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { normaliseDirections } from "@/ai/tasks/directions";
 import { normaliseStage, normaliseSteps, stepUserMessage, unstickUserMessage } from "@/ai/tasks/steps";
 import { projectContext } from "@/ai/tasks/context";
-import { visibleSteps, type StepView } from "@/modules/steps/modes";
+import { BIGGER_PICTURE_LIMIT, visibleSteps, type StepView } from "@/modules/steps/modes";
 
 const step = (n: number, status: "open" | "done" = "open"): StepView => ({
   id: `s${n}`, title: `Step ${n}`, detail: "", minutes: 10, status, source: "ai", position: n,
@@ -23,11 +23,18 @@ describe("visibleSteps", () => {
     expect([v.current?.id, ...v.upcoming.map((s) => s.id)]).toEqual(["s1", "s3", "s4"]);
     expect(v.hiddenCount).toBe(2);
   });
-  it("Let Me See Everything shows all open and done steps", () => {
+  it("The Bigger Picture shows the same three, then the rest further ahead, and done steps", () => {
     const v = visibleSteps(steps, "everything");
-    expect(v.upcoming).toHaveLength(4);
+    expect([v.current?.id, ...v.upcoming.map((s) => s.id)]).toEqual(["s1", "s3", "s4"]);
+    expect(v.ahead.map((s) => s.id)).toEqual(["s5", "s6"]);
     expect(v.done.map((s) => s.id)).toEqual(["s2"]);
     expect(v.hiddenCount).toBe(0);
+  });
+  it("The Bigger Picture never shows more than 10 steps", () => {
+    const many = Array.from({ length: 14 }, (_, i) => step(i + 1));
+    const v = visibleSteps(many, "everything");
+    expect(1 + v.upcoming.length + v.ahead.length).toBe(BIGGER_PICTURE_LIMIT);
+    expect(v.hiddenCount).toBe(4);
   });
   it("switching modes never changes the steps themselves", () => {
     const before = JSON.stringify(steps);

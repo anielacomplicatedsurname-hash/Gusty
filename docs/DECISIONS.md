@@ -212,3 +212,11 @@ button became "Help me summarise it" and Gusty now summarises their answers and 
 they wrote, no new ideas) instead of drafting something new. "Help me say more" gave too much to read at
 once: it is now capped at about three times what the person wrote (at least 15, at most 120 words). The
 prompt states the limit and the code enforces it, cutting at a full sentence where possible.
+
+## 2026-10-29 — "The bigger picture", capped at 10
+Founder feedback: "Show me the whole journey" was long and odd for a button. The modes now ask "How would
+you like to take your next steps?", and the third is "The bigger picture: See more steps ahead as your idea
+grows." It shows the same three steps as "Guide me through" under "Your immediate focus", then a quieter
+"A little further ahead" list (the rest of this stage's steps as links, then Gusty's "Maybe later" ideas).
+Ten items at most in total: a display limit, not a planning limit. Choosing it never asks Gusty for more
+steps; it only shows what's already planned (Big possibilities, small steps).

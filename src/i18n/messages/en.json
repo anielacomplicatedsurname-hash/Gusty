@@ -225,13 +225,13 @@
     "title": "Your next steps",
     "intro": "Big possibilities, small steps. Gusty suggests where to go next. You choose.",
     "modes": {
-      "label": "How much would you like to see?",
+      "label": "How would you like to take your next steps?",
       "simple": "Keep it simple",
       "simpleHint": "Just the one next thing",
       "guide": "Guide me through",
       "guideHint": "Up to three steps",
-      "everything": "Show me the whole journey",
-      "everythingHint": "Where you've been, and what's next"
+      "everything": "The bigger picture",
+      "everythingHint": "See more steps ahead as your idea grows."
     },
     "start": "Show me where I could go next",
     "starting": "Gusty is thinking about directions…",
@@ -248,7 +248,7 @@
     "markNotDone": "Not done yet",
     "doneLabel": "Done",
     "doneCount": "{n} done so far",
-    "moreHidden": "{n} more steps are waiting in this stage. Switch to “Show me the whole journey” to see them.",
+    "moreHidden": "{n} more steps are waiting in this stage. Switch to “The bigger picture” to see them.",
     "stageLabel": "Stage {n}",
     "finished": {
       "title": "You finished this stage",
@@ -325,7 +325,10 @@
       "past": "Where you've been",
       "stageDone": "{n} done",
       "later": "Maybe later",
-      "laterHint": "Gusty's loose ideas for after this stage. Not a plan: they'll change as your idea grows."
+      "laterHint": "Gusty's loose ideas for after this stage. Not a plan: they'll change as your idea grows.",
+      "focus": "Your immediate focus",
+      "ahead": "A little further ahead",
+      "aheadCount": "{n} more"
     },
     "demoStages": [
       {
@@ -376,7 +379,8 @@
           "Example: find one place it could happen"
         ]
       }
-    ]
+    ],
+    "moreBeyond": "{n} more steps are in this stage. They'll show here as you go."
   },
   "offline": {
     "title": "You're offline right now.",
