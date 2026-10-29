@@ -71,7 +71,8 @@
   --color-confirmed: var(--confirmed);
 
   --font-sans: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-hand), "Comic Sans MS", cursive;
+  --font-display: var(--font-serif), Georgia, "Times New Roman", serif;
+  --font-hand-accent: var(--font-hand), "Comic Sans MS", cursive;
 
   --radius-card: 1.25rem;
   --radius-pill: 999px;
@@ -98,21 +99,18 @@ body {
 }
 
 @layer components {
-  /* Display hand: headlines and key brand moments only. Caveat Brush, bolded and slanted
-     slightly to match the founder's lettering. Not for body copy, forms or navigation. */
+  /* Display serif: page titles and key brand moments only. Instrument Serif; the home headline
+     sets its second line in italic. Not for body copy, forms or navigation. */
   .type-display {
     font-family: var(--font-display);
-    text-transform: uppercase;
-    line-height: 0.95;
-    letter-spacing: 0.005em;
-    -webkit-text-stroke: 0.035em currentColor;
-    transform: skewX(-5deg);
-    display: inline-block;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.015em;
   }
 
   /* Small accent copy in the hand style: overlines, short brand messages. */
   .type-accent-hand {
-    font-family: var(--font-display);
+    font-family: var(--font-hand-accent);
     text-transform: uppercase;
     letter-spacing: 0.12em;
     -webkit-text-stroke: 0.02em currentColor;

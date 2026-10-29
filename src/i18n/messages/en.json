@@ -18,7 +18,8 @@
   },
   "home": {
     "overline": "Big possibilities. Small steps.",
-    "headline": "Good ideas deserve to move.",
+    "headline": "Good ideas",
+    "headlineItalic": "deserve to move.",
     "lead": "Tell Gusty about your idea. Gusty helps you understand it, shape it and take the next small step towards the funding, people and tools that make it happen.",
     "ideaLabel": "What's your idea?",
     "ideaHint": "Write it however it comes to you. A few words is enough.",
