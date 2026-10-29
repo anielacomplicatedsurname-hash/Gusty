@@ -205,3 +205,10 @@ an ordinary editable text, always labelled "started by Gusty" (on the step and i
 out"), so AI writing is never mistaken for their own words. The prompt forbids inventing facts and uses
 [square brackets] for anything only the person can fill in. In demo mode the "draft" only joins their own
 answers, and says so. Kept drafts are part of the AI context for later suggestions and of the data download.
+
+## 2026-10-29 — "Help me summarise it", and "Help me say more" kept short
+Founder feedback: by the time people reach the bottom of a step they've already written a lot, so the
+button became "Help me summarise it" and Gusty now summarises their answers and notes (shorter than what
+they wrote, no new ideas) instead of drafting something new. "Help me say more" gave too much to read at
+once: it is now capped at about three times what the person wrote (at least 15, at most 120 words). The
+prompt states the limit and the code enforces it, cutting at a full sentence where possible.

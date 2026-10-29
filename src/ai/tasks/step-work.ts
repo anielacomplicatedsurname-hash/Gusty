@@ -77,7 +77,7 @@ export function normaliseQuestions(raw: StepQuestion[], max: number, avoid: stri
 }
 
 export const TIDY_PROMPT_VERSION = "tidy@1";
-export const SAY_MORE_PROMPT_VERSION = "say-more@1";
+export const SAY_MORE_PROMPT_VERSION = "say-more@2";
 export const TidySchema = z.object({ text: z.string() });
 export const SayMoreSchema = z.object({ text: z.string() });
 
@@ -92,8 +92,8 @@ export const SAY_MORE_PROMPT = `You are Gusty, a calm, warm companion that helps
 Many people you help are neurodivergent, tired, or new to project work.
 
 The person answered a question while working on one step of their project and would like help saying
-more. Expand their answer to about three times its length (at most 250 words), as if they had kept
-writing: their voice, first person, plain everyday words.
+more. Expand their answer as if they had kept writing: their voice, first person, plain everyday words.
+Stay within the word limit you're given: it keeps the result short enough to read in one go.
 
 - Keep everything they said and what they meant. Their words come first.
 - Add a few concrete ideas that fit their project and this step: who, what, where, how.
@@ -117,7 +117,37 @@ The question: ${neutralise(question)}
 Their answer so far:
 <answer>
 ${neutralise(answer)}
-</answer>`;
+</answer>
+Word limit for the whole expanded answer: ${sayMoreLimit(answer)} words.`;
+}
+
+const words = (text: string) => text.trim().split(/\s+/).filter(Boolean);
+
+/**
+ * How long "Help me say more" may be: about three times what the person wrote, so it stays easy to read
+ * at once. Never fewer than 15 words (room for an idea or two) and never more than 120.
+ */
+export function sayMoreLimit(answer: string): number {
+  return Math.min(120, Math.max(15, words(answer).length * 3));
+}
+
+/** Cuts text to a number of words, ending at a full sentence when one is close, otherwise with "…". */
+export function clipToWords(text: string, max: number): string {
+  const all = words(text);
+  if (all.length <= max) return text.trim();
+  // Keep the line breaks the person (or Gusty) used, by cutting the original text after the max-th word.
+  let count = 0;
+  let end = 0;
+  for (const match of text.matchAll(/\S+/g)) {
+    count += 1;
+    end = match.index + match[0].length;
+    if (count === max) break;
+  }
+  const cut = text.slice(0, end);
+  const sentence = Math.max(cut.lastIndexOf(". "), cut.lastIndexOf("! "), cut.lastIndexOf("? "), cut.lastIndexOf(".\n"));
+  if (/[.!?]$/.test(cut)) return cut.trim();
+  if (sentence > cut.length * 0.6) return cut.slice(0, sentence + 1).trim();
+  return `${cut.trim()}…`;
 }
 
 /** Trims to a limit at a word boundary, so a long suggestion never ends mid-word. */
@@ -129,7 +159,7 @@ export function clipWords(text: string, max: number): string {
   return (space > max * 0.8 ? cut.slice(0, space) : cut).trimEnd();
 }
 
-export const WRITE_PROMPT_VERSION = "write-draft@1";
+export const WRITE_PROMPT_VERSION = "summarise@1";
 export const DraftSchema = z.object({ text: z.string() });
 export const REVISIONS = ["shorter", "simpler", "warmer"] as const;
 export type Revision = (typeof REVISIONS)[number];
@@ -137,14 +167,15 @@ export type Revision = (typeof REVISIONS)[number];
 export const WRITE_PROMPT = `You are Gusty, a calm, warm companion that helps people turn ideas into real projects.
 Many people you help are neurodivergent, tired, or new to project work.
 
-Write a first draft of what this step asks for (for example the three sentences, the message, the short
-list), using the person's answers and notes. It is their draft: their voice, first person, plain everyday
-words, under 200 words unless the step clearly needs less.
+The person has already written answers and notes for this step. Summarise them into a short, clear
+summary of what the step asks for (for example the three sentences, the message, the short list).
+It is their summary: their voice, first person, plain everyday words, and clearly shorter than what
+they wrote (under 120 words).
 
-- Use what they said. Connect it and fill small gaps with ordinary wording, but don't invent facts about
-  them, their plans, people, places or numbers. Where something important is missing, leave a short
-  placeholder in square brackets, like [who it's for].
-- No headings, no preamble, no sign-off from you: just the draft.
+- Keep their main points and their own words where they work. Don't add new ideas.
+- Don't invent facts about them, their plans, people, places or numbers. Where something the step needs
+  is missing, leave a short placeholder in square brackets, like [who it's for].
+- No headings, no preamble, no sign-off from you: just the summary.
 
 ${SHARED_RULES}`;
 
@@ -154,9 +185,9 @@ const REVISION_ASKS: Record<Revision, string> = {
   warmer: "Make it a little warmer and more personal. Stay honest: no hype, no exclamation marks.",
 };
 
-export const REVISE_PROMPT = `You are Gusty, a calm, warm companion. You rewrite a short draft the way the person
+export const REVISE_PROMPT = `You are Gusty, a calm, warm companion. You rewrite a short summary the way the person
 asks, keeping their voice and meaning. Keep any [placeholders] as they are. Don't add facts. Return only the
-new draft.
+new summary.
 
 ${SHARED_RULES}`;
 
@@ -181,7 +212,7 @@ export function reviseMessage(context: string, stepTitle: string, draft: string,
   return `${context}
 
 The step: ${neutralise(stepTitle)}
-The draft:
+The summary:
 <draft>
 ${neutralise(draft)}
 </draft>
