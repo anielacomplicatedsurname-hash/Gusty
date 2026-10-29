@@ -236,3 +236,8 @@ publishes; Explore then shows each opportunity with its source link and "checked
 and anything past its closing date, and reminds people to confirm on the funder's site. Explore is now a
 real, indexable page. Slice 2 connects it to projects ("Possibilities for this project", "Save to my
 project" as a step); live web search may follow as clearly-labelled "Search further".
+
+## 2026-10-29 — Admin links only admins can see
+The founder needs to reach the admin area without remembering addresses. Admins now see an "Admin" link in
+the footer of every page and an "Add an opportunity" button on Explore. For everyone else these render
+nothing (checked in the database on each page), so the admin area still isn't advertised.

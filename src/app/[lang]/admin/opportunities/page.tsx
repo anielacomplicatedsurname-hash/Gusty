@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { BrandSymbol } from "@/components/BrandSymbol";
 import { getMessages, type Messages } from "@/i18n/dictionaries";
-import { getAllOpportunities, isAdmin } from "@/modules/opportunities/data";
+import { isAdmin } from "@/modules/admin/data";
+import { getAllOpportunities } from "@/modules/opportunities/data";
 import { OpportunityAdmin } from "@/modules/opportunities/OpportunityAdmin";
 
 export async function generateMetadata(): Promise<Metadata> {

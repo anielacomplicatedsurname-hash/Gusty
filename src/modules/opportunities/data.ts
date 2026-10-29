@@ -51,16 +51,6 @@ export async function getPublishedOpportunities(): Promise<Opportunity[] | null>
   return (data as Row[]).map(toOpportunity);
 }
 
-/** Whether the signed-in person is an admin. The database decides. */
-export async function isAdmin(): Promise<boolean> {
-  const supabase = await createSupabaseServerClient();
-  if (!supabase) return false;
-  const { data: claims } = await supabase.auth.getClaims();
-  if (!claims?.claims) return false;
-  const { data } = await supabase.rpc("is_admin");
-  return data === true;
-}
-
 /** Every opportunity, for the founder's list. Only admins get rows back. */
 export async function getAllOpportunities(): Promise<Opportunity[]> {
   const supabase = await createSupabaseServerClient();

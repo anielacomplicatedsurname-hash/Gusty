@@ -50,6 +50,10 @@ test("the founder adds, publishes and takes down an opportunity", async ({ page 
   const run = Date.now();
   await page.goto("/en/admin/opportunities");
   await expect(page.getByRole("heading", { name: "This page wandered off." })).toBeVisible();
+  // Nobody else sees a way into the admin area.
+  await page.goto("/en/explore");
+  await expect(page.getByRole("link", { name: "Add an opportunity" })).toHaveCount(0);
+  await expect(page.getByRole("contentinfo").getByRole("link", { name: "Admin", exact: true })).toHaveCount(0);
 
   // Become an admin (a guest account is created by starting a project).
   await page.goto("/en");
@@ -59,8 +63,13 @@ test("the founder adds, publishes and takes down an opportunity", async ({ page 
   const id = page.url().split("/").pop();
   sql(`insert into public.admins (user_id) select owner_id from public.projects where id = '${id}' on conflict do nothing`);
   try {
-    await page.goto("/en/admin");
-    await page.getByRole("link", { name: "Manage opportunities" }).click();
+    // The founder can find her way in without typing an address: from the footer, and from Explore.
+    await page.goto("/en/projects");
+    await page.getByRole("contentinfo").getByRole("link", { name: "Admin", exact: true }).click();
+    await expect(page).toHaveURL(/\/en\/admin$/);
+    await expect(page.getByRole("link", { name: "Manage opportunities" })).toBeVisible();
+    await page.goto("/en/explore");
+    await page.getByRole("link", { name: "Add an opportunity" }).click();
     await expect(page.getByRole("heading", { level: 1, name: "Opportunities" })).toBeVisible();
 
     // Without an AI key Gusty says so, and the founder can fill it in by hand.
