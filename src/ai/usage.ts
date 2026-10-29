@@ -36,7 +36,7 @@ export async function withinTidyLimit(supabase: Client): Promise<boolean> {
 }
 
 export type RunLog = {
-  projectId: string;
+  projectId: string | null;
   task: string;
   promptVersion: string;
   model: string;

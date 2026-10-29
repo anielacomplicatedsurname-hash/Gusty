@@ -15,7 +15,7 @@ test.describe("SEO and PWA", () => {
   });
 
   test("placeholder pages are not indexed", async ({ page }) => {
-    await page.goto("/en/explore");
+    await page.goto("/en/connections");
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   });
 

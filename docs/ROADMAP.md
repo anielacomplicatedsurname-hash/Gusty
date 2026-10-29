@@ -20,7 +20,8 @@
 | 5. Ready for testers | Service worker, admin basics, full e2e journey, security review | Installed on a phone, end-to-end green | **In progress** — install, offline page, export, deletion, security headers and admin overview built; tester email set up (Resend, heygusty.com), security review done |
 
 ## Known limitations (current build)
-- Explore and Connections are labelled "Coming next" placeholders, excluded from search engines.
+- Explore lists funding the founder has checked (UK and Europe); it isn't matched to projects yet (slice 2). Connections is still a "Coming next" placeholder, excluded from search engines.
+- "Let Gusty fill it in" uses Anthropic's web fetch tool; if the organisation's Claude Console settings turn web tools off, it fails politely and the founder fills the form in herself.
 - No full version history: instead, Gusty never changes anything the person wrote or confirmed (only unconfirmed AI items are replaced on a new reading). A browsable history can come later.
 - Without `ANTHROPIC_API_KEY`, readings run in a clearly labelled demo mode that only repeats the first sentence.
 - The real Claude call is not exercised by automated tests (no API key in CI); prompt, schema handling and limits are unit-tested, and readings were verified live by the founder.

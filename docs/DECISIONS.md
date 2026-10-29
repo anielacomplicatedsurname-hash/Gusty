@@ -226,3 +226,13 @@ The founder chose Instrument Serif for headlines, with the home headline's secon
 ("Good ideas / deserve to move."), and asked for it on all big titles so the site stays consistent.
 Caveat Brush stays for the small hand-lettered overline ("Big possibilities. Small steps.") and its
 hand-drawn underline. Self-hosted via next/font like the other fonts; no new dependency.
+
+## 2026-10-29 — Explore starts with funding the founder curates and checks
+To connect Projects and Explore, Gusty needs real opportunities, never invented ones. The founder chose a
+curated list (funding only, UK and Europe) over live web search for now. In the admin area she pastes a
+funder's link; Gusty reads the page via Anthropic's web fetch tool (Gusty's own server never fetches it)
+and fills in only what the page says, leaving gaps empty. Nothing is shown until she checks it and
+publishes; Explore then shows each opportunity with its source link and "checked on" date, hides drafts
+and anything past its closing date, and reminds people to confirm on the funder's site. Explore is now a
+real, indexable page. Slice 2 connects it to projects ("Possibilities for this project", "Save to my
+project" as a step); live web search may follow as clearly-labelled "Search further".
