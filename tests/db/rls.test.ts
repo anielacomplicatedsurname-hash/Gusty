@@ -236,3 +236,19 @@ describe("step questions", () => {
     expect((await owner.from("next_steps").select("notes_tidied").eq("id", step!.id).single()).data!.notes_tidied).toBe("");
   });
 });
+
+describe("opportunities", () => {
+  it("anyone can read published ones, and nobody but an admin can add or change them", async () => {
+    const visitor = client();
+    expect((await visitor.from("opportunities").select("id, status")).error).toBeNull();
+    const { data } = await visitor.from("opportunities").select("status");
+    expect((data ?? []).every((o) => o.status === "published")).toBe(true);
+
+    const person = client();
+    expect((await person.auth.signInAnonymously()).error).toBeNull();
+    const { error } = await person.from("opportunities").insert({ title: "Fake fund", url: "https://example.org" });
+    expect(error).not.toBeNull();
+    const { data: changed } = await person.from("opportunities").update({ title: "Changed" }).neq("id", "00000000-0000-0000-0000-000000000000").select("id");
+    expect(changed ?? []).toEqual([]);
+  });
+});

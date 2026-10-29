@@ -33,7 +33,7 @@ test("the three destinations open, with unbuilt ones marked honestly", async ({ 
   await page.goto("/en");
   const nav = page.getByRole("navigation", { name: "Main" }).filter({ visible: true });
   for (const [label, path, placeholder] of [
-    ["Explore", "explore", true],
+    ["Explore", "explore", false],
     ["My Projects", "projects", false],
     ["Connections", "connections", true],
   ] as const) {

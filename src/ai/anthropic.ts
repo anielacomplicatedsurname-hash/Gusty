@@ -17,22 +17,35 @@ export function anthropicProvider(apiKey: string): AiProvider {
     name: "anthropic",
     async generate<S extends z.ZodType>(request: StructuredRequest<S>): Promise<StructuredResult<z.infer<S>>> {
       try {
-        const response = await client.beta.messages.parse({
-          model,
-          max_tokens: request.maxTokens ?? 8000,
-          betas: ["server-side-fallback-2026-07-01"],
-          fallbacks: "default",
-          system: request.system,
-          messages: [{ role: "user", content: request.user }],
-          output_config: { effort: request.effort ?? "medium", format: betaZodOutputFormat(request.schema) },
-        });
-        const usage = {
-          model: response.model,
-          inputTokens: response.usage.input_tokens,
-          outputTokens: response.usage.output_tokens,
-        };
+        type Params = Parameters<typeof client.beta.messages.parse>[0];
+        const messages: Anthropic.Beta.Messages.BetaMessageParam[] = [{ role: "user", content: request.user }];
+        const tools: Params["tools"] = request.webFetch
+          ? [{ type: "web_fetch_20260209", name: "web_fetch", max_uses: request.webFetch.maxUses }]
+          : undefined;
+        const send = () =>
+          client.beta.messages.parse({
+            model,
+            max_tokens: request.maxTokens ?? 8000,
+            betas: ["server-side-fallback-2026-07-01"],
+            fallbacks: "default",
+            system: request.system,
+            messages,
+            tools,
+            output_config: { effort: request.effort ?? "medium", format: betaZodOutputFormat(request.schema) },
+          });
+        let response = await send();
+        let inputTokens = response.usage.input_tokens;
+        let outputTokens = response.usage.output_tokens;
+        // A long server-side tool loop can pause; resending the turn lets it carry on (at most twice).
+        for (let i = 0; i < 2 && response.stop_reason === "pause_turn"; i++) {
+          messages.push({ role: "assistant", content: response.content as Anthropic.Beta.Messages.BetaContentBlockParam[] });
+          response = await send();
+          inputTokens += response.usage.input_tokens;
+          outputTokens += response.usage.output_tokens;
+        }
+        const usage = { model: response.model, inputTokens, outputTokens };
         if (response.stop_reason === "refusal") return { ok: false, reason: "declined", ...usage };
-        if (response.stop_reason === "max_tokens" || !response.parsed_output) {
+        if (response.stop_reason === "max_tokens" || response.stop_reason === "pause_turn" || !response.parsed_output) {
           return { ok: false, reason: "invalid", ...usage };
         }
         return { ok: true, data: response.parsed_output, ...usage };

@@ -17,6 +17,11 @@ export type StructuredRequest<S extends z.ZodType> = {
   schema: S;
   maxTokens?: number;
   effort?: "low" | "medium" | "high";
+  /**
+   * Lets the model read web pages named in the request, on Anthropic's side (Gusty's server never
+   * fetches them). Only for trusted callers such as the founder's admin tools.
+   */
+  webFetch?: { maxUses: number };
 };
 
 /** A model provider. Tasks depend on this, never on a vendor SDK directly. */

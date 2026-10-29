@@ -103,6 +103,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"opportunities": {
+                  Row: {
+                    "amount": string,"checked_at": string,"created_at": string,"deadline": string | null,"deadline_note": string,"funder": string,"id": string,"kind": string,"regions": (string)[],"status": string,"summary": string,"title": string,"updated_at": string,"url": string,"who_for": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount"?: string,"checked_at"?: string,"created_at"?: string,"deadline"?: string | null,"deadline_note"?: string,"funder"?: string,"id"?: string,"kind"?: string,"regions"?: (string)[],"status"?: string,"summary"?: string,"title": string,"updated_at"?: string,"url": string,"who_for"?: string
+                  }
+                  Update: {
+                    "amount"?: string,"checked_at"?: string,"created_at"?: string,"deadline"?: string | null,"deadline_note"?: string,"funder"?: string,"id"?: string,"kind"?: string,"regions"?: (string)[],"status"?: string,"summary"?: string,"title"?: string,"updated_at"?: string,"url"?: string,"who_for"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"organisations": {
                   Row: {
                     "created_at": string,"id": string,"name": string,"slug": string

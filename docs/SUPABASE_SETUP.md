@@ -25,6 +25,7 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 11. `20261029120000_tidy_and_say_more.sql` (tidied answers and notes, "Help me say more" label)
 12. `20261029140000_growing_plan.sql` (plans grow one stage at a time; guest step answers move with their projects)
 13. `20261029160000_drafts.sql` ("Help me write it": the draft a person keeps for a step)
+14. `20261029180000_opportunities.sql` (Explore: funding opportunities the founder curates)
 
 ## Making yourself an admin
 Sign in to Gusty with your email first, then in the SQL Editor run (with your own email):
