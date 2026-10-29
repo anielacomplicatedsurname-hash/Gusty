@@ -205,3 +205,11 @@ an ordinary editable text, always labelled "started by Gusty" (on the step and i
 out"), so AI writing is never mistaken for their own words. The prompt forbids inventing facts and uses
 [square brackets] for anything only the person can fill in. In demo mode the "draft" only joins their own
 answers, and says so. Kept drafts are part of the AI context for later suggestions and of the data download.
+
+## 2026-10-29 — "The bigger picture", capped at 10
+Founder feedback: "Show me the whole journey" was long and odd for a button. The modes now ask "How would
+you like to take your next steps?", and the third is "The bigger picture: See more steps ahead as your idea
+grows." It shows the same three steps as "Guide me through" under "Your immediate focus", then a quieter
+"A little further ahead" list (the rest of this stage's steps as links, then Gusty's "Maybe later" ideas).
+Ten items at most in total: a display limit, not a planning limit. Choosing it never asks Gusty for more
+steps; it only shows what's already planned (Big possibilities, small steps).

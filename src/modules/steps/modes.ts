@@ -15,19 +15,27 @@ export type StepView = {
   starter: string | null;
 };
 
+/** The most "The bigger picture" ever shows: 3 to focus on, then up to 7 further ahead. */
+export const BIGGER_PICTURE_LIMIT = 10;
+const FOCUS = 3;
+
 /**
  * What each experience mode shows. The data never changes between modes, only how much is visible:
- * Keep It Simple → the one next step · Guide Me Through → up to three · Let Me See Everything → all.
+ * Keep It Simple → the one next step · Guide Me Through → up to three · The Bigger Picture → the same
+ * three, plus a quieter look further ahead (`ahead`). It only shows what Gusty has already planned and
+ * never asks for more, and the whole view stops at BIGGER_PICTURE_LIMIT.
  */
 export function visibleSteps(steps: StepView[], mode: Mode) {
   const open = steps.filter((s) => s.status === "open").sort((a, b) => a.position - b.position);
   const done = steps.filter((s) => s.status === "done");
-  const limit = mode === "simple" ? 1 : mode === "guide" ? 3 : open.length;
+  const limit = mode === "simple" ? 1 : FOCUS;
   const shown = open.slice(0, limit);
+  const ahead = mode === "everything" ? open.slice(limit, BIGGER_PICTURE_LIMIT) : [];
   return {
     current: shown[0] ?? null,
     upcoming: shown.slice(1),
-    hiddenCount: open.length - shown.length,
+    ahead,
+    hiddenCount: open.length - shown.length - ahead.length,
     done: mode === "everything" ? done : [],
     doneCount: done.length,
   };

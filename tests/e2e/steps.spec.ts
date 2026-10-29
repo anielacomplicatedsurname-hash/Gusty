@@ -41,7 +41,7 @@ test("modes change how much is shown, never the steps", async ({ page }) => {
   await page.reload();
   await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(1);
 
-  await mode(page, "Show me the whole journey").click();
+  await mode(page, "The bigger picture").click();
   await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(3);
 });
 
@@ -56,7 +56,7 @@ test("ticking a step off keeps it, and progress survives a reload", async ({ pag
 
   await page.reload();
   await expect(page.getByText("1 done so far")).toBeVisible();
-  await mode(page, "Show me the whole journey").click();
+  await mode(page, "The bigger picture").click();
   await expect(page.getByLabel("Not done yet: Write your idea in three sentences")).toBeChecked();
 });
 
@@ -80,10 +80,13 @@ test("I'm stuck: help me start and explain it differently add help to the step",
 
 test("people can add their own step", async ({ page }) => {
   await projectWithSteps(page);
-  await mode(page, "Show me the whole journey").click();
+  await mode(page, "The bigger picture").click();
   await page.getByRole("button", { name: "+ Add your own step" }).click();
   await page.getByLabel("Add your own step").fill("Ask the librarian about Saturdays");
   await page.getByRole("button", { name: "Add", exact: true }).click();
+  // It waits after the three steps in focus, and moves up as they're done.
+  await expect(page.locator("section[aria-labelledby=ahead-title]").getByRole("link", { name: "Ask the librarian about Saturdays" })).toBeVisible();
+  await page.getByLabel("Done: Write your idea in three sentences").check();
   await expect(stepTitle(page, "Ask the librarian about Saturdays")).toBeVisible();
   await expect(page.getByText("Your step")).toBeVisible();
 });
@@ -154,7 +157,7 @@ test("working on a step with Gusty: questions, rewording, answers, notes, done",
 
   // Done steps stay reachable from the full plan too.
   await page.goto(projectUrl);
-  await mode(page, "Show me the whole journey").click();
+  await mode(page, "The bigger picture").click();
   await page.locator("section[aria-labelledby=done-title]").getByRole("link", { name: "Write your idea in three sentences" }).click();
   await expect(page).toHaveURL(/\/steps\/[0-9a-f-]{36}$/);
   await expect(page.locator("textarea#notes")).toHaveValue("A place where neighbours fix things together.");
@@ -242,15 +245,26 @@ test("the plan grows one stage at a time, with a calm moment when a stage is don
   await expect(stepTitle(page, "Pick one person to tell about your idea")).toBeVisible();
   await expect(page.getByText("3 done so far")).toBeVisible();
 
-  // The whole journey: where you've been, what's now, and loose ideas for later.
-  await mode(page, "Show me the whole journey").click();
+  // The bigger picture: where you've been, the same three steps in focus, then a quieter look ahead.
+  await mode(page, "The bigger picture").click();
+  await expect(page.getByRole("heading", { name: "Your immediate focus" })).toBeVisible();
+  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(3);
   const past = page.locator("section[aria-labelledby=past-title]");
   await expect(past.getByText("Stage 1: Getting clear on the idea")).toBeVisible();
   await past.getByText("Stage 1: Getting clear on the idea").click();
   await expect(past.getByRole("link", { name: "List three people you could tell about it" })).toBeVisible();
-  const later = page.locator("section[aria-labelledby=later-title]");
-  await expect(later.getByText("Not a plan: they'll change as your idea grows.")).toBeVisible();
-  await expect(later.getByText("Example: plan a first small try")).toBeVisible();
+  const ahead = page.locator("section[aria-labelledby=ahead-title]");
+  await expect(ahead.getByRole("heading", { name: "A little further ahead" })).toBeVisible();
+  await expect(ahead.getByText("2 more", { exact: true })).toBeVisible();
+  await expect(ahead.getByText("Not a plan: they'll change as your idea grows.")).toBeVisible();
+  await expect(ahead.getByText("Example: plan a first small try")).toBeVisible();
+  // Steps beyond the first three wait here, as links, rather than as more cards to do now.
+  await page.getByRole("button", { name: "+ Add your own step" }).click();
+  await page.getByLabel("Add your own step").fill("Ask the librarian about Saturdays");
+  await page.getByRole("button", { name: "Add", exact: true }).click();
+  await expect(ahead.getByRole("link", { name: "Ask the librarian about Saturdays" })).toBeVisible();
+  await expect(ahead.getByText("3 more", { exact: true })).toBeVisible();
+  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(3);
   const journeyScan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(journeyScan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 });
