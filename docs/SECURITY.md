@@ -7,9 +7,10 @@
   or the system. AI outputs are schema-validated before anything is saved; actions need user approval.
 - Log errors and usage (tokens, cost), not the content of people's ideas (`ai_runs` stores no content).
 - The idea is passed to the model inside `<idea>` tags with an instruction to treat it as text, not instructions; closing tags inside it are neutralised. Model output is schema-validated and length-limited before it is saved.
-- Reading a funder's page (admin only) uses Anthropic's web fetch tool, so Gusty's own server never fetches
-  outside links. Links must be plain https web addresses (no credentials, IP addresses or local hosts); the page
-  is treated as untrusted text, and what Gusty extracts is a draft the founder checks before anything is published.
+- Explore's online search uses Anthropic's web search and web fetch tools, so Gusty's own server never fetches
+  outside pages. Pages are untrusted text; results are schema-validated, must have a plain https source (no
+  credentials, IP addresses or local hosts) and are only shown to the project's owner. Search words describe the
+  idea's theme and area, never names or emails. One search per project and three per person per day.
 - AI calls run only on the server; the key never reaches the browser. 30 readings and 60 AI calls in total per person per day, plus up to 150 background tidy-ups of their own answers and notes.
 
 ## Secrets
@@ -20,7 +21,7 @@
 
 ## Data access (built in stage 2)
 - Supabase Row Level Security on every table; default deny. Each project readable only by its owner.
-- Column grants: clients may only write `title` and `idea` on projects; reading items can only be added to the person's own projects. Signed-out visitors have no table access, except reading published Explore opportunities. Only admins can add or change opportunities.
+- Column grants: clients may only write `title` and `idea` on projects; reading items can only be added to the person's own projects. Signed-out visitors have no table access.
 - Guest (anonymous) accounts can save projects; adding an email requires confirming a link.
 - Sign-in redirects only go to same-site paths (`safeNextPath`), and Supabase only allows listed redirect URLs.
 - Deleting a user deletes their projects (`on delete cascade`).

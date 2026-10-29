@@ -8,8 +8,8 @@ export type AiFailure = "key" | "busy" | "declined" | "invalid" | "error";
 
 /** Result of one structured AI call, with what's needed for the usage log. */
 export type StructuredResult<T> =
-  | { ok: true; data: T; model: string; inputTokens: number; outputTokens: number }
-  | { ok: false; reason: AiFailure; model: string; inputTokens: number; outputTokens: number };
+  | { ok: true; data: T; model: string; inputTokens: number; outputTokens: number; webSearches?: number }
+  | { ok: false; reason: AiFailure; model: string; inputTokens: number; outputTokens: number; webSearches?: number };
 
 export type StructuredRequest<S extends z.ZodType> = {
   system: string;
@@ -22,6 +22,11 @@ export type StructuredRequest<S extends z.ZodType> = {
    * fetches them). Only for trusted callers such as the founder's admin tools.
    */
   webFetch?: { maxUses: number };
+  /** Lets the model search the web (billed per search). Same trust rules as webFetch. */
+  webSearch?: { maxUses: number };
+  /** For long jobs such as a deep search: how long one request may take, and how often a paused one resumes. */
+  timeoutMs?: number;
+  maxContinuations?: number;
 };
 
 /** A model provider. Tasks depend on this, never on a vendor SDK directly. */

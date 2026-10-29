@@ -237,18 +237,24 @@ describe("step questions", () => {
   });
 });
 
-describe("opportunities", () => {
-  it("anyone can read published ones, and nobody but an admin can add or change them", async () => {
-    const visitor = client();
-    expect((await visitor.from("opportunities").select("id, status")).error).toBeNull();
-    const { data } = await visitor.from("opportunities").select("status");
-    expect((data ?? []).every((o) => o.status === "published")).toBe(true);
+describe("opportunity searches", () => {
+  it("belong only to the project's owner", async () => {
+    const owner = client();
+    const other = client();
+    expect((await owner.auth.signInAnonymously()).error).toBeNull();
+    expect((await other.auth.signInAnonymously()).error).toBeNull();
+    const { data: project } = await owner.from("projects").insert({ title: "Mine", idea: "Private" }).select("id").single();
+    const { data: search, error } = await owner
+      .from("opportunity_searches").insert({ project_id: project!.id, place: "Hackney" }).select("id").single();
+    expect(error).toBeNull();
+    const found = { search_id: search!.id, project_id: project!.id, title: "Fund", url: "https://example.org", scale: "local", complexity: "light" };
+    expect((await owner.from("found_opportunities").insert(found)).error).toBeNull();
 
-    const person = client();
-    expect((await person.auth.signInAnonymously()).error).toBeNull();
-    const { error } = await person.from("opportunities").insert({ title: "Fake fund", url: "https://example.org" });
-    expect(error).not.toBeNull();
-    const { data: changed } = await person.from("opportunities").update({ title: "Changed" }).neq("id", "00000000-0000-0000-0000-000000000000").select("id");
-    expect(changed ?? []).toEqual([]);
+    expect((await other.from("opportunity_searches").select("id").eq("id", search!.id)).data).toEqual([]);
+    expect((await other.from("found_opportunities").select("id").eq("search_id", search!.id)).data).toEqual([]);
+    expect((await other.from("opportunity_searches").insert({ project_id: project!.id })).error).not.toBeNull();
+    expect((await other.from("found_opportunities").insert(found)).error).not.toBeNull();
+    // Results must have a real https source.
+    expect((await owner.from("found_opportunities").insert({ ...found, url: "javascript:alert(1)" })).error).not.toBeNull();
   });
 });

@@ -43,8 +43,13 @@ export type RunLog = {
   status: "ok" | "demo" | "error" | "declined";
   inputTokens?: number;
   outputTokens?: number;
+  /** Web searches made during the call, billed on top of tokens. */
+  webSearches?: number;
   failure?: AiFailure;
 };
+
+/** Anthropic's list price per web search ($10 per 1,000, Oct 2026). */
+const WEB_SEARCH_USD = 0.01;
 
 /** Records one AI call: model, tokens and estimated cost. Never the content. */
 export async function logRun(supabase: Client, run: RunLog) {
@@ -58,7 +63,7 @@ export async function logRun(supabase: Client, run: RunLog) {
     status: run.status,
     input_tokens: inputTokens,
     output_tokens: outputTokens,
-    cost_usd: run.status === "demo" ? 0 : estimateCostUsd(run.model, inputTokens, outputTokens),
+    cost_usd: run.status === "demo" ? 0 : estimateCostUsd(run.model, inputTokens, outputTokens) + (run.webSearches ?? 0) * WEB_SEARCH_USD,
     error: run.failure ? (run.failure === "error" ? "other" : run.failure) : null,
   });
 }

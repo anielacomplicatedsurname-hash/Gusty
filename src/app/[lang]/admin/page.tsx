@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
 import { BrandSymbol } from "@/components/BrandSymbol";
 import { getMessages, type Messages } from "@/i18n/dictionaries";
@@ -58,7 +57,6 @@ async function AdminContent({ params, t }: { params: PageProps<"/[lang]/admin">[
       <header>
         <h1 className="type-display text-5xl">{a.title}</h1>
         <p className="mt-3 text-lg text-text-muted">{a.intro}</p>
-        <Link href={`/${lang}/admin/opportunities`} className="btn-secondary mt-4">{a.opportunitiesLink}</Link>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-3">
