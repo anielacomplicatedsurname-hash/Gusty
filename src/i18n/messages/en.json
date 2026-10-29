@@ -62,7 +62,8 @@
     "tagline": "People, ideas, places for a brighter tomorrow.",
     "privacy": "Privacy",
     "terms": "Terms",
-    "label": "More from Gusty"
+    "label": "More from Gusty",
+    "admin": "Admin"
   },
   "notFound": {
     "title": "This page wandered off.",
@@ -817,6 +818,7 @@
     "emptyFilter": "Nothing open for this area right now. Try “Everywhere”.",
     "unavailable": "We couldn't load opportunities just now. Please try again later.",
     "comingTitle": "Later in Explore",
-    "comingBody": "Matching opportunities to your projects, then people, organisations and events."
+    "comingBody": "Matching opportunities to your projects, then people, organisations and events.",
+    "addOpportunity": "Add an opportunity"
   }
 }

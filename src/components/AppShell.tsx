@@ -4,6 +4,7 @@ import { supportChoices } from "@/config/support";
 import { getMessages } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import { AccountBadge } from "./AccountBadge";
+import { AdminLink } from "./AdminLink";
 import { FeedbackLink } from "@/modules/feedback/FeedbackLink";
 import { Logo } from "./Logo";
 import { NavLinks, NavList, type NavItem } from "./NavLinks";
@@ -92,6 +93,12 @@ export async function AppShell({ locale, children }: { locale: Locale; children:
                 {t.footer.terms}
               </Link>
             </li>
+            {/* Only admins see this link; it renders nothing for everyone else. */}
+            <Suspense fallback={null}>
+              <li className="empty:hidden">
+                <AdminLink href={`/${locale}/admin`} label={t.footer.admin} className={footerLink} />
+              </li>
+            </Suspense>
           </ul>
         </div>
       </footer>

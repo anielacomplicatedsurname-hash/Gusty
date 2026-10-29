@@ -23,6 +23,16 @@ export async function getAdminOverview(): Promise<{ ok: true; overview: AdminOve
   return { ok: true, overview: data as unknown as AdminOverview };
 }
 
+/** Whether the signed-in person is an admin. The database decides; everyone else gets false. */
+export async function isAdmin(): Promise<boolean> {
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return false;
+  const { data: claims } = await supabase.auth.getClaims();
+  if (!claims?.claims) return false;
+  const { data } = await supabase.rpc("is_admin");
+  return data === true;
+}
+
 export type FeedbackItem = { worked: string | null; confusing: string | null; other: string | null; page: string | null; at: string };
 
 /** Feedback testers chose to send, newest first. Only admins can read it (checked in the database). */

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import type { Region } from "@/ai/tasks/opportunity";
+import { AdminLink } from "@/components/AdminLink";
 import { BrandSymbol } from "@/components/BrandSymbol";
 import { getMessages, type Messages } from "@/i18n/dictionaries";
 import { fill } from "@/i18n/format";
@@ -27,6 +28,9 @@ export default async function ExplorePage({ params, searchParams }: PageProps<"/
         <h1 className="type-display text-5xl sm:text-6xl">{t.explore.title}</h1>
         <p className="text-lg">{t.explore.intro}</p>
         <p className="rounded-xl bg-sky/60 p-4 text-sm text-ink">{t.explore.trust}</p>
+        <Suspense fallback={null}>
+          <ExploreAdminLink params={params} label={t.explore.addOpportunity} />
+        </Suspense>
       </header>
       <Suspense fallback={<p className="text-text-muted">…</p>}>
         <OpportunityList params={params} searchParams={searchParams} t={t} />
@@ -37,6 +41,12 @@ export default async function ExplorePage({ params, searchParams }: PageProps<"/
       </aside>
     </section>
   );
+}
+
+/** Only the founder (an admin) sees a way in to add opportunities. */
+async function ExploreAdminLink({ params, label }: { params: PageProps<"/[lang]/explore">["params"]; label: string }) {
+  const { lang } = await params;
+  return <AdminLink href={`/${lang}/admin/opportunities`} label={label} className="btn-secondary" />;
 }
 
 /** Open to applicants from the chosen area: listed for it, or open worldwide. */
