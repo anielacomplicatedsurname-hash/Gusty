@@ -4,9 +4,9 @@ import { after } from "next/server";
 import { aiProvider } from "@/ai";
 import { projectContext } from "@/ai/tasks/context";
 import {
-  clipWords, MAX_QUESTIONS, normaliseQuestions, REPHRASE_PROMPT, RephraseSchema, rephraseMessage, SAY_MORE_PROMPT,
+  clipToWords, clipWords, MAX_QUESTIONS, normaliseQuestions, REPHRASE_PROMPT, RephraseSchema, rephraseMessage, SAY_MORE_PROMPT,
   SAY_MORE_PROMPT_VERSION, SayMoreSchema, sayMoreMessage, STEP_QUESTIONS_PROMPT, STEP_QUESTIONS_PROMPT_VERSION,
-  STEP_REPHRASE_PROMPT_VERSION, StepQuestionsSchema, stepQuestionsMessage, TIDY_PROMPT, TIDY_PROMPT_VERSION, TidySchema,
+  sayMoreLimit, STEP_REPHRASE_PROMPT_VERSION, StepQuestionsSchema, stepQuestionsMessage, TIDY_PROMPT, TIDY_PROMPT_VERSION, TidySchema,
   tidyMessage, type StepQuestion, DraftSchema, REVISE_PROMPT, reviseMessage, REVISIONS, type Revision, WRITE_PROMPT,
   WRITE_PROMPT_VERSION, writeMessage,
 } from "@/ai/tasks/step-work";
@@ -222,7 +222,8 @@ export async function sayMore(questionId: string, raw: string, lang: string): Pr
   const provider = aiProvider();
   if (!provider) {
     await logRun(supabase, { projectId: q.project_id, task: "say_more", promptVersion: SAY_MORE_PROMPT_VERSION, model: "demo", status: "demo" });
-    return { ok: true, text: `${answer}\n\n${messagesFor(lang).stepWork.sayMore.demoAddition}`, demo: true };
+    const demo = `${answer}\n\n${messagesFor(lang).stepWork.sayMore.demoAddition}`;
+    return { ok: true, text: clipToWords(demo, sayMoreLimit(answer)), demo: true };
   }
   if (!(await withinDailyLimit(supabase))) return { ok: false, error: "limit" };
   const loaded = await loadStep(supabase, q.step_id);
@@ -239,7 +240,8 @@ export async function sayMore(questionId: string, raw: string, lang: string): Pr
     inputTokens: result.inputTokens, outputTokens: result.outputTokens, failure: result.ok ? undefined : result.reason,
   });
   if (!result.ok) return failed(result.reason) as Exclude<WorkResult, { ok: true }>;
-  const text = clipWords(result.data.text, 2000);
+  // The prompt asks for the limit; this makes sure of it.
+  const text = clipWords(clipToWords(result.data.text, sayMoreLimit(answer)), 2000);
   return text ? { ok: true, text, demo: false } : { ok: false, error: "invalid" };
 }
 
@@ -256,7 +258,7 @@ export async function applySayMore(questionId: string, raw: string): Promise<Sav
 
 export type DraftResult = { ok: true; text: string; demo: boolean } | Exclude<WorkResult, { ok: true }> | { ok: false; error: "empty" };
 
-/** "Help me write it": a first draft of what the step asks for, from the person's answers and notes. A suggestion only. */
+/** "Help me summarise it": a short summary of the person's answers and notes for this step. A suggestion only. */
 export async function writeDraft(stepId: string): Promise<DraftResult> {
   if (!isProjectId(stepId)) return { ok: false, error: "error" };
   const supabase = await createSupabaseServerClient();
@@ -316,7 +318,7 @@ export async function reviseDraft(stepId: string, raw: string, kind: string): Pr
   return text ? { ok: true, text, demo: false } : { ok: false, error: "invalid" };
 }
 
-/** Keeps a draft, or saves the person's changes to it. An empty draft removes it. */
+/** Keeps a summary, or saves the person's changes to it. An empty one removes it. */
 export async function saveDraft(stepId: string, raw: string): Promise<SaveResult> {
   if (!isProjectId(stepId)) return { ok: false };
   const supabase = await createSupabaseServerClient();

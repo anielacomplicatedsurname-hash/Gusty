@@ -270,7 +270,7 @@ function SayMore({ questionId, assisted: initiallyAssisted, lang, box, copy }: {
 const REVISIONS = ["shorter", "simpler", "warmer"] as const;
 
 /**
- * "Help me write it": Gusty drafts what the step asks for from the answers and notes. The draft is a
+ * "Help me summarise it": Gusty sums up the answers and notes for this step. The summary is a
  * suggestion until the person keeps it; after that it's theirs to change, still marked as started by Gusty.
  */
 function WriteIt({ stepId, initial, copy }: { stepId: string; initial: string; copy: Copy }) {
