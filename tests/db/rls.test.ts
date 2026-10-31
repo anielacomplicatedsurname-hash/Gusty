@@ -386,3 +386,28 @@ describe("the project bank", () => {
     expect((await owner.from("research_runs").select("id").eq("id", run!.id)).data).toHaveLength(1);
   });
 });
+
+describe("application spaces", () => {
+  it("belong only to the project's owner, and papers only to their own application", async () => {
+    const owner = client();
+    const other = client();
+    expect((await owner.auth.signInAnonymously()).error).toBeNull();
+    expect((await other.auth.signInAnonymously()).error).toBeNull();
+    const { data: project } = await owner.from("projects").insert({ title: "Mine", idea: "Private" }).select("id").single();
+    const { data: second } = await owner.from("projects").insert({ title: "Second", idea: "Also mine" }).select("id").single();
+    const { data: app, error } = await owner.from("applications").insert({ project_id: project!.id, title: "A fund" }).select("id").single();
+    expect(error).toBeNull();
+    expect((await other.from("applications").select("id").eq("id", app!.id)).data).toEqual([]);
+    expect((await other.from("applications").insert({ project_id: project!.id, title: "Sneaky" })).error).not.toBeNull();
+    expect((await owner.from("applications").insert({ project_id: project!.id, title: "Bad link", url: "http://x.org" })).error).not.toBeNull();
+
+    const paper = { application_id: app!.id, kind: "form", origin: "paste", label: "Questions", reading: { questions: [] } };
+    expect((await owner.from("application_materials").insert({ ...paper, project_id: project!.id })).error).toBeNull();
+    // A paper can't be filed under another project, and nobody else can add one.
+    expect((await owner.from("application_materials").insert({ ...paper, project_id: second!.id })).error).not.toBeNull();
+    expect((await other.from("application_materials").insert({ ...paper, project_id: project!.id })).error).not.toBeNull();
+    expect((await other.from("application_materials").select("id").eq("application_id", app!.id)).data).toEqual([]);
+    const { data: changed } = await other.from("applications").update({ title: "Hijacked" }).eq("id", app!.id).select("id");
+    expect(changed ?? []).toEqual([]);
+  });
+});

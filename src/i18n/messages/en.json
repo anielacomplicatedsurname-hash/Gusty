@@ -119,7 +119,8 @@
     "savedIntro": "Opportunities you saved from Explore. Confirm the details with the funder before you apply.",
     "addStep": "Add a step to check it",
     "stepAdded": "Added to your steps",
-    "checkStep": "Check whether you can apply: {title}"
+    "checkStep": "Check whether you can apply: {title}",
+    "prepareApplication": "Prepare an application"
   },
   "emailLink": {
     "label": "Email address",
@@ -559,6 +560,7 @@
             "When Gusty reads your idea or suggests steps, the text of that project is sent to Anthropic, the company that makes the Claude AI, to prepare the answer. Under Anthropic's commercial terms, this text isn't used to train their models.",
             "When you ask Gusty to search for opportunities, Claude searches the web for you. The search words describe your idea's theme and the area you gave (for example “community repair café, Hackney”), and go to the search engine Anthropic uses. They never include your name or email. What Gusty finds is saved with your project, only for you.",
             "Looking for research that backs your idea works the same way: the search words describe your idea's theme, never you, and the sources Gusty finds are saved with your project, only for you. When you ask Gusty to describe how you write, only your own writing about that project is sent.",
+            "When you bring a funder's papers into an application space (a PDF, pasted text or a public link), they're sent to Anthropic for Claude to read, then discarded. Gusty keeps only what it read from them, such as the questions and rules, with your project. To see how your project fits, Gusty sends that project, its story and what it read from the funder's papers.",
             "If you bring in a PDF, it's sent to Anthropic for Claude to read, then discarded: Gusty doesn't keep the file. It keeps only its notes (a short summary and what the document says you've done), which you can read and delete on the project page.",
             "Your projects are private to you. We never show them to other people who use Gusty, and we never use one person's ideas to make suggestions for someone else: each request only includes the project you're working on.",
             "AI suggestions can be wrong. Please avoid including sensitive details, such as health information, about yourself or other people in your ideas."
@@ -1206,5 +1208,173 @@
     },
     "demoVoice": "- Demo: Gusty's description of how you write will go here\n- For example: short sentences, warm, uses “we”\nSomething you might write: (Demo: an example sentence in your voice will go here.)",
     "voiceDemoNotice": "Demo mode: this is an example. Gusty's real description appears once the AI key is set up."
+  },
+  "applications": {
+    "listTitle": "Your applications",
+    "listIntro": "One space for each thing you'd like to apply for. Bring in the funder's papers and Gusty will show you what they're looking for and how your project fits.",
+    "none": "No applications yet.",
+    "start": "Start an application",
+    "fromSaved": "Prepare an application",
+    "titleLabel": "What are you applying for?",
+    "titleHint": "For example: Community Wellbeing Fund 2027",
+    "funderLabel": "Who runs it? (optional)",
+    "urlLabel": "A link to it (optional)",
+    "create": "Create the application space",
+    "creating": "Creating…",
+    "cancel": "Cancel",
+    "materialsCount": "{n} papers read",
+    "oneMaterial": "1 paper read",
+    "noMaterials": "No papers yet",
+    "open": "Open",
+    "back": "Back to the project",
+    "pageIntro": "Bring in the funder's papers. Gusty reads them, keeps what matters, and shows you how your project fits. Nothing is sent to the funder.",
+    "addTitle": "Bring in the funder's papers",
+    "addIntro": "The application form or questions, guidance notes, terms and conditions, or a list of past winners. Add as many as you have.",
+    "kindLabel": "What is it?",
+    "kinds": {
+      "form": "Application form or questions",
+      "guidance": "Guidance notes",
+      "terms": "Terms and conditions",
+      "past_winners": "Past winners",
+      "other": "Something else"
+    },
+    "ways": {
+      "pdf": "Upload a PDF",
+      "paste": "Paste the text",
+      "link": "Use a link"
+    },
+    "waysLabel": "How would you like to bring it in?",
+    "fileLabel": "Choose a PDF",
+    "fileHint": "Up to 10 MB and 100 pages. Gusty keeps what it reads, not the file.",
+    "pasteLabel": "Paste it here",
+    "pasteHint": "For example, copy the questions from the funder's online form. Gusty keeps what it reads, not the pasted text.",
+    "linkLabel": "Link to a public page",
+    "linkHint": "Gusty can open public pages only. If it needs a login (like a private Google Doc or a funder portal), download it as a PDF or paste the text instead.",
+    "read": "Read this",
+    "reading": "Gusty is reading it. This can take up to a minute.",
+    "added": "Gusty has read it. What it found is below.",
+    "limitNote": "Up to 8 papers a day.",
+    "errors": {
+      "limit": "You've brought in today's 8 papers. You can add more tomorrow.",
+      "unreadable": "Gusty couldn't read that. If it's a link that needs a login, download it as a PDF or paste the text instead.",
+      "notFunding": "That doesn't look like material about a funding opportunity. Nothing was saved.",
+      "busy": "Gusty is a little busy right now. Please try again in a minute.",
+      "unavailable": "Gusty can't read papers right now. Please try again later.",
+      "error": "That didn't work. Please try again.",
+      "empty": "Please paste some text first.",
+      "tooLong": "That's a lot of text. Please paste one part at a time, for example just the questions.",
+      "link": "That link doesn't look right. Use a full https:// address.",
+      "tooBig": "That file is too big. The limit is 10 MB.",
+      "notPdf": "Please choose a PDF file.",
+      "tooManyPages": "That PDF has more than 100 pages. Please upload just the part you need.",
+      "title": "Please say what you're applying for."
+    },
+    "papersTitle": "Papers Gusty has read",
+    "remove": "Remove",
+    "pages": "{n} pages",
+    "pasted": "Pasted text",
+    "briefTitle": "What this funder is looking for",
+    "briefIntro": "Read from their papers and quoted as they put it. Always check the original before you apply: funders change their rules, and Gusty can misread.",
+    "questionsTitle": "The questions",
+    "limit": "Limit: {limit}",
+    "prioritiesTitle": "What they care about",
+    "rulesTitle": "Who can apply",
+    "ruleKinds": {
+      "eligible": "Can apply",
+      "excluded": "Ruled out",
+      "requirement": "You'll need to"
+    },
+    "detailsTitle": "Key details, as they're written",
+    "winnersTitle": "Who they've funded before",
+    "toneTitle": "How they write",
+    "page": "page {n}",
+    "from": "From: {label}",
+    "nothingYet": "Bring in at least one of the funder's papers to see this.",
+    "demoReadingNotice": "Demo mode: this is a made-up example, not what your paper says. Gusty's real reading starts once the AI key is set up.",
+    "fitTitle": "How your project fits",
+    "fitIntro": "Gusty's view, from your project, your story and the funder's papers. It's a suggestion, not a decision: only the funder decides who gets funding.",
+    "fitRunning": "Gusty is working out how your project fits. This takes about a minute.",
+    "fitFailed": "Gusty couldn't work this out just now.",
+    "fitAgain": "Work it out again",
+    "fitAgainHint": "Added to your story since? Gusty can look again.",
+    "strengthsTitle": "Where you already match",
+    "gapsTitle": "What they'll look for that you haven't shown yet",
+    "wordsTitle": "Their words, your way",
+    "wordsIntro": "The funder's key phrases, and how you might say the same thing in your own voice.",
+    "theirs": "They say",
+    "yours": "You might say",
+    "checkTitle": "Check these rules carefully",
+    "checkIntro": "Only the funder can say whether you're eligible. These are worth reading closely, or asking them about.",
+    "fitLabel": "Gusty's suggestion · {date}",
+    "demoFitNotice": "Demo mode: this is a made-up example. Gusty's real view appears once the AI key is set up.",
+    "deleteApplication": "Delete this application space",
+    "deleteConfirm": "Delete this application space and everything Gusty read for it? Your project stays as it is.",
+    "deleteYes": "Yes, delete it",
+    "notFound": "This application space doesn't exist, or it isn't yours.",
+    "demoReading": {
+      "title": "Example: Community Wellbeing Fund",
+      "funder": "Example Foundation",
+      "questions": [
+        {
+          "question": "Example: Tell us about your project and who it's for.",
+          "limit": "300 words",
+          "help": "This is where Gusty would show the funder's guidance for this question."
+        },
+        {
+          "question": "Example: What difference will it make?",
+          "limit": "250 words"
+        }
+      ],
+      "priorities": [
+        {
+          "phrase": "example: reducing loneliness",
+          "meaning": "Here Gusty would explain the funder's key phrase in plain words."
+        }
+      ],
+      "rules": [
+        {
+          "kind": "eligible",
+          "text": "Example: who can apply would be quoted here."
+        },
+        {
+          "kind": "excluded",
+          "text": "Example: what isn't funded would be quoted here."
+        }
+      ],
+      "details": [
+        {
+          "label": "Amount",
+          "value": "Example: as written in the papers"
+        }
+      ],
+      "tone": "Example: here Gusty would describe how the funder writes."
+    },
+    "demoFit": {
+      "summary": "Example: here Gusty would say, in two or three honest sentences, how your project and this opportunity fit.",
+      "strengths": [
+        {
+          "point": "Example: a place where your project matches what they care about.",
+          "from": "Example: what in your story shows it"
+        }
+      ],
+      "gaps": [
+        {
+          "point": "Example: something they'll look for that you haven't shown yet.",
+          "suggestion": "Example: one small thing you could add."
+        }
+      ],
+      "words": [
+        {
+          "theirs": "example: reducing loneliness",
+          "yours": "Example: how you might say it in your own words."
+        }
+      ],
+      "check": [
+        {
+          "rule": "Example: a rule worth checking.",
+          "why": "Example: why it's worth a closer look."
+        }
+      ]
+    }
   }
 }
