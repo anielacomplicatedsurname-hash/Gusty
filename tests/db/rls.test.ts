@@ -346,3 +346,43 @@ describe("changes Gusty makes from steps", () => {
     expect((await owner.from("fact_suggestions").insert({ ...change, project_id: mine!.id, status: "wild" })).error).not.toBeNull();
   });
 });
+
+describe("the project bank", () => {
+  it("experience, research and voice belong only to the project's owner", async () => {
+    const owner = client();
+    const other = client();
+    expect((await owner.auth.signInAnonymously()).error).toBeNull();
+    expect((await other.auth.signInAnonymously()).error).toBeNull();
+    const { data: project } = await owner.from("projects").insert({ title: "Mine", idea: "Private" }).select("id").single();
+    const { data: item, error } = await owner.from("project_evidence")
+      .insert({ project_id: project!.id, kind: "win", text: "Won £500 from the ward fund in 2024" }).select("id").single();
+    expect(error).toBeNull();
+    expect((await other.from("project_evidence").select("id").eq("id", item!.id)).data).toEqual([]);
+    expect((await other.from("project_evidence").insert({ project_id: project!.id, kind: "win", text: "Fake" })).error).not.toBeNull();
+    const { data: removed } = await other.from("project_evidence").delete().eq("id", item!.id).select("id");
+    expect(removed ?? []).toEqual([]);
+
+    // Research always carries its source and the date it was found; links must be https.
+    const research = { project_id: project!.id, origin: "research", kind: "research", text: "A finding", title: "A study" };
+    expect((await owner.from("project_evidence").insert(research)).error).not.toBeNull();
+    expect((await owner.from("project_evidence")
+      .insert({ ...research, url: "https://example.org/s", found_at: new Date().toISOString() })).error).toBeNull();
+    expect((await owner.from("project_evidence")
+      .insert({ project_id: project!.id, kind: "quote", text: "x", url: "javascript:alert(1)" })).error).not.toBeNull();
+
+    expect((await owner.from("project_voice").insert({ project_id: project!.id, description: "Short and warm" })).error).toBeNull();
+    expect((await other.from("project_voice").select("description").eq("project_id", project!.id)).data).toEqual([]);
+    const { data: changed } = await other.from("project_voice").update({ description: "Hijacked" }).eq("project_id", project!.id).select("project_id");
+    expect(changed ?? []).toEqual([]);
+  });
+
+  it("research runs can't be deleted, so the daily allowance can't be reset", async () => {
+    const owner = client();
+    expect((await owner.auth.signInAnonymously()).error).toBeNull();
+    const { data: project } = await owner.from("projects").insert({ title: "Mine", idea: "Private" }).select("id").single();
+    const { data: run } = await owner.from("research_runs").insert({ project_id: project!.id }).select("id").single();
+    const { data: removed } = await owner.from("research_runs").delete().eq("id", run!.id).select("id");
+    expect(removed ?? []).toEqual([]);
+    expect((await owner.from("research_runs").select("id").eq("id", run!.id)).data).toHaveLength(1);
+  });
+});

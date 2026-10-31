@@ -30,7 +30,7 @@ test("bring in a new project from a PDF, then forget the document", async ({ pag
   await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/, { timeout: 20_000 });
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Repair café plan");
 
-  await page.getByRole("navigation", { name: "Project sections" }).getByRole("link", { name: "Notes" }).click();
+  await page.getByRole("navigation", { name: "Project sections" }).getByRole("link", { name: "Story" }).click();
   const docs = page.locator("section[aria-labelledby=documents-title]");
   await docs.getByText("Repair café plan.pdf").click();
   await expect(docs.getByText("Gusty's notes from your document, not checked.")).toBeVisible();
