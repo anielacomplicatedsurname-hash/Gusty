@@ -2,7 +2,8 @@
 
 import { aiProvider } from "@/ai";
 import {
-  DRAFT_PROMPT, DRAFT_PROMPT_VERSION, DraftSchema, DRAFTS_PER_PERSON_PER_DAY, draftMessage, normaliseDraft, type Gap,
+  checkFunderWords, DRAFT_PROMPT_VERSION, DRAFT_STYLES, DraftSchema, DRAFTS_PER_PERSON_PER_DAY, draftMessage, draftPrompt, funderText,
+  normaliseDraft, type DraftStyle, type Gap,
 } from "@/ai/tasks/draft-answer";
 import type { MaterialReading } from "@/ai/tasks/funder-material";
 import { logRun, withinDailyLimit } from "@/ai/usage";
@@ -15,7 +16,7 @@ import { questionsOf } from "./questions";
 
 type Supabase = NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>>;
 export type DraftResult =
-  | { ok: true; answer: string; gaps: Gap[]; demo: boolean }
+  | { ok: true; answer: string; gaps: Gap[]; funderWords: string[]; demo: boolean }
   | { ok: false; error: "limit" | "busy" | "declined" | "unavailable" | "error" };
 
 async function loadQuestion(supabase: Supabase, appId: string, key: string) {
@@ -32,11 +33,13 @@ async function loadQuestion(supabase: Supabase, appId: string, key: string) {
 
 async function store(
   supabase: Supabase, found: NonNullable<Awaited<ReturnType<typeof loadQuestion>>>,
-  row: { answer: string; source: "ai" | "user"; gaps?: Gap[]; drafted?: boolean },
+  row: { answer: string; source: "ai" | "user"; gaps?: Gap[]; drafted?: boolean; style?: DraftStyle; funderWords?: string[] },
 ): Promise<boolean> {
   const values = {
     answer: row.answer, source: row.source,
     ...(row.gaps ? { gaps: row.gaps } : {}),
+    ...(row.style ? { style: row.style } : {}),
+    ...(row.funderWords ? { funder_words: row.funderWords } : {}),
     ...(row.drafted ? { drafted_at: new Date().toISOString() } : {}),
   };
   if (found.existing) {
@@ -52,8 +55,9 @@ async function store(
  * Gusty drafts one answer in the person's voice, from their project and story, using the funder's key phrases
  * where they fit. Anything their material doesn't show is left [in brackets] and listed, never made up.
  */
-export async function draftAnswer(appId: string, key: string, lang: string): Promise<DraftResult> {
+export async function draftAnswer(appId: string, key: string, lang: string, rawStyle: string = "funder"): Promise<DraftResult> {
   if (!isProjectId(appId) || !key) return { ok: false, error: "error" };
+  const style: DraftStyle = (DRAFT_STYLES as readonly string[]).includes(rawStyle) ? (rawStyle as DraftStyle) : "funder";
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { ok: false, error: "unavailable" };
   const found = await loadQuestion(supabase, appId, key);
@@ -69,7 +73,11 @@ export async function draftAnswer(appId: string, key: string, lang: string): Pro
   let demo = false;
   if (!provider) {
     const t = messagesFor(lang).applications;
-    draft = { draft: t.demoDraft, gaps: [{ missing: t.demoGap, suggestion: t.demoGapSuggestion }] };
+    const text = style === "funder" ? t.demoDraftFunder : t.demoDraft;
+    draft = {
+      draft: text, gaps: [{ missing: t.demoGap, suggestion: t.demoGapSuggestion }],
+      funderWords: checkFunderWords([t.demoFunderWord], text, funderText(found.readings)),
+    };
     demo = true;
     await logRun(supabase, { projectId: found.app.project_id, task: "draft_answer", promptVersion: DRAFT_PROMPT_VERSION, model: "demo", status: "demo" });
   } else {
@@ -77,7 +85,7 @@ export async function draftAnswer(appId: string, key: string, lang: string): Pro
     const inputs = await loadProjectInputs(supabase, found.app.project_id);
     if (!inputs) return { ok: false, error: "error" };
     const result = await provider.generate({
-      system: DRAFT_PROMPT.replace("{lang}", lang),
+      system: draftPrompt(style, lang),
       user: draftMessage(inputs.context, inputs.bank, { title: found.app.title, readings: found.readings }, found.question, found.existing?.answer ?? ""),
       schema: DraftSchema,
       effort: "medium",
@@ -92,11 +100,13 @@ export async function draftAnswer(appId: string, key: string, lang: string): Pro
     if (!result.ok) {
       return { ok: false, error: result.reason === "busy" ? "busy" : result.reason === "declined" ? "declined" : result.reason === "key" ? "unavailable" : "error" };
     }
-    draft = normaliseDraft(result.data);
+    draft = normaliseDraft(result.data, funderText(found.readings));
     if (!draft.draft) return { ok: false, error: "error" };
   }
-  const saved = await store(supabase, found, { answer: draft.draft, source: "ai", gaps: draft.gaps, drafted: true });
-  return saved ? { ok: true, answer: draft.draft, gaps: draft.gaps, demo } : { ok: false, error: "error" };
+  const saved = await store(supabase, found, {
+    answer: draft.draft, source: "ai", gaps: draft.gaps, drafted: true, style, funderWords: draft.funderWords,
+  });
+  return saved ? { ok: true, answer: draft.draft, gaps: draft.gaps, funderWords: draft.funderWords, demo } : { ok: false, error: "error" };
 }
 
 /** The person writes or edits an answer: it becomes theirs. */

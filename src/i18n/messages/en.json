@@ -1406,7 +1406,7 @@
       "level": "some"
     },
     "answersTitle": "Your answers",
-    "answersIntro": "One question at a time. Gusty can draft an answer in your voice, from your project and your story. Anything it can't find stays [in brackets] for you to fill in: it never makes things up.",
+    "answersIntro": "One question at a time. Gusty drafts in the funder's language, using your project and your story, and can switch to sound more like you. Anything it can't find stays [in brackets] for you to fill in: it never makes things up.",
     "answersNone": "Bring in the application form or the questions to start writing answers.",
     "draft": "Help me draft this",
     "drafting": "Gusty is writing a draft. This takes about half a minute.",
@@ -1479,7 +1479,14 @@
       "eligible": "Who can apply",
       "requirement": "What you'll need",
       "excluded": "What they won't fund"
-    }
+    },
+    "soundLikeMe": "Sound more like me",
+    "soundLikeMeHint": "Off: Gusty mirrors the funder's language, which funders tend to respond to. On: your own voice comes first. Applies the next time Gusty drafts.",
+    "showTheirWords": "Show the funder's words",
+    "theirWordsIntro": "Words and phrases in this answer that come from the funder's own papers:",
+    "theirWordsNone": "None of the funder's words are in this answer yet.",
+    "demoDraftFunder": "(Demo: Gusty's draft in the funder's language will go here.) Our project is about reducing loneliness for [who it's for]. Last summer [what happened], and [how many people] took part.",
+    "demoFunderWord": "reducing loneliness"
   },
   "account": {
     "title": "Your account",

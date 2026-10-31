@@ -59,14 +59,14 @@ isOneToOne: false
                   ]
                 },"application_answers": {
                   Row: {
-                    "answer": string,"application_id": string,"created_at": string,"drafted_at": string | null,"gaps": NonNullable<Json>,"id": string,"owner_id": string,"project_id": string,"question": string,"question_key": string,"source": string,"updated_at": string
+                    "answer": string,"application_id": string,"created_at": string,"drafted_at": string | null,"funder_words": NonNullable<Json>,"gaps": NonNullable<Json>,"id": string,"owner_id": string,"project_id": string,"question": string,"question_key": string,"source": string,"style": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "answer"?: string,"application_id": string,"created_at"?: string,"drafted_at"?: string | null,"gaps"?: NonNullable<Json>,"id"?: string,"owner_id"?: string,"project_id": string,"question": string,"question_key": string,"source"?: string,"updated_at"?: string
+                    "answer"?: string,"application_id": string,"created_at"?: string,"drafted_at"?: string | null,"funder_words"?: NonNullable<Json>,"gaps"?: NonNullable<Json>,"id"?: string,"owner_id"?: string,"project_id": string,"question": string,"question_key": string,"source"?: string,"style"?: string,"updated_at"?: string
                   }
                   Update: {
-                    "answer"?: string,"application_id"?: string,"created_at"?: string,"drafted_at"?: string | null,"gaps"?: NonNullable<Json>,"id"?: string,"owner_id"?: string,"project_id"?: string,"question"?: string,"question_key"?: string,"source"?: string,"updated_at"?: string
+                    "answer"?: string,"application_id"?: string,"created_at"?: string,"drafted_at"?: string | null,"funder_words"?: NonNullable<Json>,"gaps"?: NonNullable<Json>,"id"?: string,"owner_id"?: string,"project_id"?: string,"question"?: string,"question_key"?: string,"source"?: string,"style"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
