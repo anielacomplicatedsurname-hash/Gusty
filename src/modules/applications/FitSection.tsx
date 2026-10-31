@@ -10,25 +10,21 @@ import type { Application } from "./data";
 
 type Copy = typeof en.applications;
 
-const LIGHTS: { level: FitLevel; colour: string }[] = [
-  { level: "weak", colour: "bg-(--status-old)" },
-  { level: "some", colour: "bg-(--status-aging)" },
-  { level: "strong", colour: "bg-(--status-fresh)" },
-];
+const LIGHT: Record<FitLevel, { dot: string; edge: string }> = {
+  strong: { dot: "bg-(--status-fresh)", edge: "border-[color:var(--status-fresh)]" },
+  some: { dot: "bg-(--status-aging)", edge: "border-[color:var(--status-aging)]" },
+  weak: { dot: "bg-(--status-old)", edge: "border-[color:var(--status-old)]" },
+};
 
-/** A traffic light for the overall fit: colour, position and words together, so it never relies on colour. */
+/** The overall fit: one coloured dot and edge, like Explore's lights, always with words. */
 function FitLight({ level, copy }: { level: FitLevel; copy: Copy }) {
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-border p-4">
-      <span aria-hidden="true" className="flex shrink-0 flex-col gap-1.5 rounded-full bg-ink p-2">
-        {LIGHTS.map((l) => (
-          <span key={l.level} className={`block size-4 rounded-full ${l.level === level ? l.colour : "bg-paper/25"}`} />
-        ))}
-      </span>
-      <span className="flex flex-col">
-        <span className="text-lg font-semibold">{copy.levels[level].title}</span>
-        <span className="text-sm text-text-muted">{copy.levels[level].body}</span>
-      </span>
+    <div className={`flex flex-col gap-1 rounded-xl border-l-4 bg-paper p-4 ${LIGHT[level].edge}`}>
+      <p className="flex items-center gap-2 text-lg font-semibold">
+        <span aria-hidden="true" className={`inline-block size-3 shrink-0 rounded-full ${LIGHT[level].dot}`} />
+        {copy.levels[level].title}
+      </p>
+      <p className="text-sm text-text-muted">{copy.levels[level].body}</p>
     </div>
   );
 }

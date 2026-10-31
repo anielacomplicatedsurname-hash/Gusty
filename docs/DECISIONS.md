@@ -426,7 +426,7 @@ Each view is shorter:
 Each view is now one to two phone screens.
 
 ## 2026-11-01 — Clearer fit and rules: a traffic light and three plain groups
-**Fit:** shown as a traffic light, using the same red, amber and green as the Explore freshness lights. Each
+**Fit:** shown as one small dot and a matching coloured edge, in the same red, amber and green as the Explore freshness lights (an earlier traffic-light graphic was too heavy). Each
 level is always shown in words as well as colour:
 - "Looks like a good fit";
 - "Partly fits";
