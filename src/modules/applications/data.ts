@@ -19,7 +19,10 @@ export type Application = {
   fitAt: string | null;
   answers: Answer[];
 };
-export type Answer = { key: string; answer: string; source: "ai" | "user"; gaps: Gap[]; draftedAt: string | null; updatedAt: string };
+export type Answer = {
+  key: string; answer: string; source: "ai" | "user"; gaps: Gap[]; draftedAt: string | null; updatedAt: string;
+  style: "funder" | "mine"; funderWords: string[];
+};
 
 /** A project's application spaces. Owner only (RLS). Before the database change, simply none. */
 export async function listApplications(projectId: string): Promise<ApplicationSummary[]> {
@@ -44,7 +47,7 @@ export async function getApplication(projectId: string, appId: string): Promise<
       .eq("id", appId).eq("project_id", projectId).maybeSingle(),
     supabase.from("application_materials").select("id, kind, origin, label, url, pages, reading, created_at")
       .eq("application_id", appId).order("created_at"),
-    supabase.from("application_answers").select("question_key, answer, source, gaps, drafted_at, updated_at").eq("application_id", appId),
+    supabase.from("application_answers").select("question_key, answer, source, gaps, drafted_at, updated_at, style, funder_words").eq("application_id", appId),
   ]);
   if (!app) return null;
   return {
@@ -62,6 +65,7 @@ export async function getApplication(projectId: string, appId: string): Promise<
     answers: (answers ?? []).map((a) => ({
       key: a.question_key, answer: a.answer, source: a.source as Answer["source"], gaps: (a.gaps as Gap[]) ?? [],
       draftedAt: a.drafted_at, updatedAt: a.updated_at,
+      style: a.style as Answer["style"], funderWords: (a.funder_words as string[]) ?? [],
     })),
   };
 }
