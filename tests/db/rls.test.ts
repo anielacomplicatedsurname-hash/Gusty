@@ -291,3 +291,17 @@ describe("project documents", () => {
     expect(removed ?? []).toEqual([]);
   });
 });
+
+describe("idea summaries", () => {
+  it("belong only to the project's owner", async () => {
+    const owner = client();
+    const other = client();
+    expect((await owner.auth.signInAnonymously()).error).toBeNull();
+    expect((await other.auth.signInAnonymously()).error).toBeNull();
+    const { data: project } = await owner.from("projects").insert({ title: "Mine", idea: "Private" }).select("id").single();
+    expect((await owner.from("project_summaries").insert({ project_id: project!.id, summary: "A summary" })).error).toBeNull();
+    expect((await other.from("project_summaries").select("summary").eq("project_id", project!.id)).data).toEqual([]);
+    const { data: changed } = await other.from("project_summaries").update({ summary: "Hijacked" }).eq("project_id", project!.id).select("project_id");
+    expect(changed ?? []).toEqual([]);
+  });
+});

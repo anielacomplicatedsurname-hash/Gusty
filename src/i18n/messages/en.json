@@ -440,7 +440,8 @@
       "revise_draft": "Shorter, simpler, warmer",
       "opportunity_search": "Searching for opportunities",
       "funding_routes": "Funding routes",
-      "read_document": "Reading a document"
+      "read_document": "Reading a document",
+      "idea_summary": "Idea summary"
     },
     "reasons": {
       "key": "API key missing, expired or refused",
@@ -1071,6 +1072,30 @@
       "fresh": "Searched this week",
       "aging": "Searched a few weeks ago",
       "old": "Searched over a month ago"
+    }
+  },
+  "ideaSummary": {
+    "title": "Your idea, as it stands",
+    "pointsTitle": "What makes it different",
+    "label": "Gusty's summary of everything you've said · updated {date}",
+    "writing": "Gusty is pulling together what you've said…",
+    "notYet": "Once Gusty has read your idea, a short summary of everything you've said will appear here.",
+    "stale": "You've added more since this summary.",
+    "refresh": "Refresh the summary",
+    "refreshing": "Refreshing…",
+    "originalTitle": "Your original words",
+    "originalHint": "Your own words are kept as you wrote them. Change anything: Gusty uses it next time.",
+    "demoNotice": "Demo mode: this just puts your own words side by side. Gusty's real summary appears once the AI key is set up.",
+    "demo": {
+      "note": "(Demo: Gusty's summary will go here.)"
+    },
+    "errors": {
+      "unavailable": "Gusty can't write a summary right now. Please try again later.",
+      "busy": "Gusty is a little busy right now. Please try again in a minute.",
+      "declined": "Gusty couldn't summarise this one.",
+      "invalid": "The summary came back incomplete. Please try again.",
+      "error": "Something went wrong. Please try again.",
+      "limit": "You've reached today's limit for Gusty's suggestions. It resets within a day."
     }
   }
 }
