@@ -401,7 +401,46 @@
       }
     ],
     "moreBeyond": "{n} more steps are in this stage. They'll show here as you go.",
-    "comingUp": "Coming up in this stage"
+    "comingUp": "Coming up in this stage",
+    "moods": {
+      "social": "Talking to people",
+      "writing": "Writing",
+      "planning": "Planning",
+      "research": "Looking things up",
+      "making": "Making something"
+    },
+    "moodAny": "Anything",
+    "moodQuestion": "What do you feel like doing today?",
+    "moodNone": "Nothing like that in this stage yet.",
+    "moodSuggest": "Suggest a small step: {mood}",
+    "moodSuggesting": "Gusty is thinking of one…",
+    "moodDemo": {
+      "social": {
+        "title": "Example: Tell one friend about your idea",
+        "detail": "Demo mode: Gusty would suggest a real step for your project here.",
+        "minutes": 10
+      },
+      "writing": {
+        "title": "Example: Write three sentences about why it matters",
+        "detail": "Demo mode: Gusty would suggest a real step for your project here.",
+        "minutes": 10
+      },
+      "planning": {
+        "title": "Example: Choose a date for a first small try",
+        "detail": "Demo mode: Gusty would suggest a real step for your project here.",
+        "minutes": 10
+      },
+      "research": {
+        "title": "Example: Look up one similar project near you",
+        "detail": "Demo mode: Gusty would suggest a real step for your project here.",
+        "minutes": 15
+      },
+      "making": {
+        "title": "Example: Sketch what a first session could look like",
+        "detail": "Demo mode: Gusty would suggest a real step for your project here.",
+        "minutes": 15
+      }
+    }
   },
   "offline": {
     "title": "You're offline right now.",

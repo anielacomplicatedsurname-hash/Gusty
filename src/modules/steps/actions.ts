@@ -10,8 +10,9 @@ import {
 import {
   clip, ExplainSchema, normaliseStage, normaliseSteps, SmallerSchema, StartSchema, STEPS_PROMPT_VERSION,
   STEPS_SYSTEM_PROMPT, StepsSchema, stepUserMessage, UNSTICK_PROMPT_VERSION, UNSTICK_PROMPTS, unstickUserMessage,
-  type UnstickKind,
+  type UnstickKind, MOOD_STEP_PROMPT_VERSION, moodStepMessage, moodStepPrompt,
 } from "@/ai/tasks/steps";
+import { isMood } from "./mood";
 import { logRun, withinDailyLimit } from "@/ai/usage";
 import { messagesFor } from "@/i18n/messages-for";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -310,4 +311,48 @@ export async function setMode(mode: string): Promise<SimpleResult> {
   if (!supabase) return { ok: false };
   const { error } = await supabase.from("user_preferences").upsert({ experience_mode: mode }, { onConflict: "user_id" });
   return { ok: !error };
+}
+
+/**
+ * "Suggest a small … step": when nothing in the current stage matches how the person feels today, Gusty
+ * adds one step of that kind to the stage. It keeps its kind, so it's found the next time.
+ */
+export async function suggestMoodStep(projectId: string, mood: string, lang: string): Promise<StepsResult> {
+  if (!isProjectId(projectId) || !isMood(mood)) return { ok: false, error: "error" };
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { ok: false, error: "unavailable" };
+  const [project, { data: stage }, { data: steps }] = await Promise.all([
+    loadProject(supabase, projectId),
+    supabase.from("project_stages").select("id, title, direction_id").eq("project_id", projectId).eq("status", "current").maybeSingle(),
+    supabase.from("next_steps").select("title, position").eq("project_id", projectId).neq("status", "replaced"),
+  ]);
+  if (!project || !stage) return { ok: false, error: "error" };
+
+  const provider = aiProvider();
+  let step: { title: string; detail: string; minutes: number } | undefined;
+  if (!provider) {
+    step = { ...messagesFor(lang).steps.moodDemo[mood] };
+    await logRun(supabase, { projectId, task: "mood_step", promptVersion: MOOD_STEP_PROMPT_VERSION, model: "demo", status: "demo" });
+  } else {
+    if (!(await withinDailyLimit(supabase))) return { ok: false, error: "limit" };
+    const result = await provider.generate({
+      system: moodStepPrompt(mood),
+      user: moodStepMessage(project.context, stage.title, (steps ?? []).map((s) => s.title)),
+      schema: SmallerSchema,
+      effort: "low",
+    });
+    await logRun(supabase, {
+      projectId, task: "mood_step", promptVersion: MOOD_STEP_PROMPT_VERSION, model: result.model,
+      status: result.ok ? "ok" : result.reason === "declined" ? "declined" : "error",
+      inputTokens: result.inputTokens, outputTokens: result.outputTokens, failure: result.ok ? undefined : result.reason,
+    });
+    if (!result.ok) return failed(result.reason);
+    step = normaliseSteps(result.data.steps, 1, 45)[0];
+  }
+  if (!step?.title) return { ok: false, error: "invalid" };
+  const { error } = await supabase.from("next_steps").insert({
+    project_id: projectId, direction_id: stage.direction_id, stage_id: stage.id, ...step, source: "ai", mood,
+    position: Math.max(0, ...(steps ?? []).map((s) => s.position + 1)),
+  });
+  return error ? { ok: false, error: "error" } : { ok: true };
 }

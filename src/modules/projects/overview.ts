@@ -39,6 +39,8 @@ export type ProjectOverview = {
   lastSearch: string | null;
   hasReading: boolean;
   hasDirection: boolean;
+  /** Open steps in the current stage, in order: for choosing one by how the person feels today. */
+  open: StepView[];
 };
 
 /** Everything the project's top card, the welcome-back card and My Projects need. RLS keeps it to the owner. */
@@ -75,5 +77,6 @@ export async function getProjectOverview(projectId: string): Promise<ProjectOver
     lastSearch: search.data?.[0]?.created_at ?? null,
     hasReading,
     hasDirection,
+    open: stage.open,
   };
 }

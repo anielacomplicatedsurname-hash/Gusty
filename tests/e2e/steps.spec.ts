@@ -326,3 +326,26 @@ test("Help me summarise it sums up the answers, and a kept summary stays the per
   await expect(worked.getByRole("heading", { name: "Summary (started by Gusty)" })).toBeVisible();
   await expect(worked.getByText("every Saturday.")).toBeVisible();
 });
+
+test("choosing the next step by how you feel today", async ({ page }) => {
+  await projectWithSteps(page);
+  const card = nextCard(page);
+  const moods = card.getByRole("navigation", { name: "What do you feel like doing today?" });
+  await expect(moods.getByRole("link", { name: "Anything" })).toHaveAttribute("aria-current", "page");
+
+  // Planning: the first planning step in the stage, not the first step overall.
+  await moods.getByRole("link", { name: "Planning" }).click();
+  await expect(moods.getByRole("link", { name: "Planning" })).toHaveAttribute("aria-current", "page");
+  await expect(card.getByRole("heading", { name: "Choose one small thing to try this week" })).toBeVisible();
+  const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+
+  // Nothing hands-on yet: Gusty can add one small step of that kind, and it's found from then on.
+  await moods.getByRole("link", { name: "Making something" }).click();
+  await expect(card.getByText("Nothing like that in this stage yet.")).toBeVisible();
+  await card.getByRole("button", { name: "Suggest a small step: making something" }).click();
+  await expect(card.getByRole("heading", { name: "Example: Sketch what a first session could look like" })).toBeVisible();
+
+  await moods.getByRole("link", { name: "Anything" }).click();
+  await expect(card.getByRole("heading", { name: "Write your idea in three sentences" })).toBeVisible();
+});

@@ -229,14 +229,14 @@ isOneToOne: false
                   ]
                 },"next_steps": {
                   Row: {
-                    "created_at": string,"detail": string,"direction_id": string | null,"done_at": string | null,"draft": string,"explanation": string | null,"id": string,"minutes": number | null,"notes": string,"notes_tidied": string,"owner_id": string,"position": number,"project_id": string,"source": string,"stage_id": string | null,"starter": string | null,"status": string,"title": string,"updated_at": string
+                    "created_at": string,"detail": string,"direction_id": string | null,"done_at": string | null,"draft": string,"explanation": string | null,"id": string,"minutes": number | null,"mood": string | null,"notes": string,"notes_tidied": string,"owner_id": string,"position": number,"project_id": string,"source": string,"stage_id": string | null,"starter": string | null,"status": string,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"draft"?: string,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"notes"?: string,"notes_tidied"?: string,"owner_id"?: string,"position"?: number,"project_id": string,"source"?: string,"stage_id"?: string | null,"starter"?: string | null,"status"?: string,"title": string,"updated_at"?: string
+                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"draft"?: string,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"mood"?: string | null,"notes"?: string,"notes_tidied"?: string,"owner_id"?: string,"position"?: number,"project_id": string,"source"?: string,"stage_id"?: string | null,"starter"?: string | null,"status"?: string,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"draft"?: string,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"notes"?: string,"notes_tidied"?: string,"owner_id"?: string,"position"?: number,"project_id"?: string,"source"?: string,"stage_id"?: string | null,"starter"?: string | null,"status"?: string,"title"?: string,"updated_at"?: string
+                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"draft"?: string,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"mood"?: string | null,"notes"?: string,"notes_tidied"?: string,"owner_id"?: string,"position"?: number,"project_id"?: string,"source"?: string,"stage_id"?: string | null,"starter"?: string | null,"status"?: string,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
