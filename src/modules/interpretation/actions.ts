@@ -135,19 +135,6 @@ export async function editFact(factId: string, rawValue: string): Promise<FactRe
   return { ok: !error && !!data };
 }
 
-export async function confirmFact(factId: string): Promise<FactResult> {
-  if (!isProjectId(factId)) return { ok: false };
-  const supabase = await createSupabaseServerClient();
-  if (!supabase) return { ok: false };
-  const { data, error } = await supabase
-    .from("project_facts")
-    .update({ status: "confirmed" })
-    .eq("id", factId)
-    .select("id")
-    .maybeSingle();
-  return { ok: !error && !!data };
-}
-
 export async function removeFact(factId: string): Promise<FactResult> {
   if (!isProjectId(factId)) return { ok: false };
   const supabase = await createSupabaseServerClient();

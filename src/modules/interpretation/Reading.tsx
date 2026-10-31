@@ -6,7 +6,7 @@ import type { FactKind } from "@/ai/tasks/interpret-idea";
 import { fill } from "@/i18n/format";
 import type en from "@/i18n/messages/en.json";
 import { undoChange } from "@/modules/idea-loop/actions";
-import { addFact, confirmFact, editFact, interpretProject, removeFact, type InterpretResult } from "./actions";
+import { addFact, editFact, interpretProject, removeFact, type InterpretResult } from "./actions";
 import type { Fact } from "./data";
 
 type Copy = typeof en.interpretation;
@@ -233,8 +233,8 @@ function FactItem({
         <span className="text-lg">{label}</span>
         <span className="flex flex-wrap gap-2 text-xs font-medium text-ink">
           <span className={`rounded-full px-2 py-0.5 ${chipStyle[fact.source]}`}>{copy.sources[fact.source]}</span>
-          {fact.status === "confirmed" && fact.source !== "user" && (
-            <span className="rounded-full bg-sage px-2 py-0.5">✓ {copy.confirmed}</span>
+          {fact.source === "ai_suggestion" && fact.status !== "confirmed" && (
+            <span className="py-0.5 font-normal text-text-muted">{copy.guessHint}</span>
           )}
         </span>
         {fact.fromStep && (
@@ -248,12 +248,6 @@ function FactItem({
         )}
       </div>
       <div className="flex shrink-0 flex-wrap gap-x-4 gap-y-1 text-sm font-medium">
-        {fact.status !== "confirmed" && (
-          <button type="button" className="min-h-6 underline underline-offset-4" disabled={disabled}
-            onClick={() => act(() => confirmFact(fact.id))} aria-label={`${copy.actions.confirm}: ${label}`}>
-            {copy.actions.confirm}
-          </button>
-        )}
         <button type="button" className="min-h-6 underline underline-offset-4" disabled={disabled}
           onClick={() => setEditing(true)} aria-label={`${copy.actions.edit}: ${label}`}>
           {copy.actions.edit}

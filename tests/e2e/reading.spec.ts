@@ -27,11 +27,13 @@ test("Gusty's first reading appears automatically and is labelled honestly", asy
   await expect(page.getByText("Who would this help most?")).toBeVisible();
 });
 
-test("people can confirm, edit, add and remove, and it all persists", async ({ page }) => {
+test("people can edit, add and remove, and it all persists", async ({ page }) => {
   await newProject(page);
 
-  await section(page, "In one sentence").getByRole("button", { name: /^That's right/ }).click();
-  await expect(section(page, "In one sentence").getByText("Confirmed")).toBeVisible();
+  // No "That's right" to tap: editing is how something becomes theirs. Gusty's guesses say so.
+  await expect(page.getByRole("button", { name: /^That's right/ })).toHaveCount(0);
+  await expect(section(page, "Where you are now").getByText("Gusty's guess")).toBeVisible();
+  await expect(section(page, "Where you are now").getByText("Edit to make it yours")).toBeVisible();
 
   const stage = section(page, "Where you are now");
   await stage.getByRole("button", { name: /^Edit/ }).click();
@@ -39,6 +41,7 @@ test("people can confirm, edit, add and remove, and it all persists", async ({ p
   await stage.getByRole("button", { name: "Save" }).click();
   await expect(stage.getByText("Planning")).toBeVisible();
   await expect(stage.getByText("Your words")).toBeVisible();
+  await expect(stage.getByText("Edit to make it yours")).toHaveCount(0);
 
   const audience = section(page, "Who it's for");
   await audience.getByRole("button", { name: /Add/ }).click();
@@ -50,7 +53,6 @@ test("people can confirm, edit, add and remove, and it all persists", async ({ p
   await expect(page.getByText("Who would this help most?")).toHaveCount(0);
 
   await page.reload();
-  await expect(section(page, "In one sentence").getByText("Confirmed")).toBeVisible();
   await expect(section(page, "Where you are now").getByText("Planning")).toBeVisible();
   await expect(section(page, "Who it's for").getByText("Neighbours with broken lamps")).toBeVisible();
 });
