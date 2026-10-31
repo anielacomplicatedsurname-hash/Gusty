@@ -16,7 +16,9 @@ import { logRun, withinDailyLimit } from "@/ai/usage";
 import { messagesFor } from "@/i18n/messages-for";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isProjectId } from "@/modules/projects/validation";
+import { after } from "next/server";
 import { loadDocuments } from "@/modules/documents/data";
+import { suggestFactUpdates } from "@/modules/idea-loop/suggest";
 import { loadWorkedOut } from "@/modules/step-work/data";
 import { isMode } from "./modes";
 
@@ -272,6 +274,8 @@ export async function setStepDone(stepId: string, done: boolean): Promise<Simple
     .in("status", ["open", "done"])
     .select("id")
     .maybeSingle();
+  // A finished step may say something new about the idea: Gusty looks, after responding, and only suggests.
+  if (done && data) after(() => suggestFactUpdates(supabase, stepId));
   return { ok: !error && !!data };
 }
 

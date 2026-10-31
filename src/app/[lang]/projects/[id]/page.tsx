@@ -26,6 +26,8 @@ import { getSavedOpportunities } from "@/modules/explore/data";
 import { ResultCard } from "@/modules/explore/Results";
 import { getWorkedOut } from "@/modules/step-work/data";
 import { WorkedOut } from "@/modules/step-work/WorkedOut";
+import { getSuggestions } from "@/modules/idea-loop/data";
+import { Suggestions } from "@/modules/idea-loop/Suggestions";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getMessages();
@@ -114,6 +116,15 @@ async function ProjectContent({
       {tab === "idea" && (
         <>
           <SummaryBlock projectId={project.id} lang={lang} t={t}
+            reading={
+              <section aria-labelledby="reading-title" className="flex flex-col gap-3 border-t border-border pt-4">
+                <div>
+                  <h3 id="reading-title" className="scroll-mt-6 text-lg font-semibold">{t.interpretation.title}</h3>
+                  <p className="mt-1 text-sm text-text-muted">{t.interpretation.intro}</p>
+                </div>
+                <ReadingSection projectId={project.id} lang={lang} t={t} />
+              </section>
+            }
             original={
               <IdeaEditor
                 projectId={project.id}
@@ -122,16 +133,6 @@ async function ProjectContent({
               />
             }
           />
-          <section aria-labelledby="reading-title" className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
-            <div className="flex items-center gap-3">
-              <BrandSymbol name="spark" size={28} />
-              <h2 id="reading-title" className="text-xl font-semibold">{t.interpretation.title}</h2>
-            </div>
-            <p className="mt-1 text-sm text-text-muted">{t.interpretation.intro}</p>
-            <div className="mt-5">
-              <ReadingSection projectId={project.id} lang={lang} t={t} />
-            </div>
-          </section>
         </>
       )}
 
@@ -144,6 +145,7 @@ async function ProjectContent({
 
       {tab === "notes" && (
         <>
+          <p className="-mt-2 text-sm text-text-muted">{t.workedOut.explainer}</p>
           <WorkedOutSection projectId={project.id} lang={lang} t={t} />
           <DocumentsBlock projectId={project.id} lang={lang} t={t} />
         </>
@@ -187,11 +189,19 @@ async function ReadingSection({ projectId, lang, t }: { projectId: string; lang:
   );
 }
 
-/** "Your idea, as it stands", with the person's own words folded underneath. */
-async function SummaryBlock({ projectId, lang, t, original }: { projectId: string; lang: string; t: Messages; original: ReactNode }) {
-  const summary = await getIdeaSummary(projectId);
-  if (!summary) return <div className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">{original}</div>;
-  return <IdeaSummarySection summary={summary} projectId={projectId} lang={lang} copy={t.ideaSummary} original={original} />;
+/**
+ * "Your idea, as it stands": one card holding the summary, Gusty's suggested updates from finished steps,
+ * what Gusty understood, and the person's own words folded underneath.
+ */
+async function SummaryBlock({ projectId, lang, t, original, reading }: {
+  projectId: string; lang: string; t: Messages; original: ReactNode; reading: ReactNode;
+}) {
+  const [summary, suggestions] = await Promise.all([getIdeaSummary(projectId), getSuggestions(projectId)]);
+  if (!summary) return <div className="flex flex-col gap-4 rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">{reading}{original}</div>;
+  return (
+    <IdeaSummarySection summary={summary} projectId={projectId} lang={lang} copy={t.ideaSummary} original={original} reading={reading}
+      suggestions={<Suggestions items={suggestions} labels={t.interpretation.sections} copy={t.ideaLoop} />} />
+  );
 }
 
 /** One line of where the project is: its stage, how ready it is for funding, and what's been saved. */
@@ -204,6 +214,11 @@ function ProgressChips({ overview, projectPath, t }: { overview: ProjectOverview
         <li><Link href={`${projectPath}?tab=plan`} className={chip}>{fill(h.stageChip, { n: String(overview.stage.number), title: overview.stage.title })}</Link></li>
       )}
       <li><Link href={`${projectPath}?tab=funding`} className={chip}>{fill(h.readyChip, { n: String(overview.ready.done), total: String(overview.ready.total) })}</Link></li>
+      {overview.suggestions > 0 && (
+        <li><Link href={`${projectPath}?tab=idea#suggestions-title`} className={chip}>
+          {overview.suggestions === 1 ? t.ideaLoop.chip : fill(t.ideaLoop.chipMany, { n: String(overview.suggestions) })}
+        </Link></li>
+      )}
       {overview.saved > 0 && (
         <li><Link href={`${projectPath}?tab=funding`} className={chip}>{overview.saved === 1 ? h.oneSavedChip : fill(h.manySavedChip, { n: String(overview.saved) })}</Link></li>
       )}

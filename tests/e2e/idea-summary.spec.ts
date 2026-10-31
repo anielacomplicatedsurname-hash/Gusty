@@ -19,10 +19,10 @@ test("your idea, as it stands: a summary of what's been said, with the person's 
   await expect(section.getByText("Demo mode: this just puts your own words side by side.")).toBeVisible();
 
   // The person's own words are folded underneath, never changed, and still editable.
-  const original = section.locator("details");
+  const original = section.locator("details", { hasText: "Your original words" });
   await expect(original).not.toHaveAttribute("open", "");
   await original.getByText("Your original words").click();
-  const idea = section.getByRole("textbox");
+  const idea = original.getByRole("textbox");
   await expect(idea).toHaveValue("cycling club");
   const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);

@@ -32,6 +32,8 @@ export type ProjectOverview = {
   stage: { number: number; title: string } | null;
   ready: { done: number; total: number };
   saved: number;
+  /** Gusty's pending suggestions for the idea, from finished steps. */
+  suggestions: number;
   lastSearch: string | null;
   hasReading: boolean;
   hasDirection: boolean;
@@ -42,13 +44,14 @@ export async function getProjectOverview(projectId: string): Promise<ProjectOver
   if (!isProjectId(projectId)) return null;
   const supabase = await createSupabaseServerClient();
   if (!supabase) return null;
-  const [reading, steps, readiness, saved, search] = await Promise.all([
+  const [reading, steps, readiness, saved, search, suggestions] = await Promise.all([
     getReading(projectId),
     getStepsState(projectId),
     getReadiness(projectId),
     supabase.from("found_opportunities").select("id", { count: "exact", head: true }).eq("project_id", projectId).not("saved_at", "is", null),
     supabase.from("opportunity_searches").select("created_at").eq("project_id", projectId).eq("status", "done")
       .order("created_at", { ascending: false }).limit(1),
+    supabase.from("fact_suggestions").select("id", { count: "exact", head: true }).eq("project_id", projectId).eq("status", "pending"),
   ]);
   const stage = currentStage(steps.stages, steps.steps);
   const hasReading = reading.facts.length > 0;
@@ -63,6 +66,7 @@ export async function getProjectOverview(projectId: string): Promise<ProjectOver
     stage: stage.current ? { number: stage.number, title: stage.current.title } : null,
     ready: { done: readiness ? AREAS.filter((a) => readiness.inPlace[a]).length : 0, total: AREAS.length },
     saved: saved.count ?? 0,
+    suggestions: suggestions.count ?? 0,
     lastSearch: search.data?.[0]?.created_at ?? null,
     hasReading,
     hasDirection,
