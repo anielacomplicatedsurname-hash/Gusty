@@ -76,7 +76,7 @@
 
   --font-sans: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-serif), Georgia, "Times New Roman", serif;
-  --font-hand-accent: var(--font-hand), "Comic Sans MS", cursive;
+  --font-hand-accent: var(--font-hand), "Marker Felt", cursive;
 
   --radius-card: 1.25rem;
   --radius-pill: 999px;
@@ -112,12 +112,11 @@ body {
     letter-spacing: -0.015em;
   }
 
-  /* Small accent copy in the hand style: overlines, short brand messages. */
-  .type-accent-hand {
+  /* The marker hand, for one short brand line at a large size. Never for body text: hand fonts are
+     harder to read for many dyslexic readers, so it's kept short and big. */
+  .type-marker {
     font-family: var(--font-hand-accent);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    -webkit-text-stroke: 0.02em currentColor;
+    line-height: 1.15;
   }
 
   /* Spaced uppercase labels in the UI sans. */

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Caveat_Brush, Google_Sans_Flex, Instrument_Serif } from "next/font/google";
+import { Google_Sans_Flex, Instrument_Serif, Permanent_Marker } from "next/font/google";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { ServiceWorker } from "@/components/ServiceWorker";
@@ -24,9 +24,10 @@ const displaySerif = Instrument_Serif({
   variable: "--font-serif",
   display: "swap",
 });
-const displayHand = Caveat_Brush({
+// A marker hand for the one brand line ("Big possibilities. Small steps."), used large and sparingly.
+const displayHand = Permanent_Marker({
   weight: "400",
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   variable: "--font-hand",
   display: "swap",
 });
