@@ -7,14 +7,14 @@ import { NeedPicker } from "./NeedPicker";
 import { SuggestRoutes } from "./SuggestRoutes";
 
 /** Where each "what would help next" points: the part of the page (or Explore) that does it. */
-const HREF: Record<Area, (base: string) => string> = {
-  clear: () => "#reading-title",
-  who: () => "#reading-title",
-  where: () => "#reading-title",
+const HREF: Record<Area, (project: string, explore: string) => string> = {
+  clear: (p) => `${p}?tab=idea#reading-title`,
+  who: (p) => `${p}?tab=idea#reading-title`,
+  where: (p) => `${p}?tab=idea#reading-title`,
   amount: () => "#need",
-  plan: () => "#steps-title",
-  progress: () => "#steps-title",
-  opportunities: (base) => base,
+  plan: (p) => `${p}?tab=plan#steps-title`,
+  progress: (p) => `${p}?tab=plan#steps-title`,
+  opportunities: (_, explore) => explore,
 };
 
 /** "Ready for funding": what's in place, up to three next things, the amount needed, and Gusty's routes. */
@@ -60,7 +60,7 @@ export function ReadinessSection({ readiness, projectId, lang, copy }: {
           <ul className="mt-2 flex flex-col gap-1">
             {missing.map((a) => (
               <li key={a}>
-                <Link href={HREF[a](explore)} className="font-medium underline underline-offset-4">{copy.next[a]}</Link>
+                <Link href={HREF[a](`/${lang}/projects/${projectId}`, explore)} className="font-medium underline underline-offset-4">{copy.next[a]}</Link>
               </li>
             ))}
           </ul>

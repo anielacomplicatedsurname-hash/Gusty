@@ -12,7 +12,8 @@ import { TitleEditor } from "@/modules/projects/TitleEditor";
 import { deleteProject } from "@/modules/projects/actions";
 import { ConfirmButton } from "@/modules/projects/ConfirmButton";
 import { getStepsState } from "@/modules/steps/data";
-import { NextSteps } from "@/modules/steps/NextSteps";
+import { NextSteps, TopStep } from "@/modules/steps/NextSteps";
+import { getProjectOverview, type ProjectOverview } from "@/modules/projects/overview";
 import { aiProvider } from "@/ai";
 import { getDocuments } from "@/modules/documents/data";
 import { DocumentsSection } from "@/modules/documents/DocumentsSection";
@@ -29,12 +30,15 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t.projects.title, robots: { index: false, follow: false } };
 }
 
-export default async function ProjectPage({ params }: PageProps<"/[lang]/projects/[id]">) {
+const TABS = ["plan", "idea", "funding", "notes"] as const;
+type Tab = (typeof TABS)[number];
+
+export default async function ProjectPage({ params, searchParams }: PageProps<"/[lang]/projects/[id]">) {
   const t = await getMessages();
   return (
     <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6 md:py-14">
       <Suspense fallback={<p className="text-text-muted">{t.projects.loading}</p>}>
-        <ProjectContent params={params} t={t} />
+        <ProjectContent params={params} searchParams={searchParams} t={t} />
       </Suspense>
     </section>
   );
@@ -42,13 +46,15 @@ export default async function ProjectPage({ params }: PageProps<"/[lang]/project
 
 async function ProjectContent({
   params,
+  searchParams,
   t,
 }: {
   params: PageProps<"/[lang]/projects/[id]">["params"];
+  searchParams: PageProps<"/[lang]/projects/[id]">["searchParams"];
   t: Messages;
 }) {
-  const { lang, id } = await params;
-  const project = await getProject(id);
+  const [{ lang, id }, query] = await Promise.all([params, searchParams]);
+  const [project, overview] = await Promise.all([getProject(id), getProjectOverview(id)]);
   const back = (
     <Link href={`/${lang}/projects`} className="text-sm font-medium underline underline-offset-4">
       ← {t.projects.back}
@@ -65,8 +71,14 @@ async function ProjectContent({
     );
   }
 
+  const projectPath = `/${lang}/projects/${project.id}`;
+  // Plan opens first once there's a plan. Before that, the Idea tab does: it's where Gusty reads the idea
+  // and the person checks what Gusty understood.
+  const asked = TABS.find((name) => name === query.tab);
+  const tab: Tab = asked ?? (overview && !overview.hasDirection ? "idea" : "plan");
+
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       {back}
       <header>
         <TitleEditor
@@ -80,39 +92,58 @@ async function ProjectContent({
         </p>
       </header>
 
-      <div className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
-        <IdeaEditor
-          projectId={project.id}
-          initialIdea={project.idea}
-          copy={{ label: t.projects.ideaLabel, hint: t.projects.ideaHint, status: t.projects.save }}
-        />
-      </div>
+      {overview && <ProgressChips overview={overview} projectPath={projectPath} t={t} />}
+      {overview && <NextCard overview={overview} projectId={project.id} projectPath={projectPath} lang={lang} t={t} />}
 
-      <section
-        aria-labelledby="reading-title"
-        className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6"
-      >
-        <div className="flex items-center gap-3">
-          <BrandSymbol name="spark" size={28} />
-          <h2 id="reading-title" className="text-xl font-semibold">
-            {t.interpretation.title}
-          </h2>
-        </div>
-        <p className="mt-1 text-sm text-text-muted">{t.interpretation.intro}</p>
-        <div className="mt-5">
-          <ReadingSection projectId={project.id} lang={lang} t={t} />
-        </div>
-      </section>
+      <nav aria-label={t.projectHome.tabsLabel} className="flex gap-1 rounded-full bg-oat p-1">
+        {TABS.map((name) => (
+          <Link key={name} href={`${projectPath}?tab=${name}`} aria-current={name === tab ? "page" : undefined}
+            className={`flex min-h-11 flex-1 items-center justify-center rounded-full text-sm font-semibold ${
+              name === tab ? "bg-ink text-paper" : "text-ink hover:bg-paper/70"}`}>
+            {t.projectHome.tabs[name]}
+          </Link>
+        ))}
+      </nav>
 
-      <WorkedOutSection projectId={project.id} lang={lang} t={t} />
+      {tab === "plan" && (
+        <NextStepsSection projectId={project.id} lang={lang} t={t} hideCurrent={overview?.next.kind === "step"} />
+      )}
 
-      <DocumentsBlock projectId={project.id} lang={lang} t={t} />
+      {tab === "idea" && (
+        <>
+          <div className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
+            <IdeaEditor
+              projectId={project.id}
+              initialIdea={project.idea}
+              copy={{ label: t.projects.ideaLabel, hint: t.projects.ideaHint, status: t.projects.save }}
+            />
+          </div>
+          <section aria-labelledby="reading-title" className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
+            <div className="flex items-center gap-3">
+              <BrandSymbol name="spark" size={28} />
+              <h2 id="reading-title" className="text-xl font-semibold">{t.interpretation.title}</h2>
+            </div>
+            <p className="mt-1 text-sm text-text-muted">{t.interpretation.intro}</p>
+            <div className="mt-5">
+              <ReadingSection projectId={project.id} lang={lang} t={t} />
+            </div>
+          </section>
+        </>
+      )}
 
-      <NextStepsSection projectId={project.id} lang={lang} t={t} />
+      {tab === "funding" && (
+        <>
+          <ReadinessBlock projectId={project.id} lang={lang} t={t} />
+          <ExploreSection projectId={project.id} lang={lang} t={t} />
+        </>
+      )}
 
-      <ReadinessBlock projectId={project.id} lang={lang} t={t} />
-
-      <ExploreSection projectId={project.id} lang={lang} t={t} />
+      {tab === "notes" && (
+        <>
+          <WorkedOutSection projectId={project.id} lang={lang} t={t} />
+          <DocumentsBlock projectId={project.id} lang={lang} t={t} />
+        </>
+      )}
 
       <section aria-labelledby="feedback-card-title" className="rounded-(--radius-card) bg-sky/60 p-6 text-ink">
         <h2 id="feedback-card-title" className="text-lg font-semibold">{t.feedback.cardTitle}</h2>
@@ -149,6 +180,50 @@ async function ReadingSection({ projectId, lang, t }: { projectId: string; lang:
       aiReady={aiProvider() !== null}
       copy={t.interpretation}
     />
+  );
+}
+
+/** One line of where the project is: its stage, how ready it is for funding, and what's been saved. */
+function ProgressChips({ overview, projectPath, t }: { overview: ProjectOverview; projectPath: string; t: Messages }) {
+  const h = t.projectHome;
+  const chip = "inline-flex min-h-9 items-center rounded-full bg-oat px-3 text-sm text-ink hover:bg-oat/70";
+  return (
+    <ul className="-mt-2 flex flex-wrap gap-2" aria-label={t.readiness.progressLabel}>
+      {overview.stage && (
+        <li><Link href={`${projectPath}?tab=plan`} className={chip}>{fill(h.stageChip, { n: String(overview.stage.number), title: overview.stage.title })}</Link></li>
+      )}
+      <li><Link href={`${projectPath}?tab=funding`} className={chip}>{fill(h.readyChip, { n: String(overview.ready.done), total: String(overview.ready.total) })}</Link></li>
+      {overview.saved > 0 && (
+        <li><Link href={`${projectPath}?tab=funding`} className={chip}>{overview.saved === 1 ? h.oneSavedChip : fill(h.manySavedChip, { n: String(overview.saved) })}</Link></li>
+      )}
+    </ul>
+  );
+}
+
+/** The single most useful thing to do now, always at the top. */
+function NextCard({ overview, projectId, projectPath, lang, t }: {
+  overview: ProjectOverview; projectId: string; projectPath: string; lang: string; t: Messages;
+}) {
+  const next = overview.next;
+  const h = t.projectHome;
+  return (
+    <section aria-labelledby="next-title" className="flex flex-col gap-3">
+      <h2 id="next-title" className="type-label text-text-muted">{h.nextLabel}</h2>
+      {next.kind === "step" ? (
+        <TopStep step={next.step} projectId={projectId} lang={lang} copy={t.steps} />
+      ) : (
+        <div className="flex flex-col items-start gap-2 rounded-xl bg-signal p-4 text-ink">
+          <p className="text-lg font-semibold">{h.next[next.kind].title}</p>
+          <p>{h.next[next.kind].body}</p>
+          <Link className="btn-primary mt-2" href={
+            next.kind === "explore" ? `/${lang}/explore?project=${projectId}`
+              : next.kind === "reading" ? `${projectPath}?tab=idea`
+              : `${projectPath}?tab=plan`}>
+            {h.next[next.kind].action}
+          </Link>
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -204,7 +279,9 @@ async function ExploreSection({ projectId, lang, t }: { projectId: string; lang:
 }
 
 /** Next steps appear once Gusty has read the idea. */
-async function NextStepsSection({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
+async function NextStepsSection({ projectId, lang, t, hideCurrent = false }: {
+  projectId: string; lang: string; t: Messages; hideCurrent?: boolean;
+}) {
   const [{ facts }, state] = await Promise.all([getReading(projectId), getStepsState(projectId)]);
   if (facts.length === 0 || state.unavailable) return null;
   return (
@@ -225,6 +302,7 @@ async function NextStepsSection({ projectId, lang, t }: { projectId: string; lan
           steps={state.steps}
           initialMode={state.mode}
           demo={state.demo}
+          hideCurrent={hideCurrent}
           copy={t.steps}
         />
       </div>

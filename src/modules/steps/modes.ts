@@ -40,3 +40,22 @@ export function visibleSteps(steps: StepView[], mode: Mode) {
     doneCount: done.length,
   };
 }
+
+type StageLike = { id: string; title: string; status: string };
+
+/**
+ * The stage being worked on and its steps. Earlier stages are history; with no stages (older projects),
+ * all steps count as the current ones.
+ */
+export function currentStage<S extends StageLike>(stages: S[], steps: StepView[]) {
+  const current = stages.find((st) => st.status === "current") ?? null;
+  const stageSteps = current ? steps.filter((st) => st.stage_id === current.id) : steps;
+  const open = stageSteps.filter((st) => st.status === "open").sort((a, b) => a.position - b.position);
+  return {
+    current,
+    stageSteps,
+    open,
+    finished: stageSteps.length > 0 && open.length === 0,
+    number: stages.filter((st) => st.status === "done").length + 1,
+  };
+}

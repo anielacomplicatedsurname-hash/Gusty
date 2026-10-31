@@ -171,7 +171,8 @@ test("a returning person can bring guest projects by typing the code", async ({ 
   await createProject(page, "Phone project");
   // Work on a step as a guest, so the answer has to come along too.
   const phoneProject = page.url();
-  await page.getByRole("button", { name: "Show me where I could go next" }).click({ timeout: 15_000 });
+  await page.getByRole("link", { name: "See directions" }).click({ timeout: 15_000 });
+  await page.getByRole("button", { name: "Show me where I could go next" }).click();
   await page.getByRole("button", { name: "Choose this: Shape the idea" }).click();
   await page.getByRole("link", { name: "Work on this with Gusty: Write your idea in three sentences" }).click();
   const answer = page.locator("section[aria-labelledby=questions-title] ol > li").first().getByLabel("Your answer");
@@ -188,7 +189,7 @@ test("a returning person can bring guest projects by typing the code", async ({ 
   await expect(page.getByText(`Signed in as ${email}`)).toBeVisible();
   await expect(page.getByRole("link", { name: /Phone project/ })).toBeVisible();
   await expect(page.getByRole("link", { name: /Laptop project/ })).toBeVisible();
-  await page.goto(phoneProject);
+  await page.goto(`${phoneProject}?tab=notes`);
   const worked = page.locator("section[aria-labelledby=worked-title]");
   await worked.getByText("Write your idea in three sentences").click();
   await expect(worked.getByText("An answer written as a guest")).toBeVisible();

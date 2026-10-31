@@ -13,6 +13,7 @@ test("ready for funding: what's in place, what would help next, the amount, and 
   await page.getByRole("button", { name: "Start with my idea" }).click();
   await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/);
 
+  await page.getByRole("navigation", { name: "Project sections" }).getByRole("link", { name: "Funding" }).click();
   const section = page.locator("section[aria-labelledby=readiness-title]");
   await expect(section.getByRole("heading", { name: "Ready for funding" })).toBeVisible();
   const bar = section.getByRole("progressbar", { name: "Ready for funding" });

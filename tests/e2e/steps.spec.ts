@@ -13,11 +13,16 @@ async function projectWithSteps(page: Page) {
   await page.getByLabel("What's your idea?").fill("A repair café in the old library. Volunteers fix things.");
   await page.getByRole("button", { name: "Start with my idea" }).click();
   await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/);
-  await page.getByRole("button", { name: "Show me where I could go next" }).click({ timeout: 15_000 });
+  // A new project opens on Idea, where Gusty reads it; the next-step card then points to the plan.
+  await page.getByRole("link", { name: "See directions" }).click({ timeout: 15_000 });
+  await page.getByRole("button", { name: "Show me where I could go next" }).click();
   await expect(page.getByText("Gusty recommends starting here")).toBeVisible();
   await page.getByRole("button", { name: "Choose this: Shape the idea" }).click();
-  await expect(page.getByText("Start here", { exact: true })).toBeVisible();
+  await expect(nextCard(page).getByRole("heading", { level: 4 })).toBeVisible();
 }
+
+/** The "Your next step" card at the top of the project. */
+const nextCard = (page: Page) => page.locator("section[aria-labelledby=next-title]");
 
 const sql = (query: string) =>
   execFileSync("docker", ["exec", "supabase_db_gusty", "psql", "-U", "postgres", "-d", "postgres", "-qc", query]);
@@ -28,28 +33,31 @@ const stepTitle = (page: Page, name: string) => page.getByRole("heading", { leve
 test("choosing a direction gives small steps, the first one highlighted", async ({ page }) => {
   await projectWithSteps(page);
   await expect(page.getByText("Your direction")).toBeVisible();
-  await expect(stepTitle(page, "Write your idea in three sentences")).toBeVisible();
-  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(3);
+  // The first step is the next-step card at the top; the rest of the stage follows in the plan.
+  await expect(nextCard(page).getByRole("heading", { name: "Write your idea in three sentences" })).toBeVisible();
+  await expect(page.getByText("Coming up in this stage")).toBeVisible();
+  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(2);
 });
 
 test("modes change how much is shown, never the steps", async ({ page }) => {
   await projectWithSteps(page);
   await mode(page, "Keep it simple").click();
-  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(1);
+  // Just the one next thing: the card at the top.
+  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(0);
   await expect(page.getByText("2 more steps are waiting")).toBeVisible();
 
   await page.reload();
-  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(1);
+  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(0);
 
   await mode(page, "The bigger picture").click();
-  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(3);
+  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(2);
 });
 
 test("ticking a step off keeps it, and progress survives a reload", async ({ page }) => {
   await projectWithSteps(page);
   await page.getByLabel("Done: Write your idea in three sentences").check();
   await expect(page.getByText("1 done so far")).toBeVisible();
-  await expect(page.getByText("Start here", { exact: true })).toBeVisible();
+  await expect(nextCard(page).getByRole("heading", { name: "List three people you could tell about it" })).toBeVisible();
   await expect(stepTitle(page, "List three people you could tell about it")).toBeVisible();
   // The next step starts unticked: a tick never carries over (tester report, 2026-10-28).
   await expect(page.getByLabel("Done: List three people you could tell about it")).not.toBeChecked();
@@ -139,10 +147,11 @@ test("working on a step with Gusty: questions, rewording, answers, notes, done",
 
   // Done: back to the project, step ticked off.
   await page.getByRole("button", { name: "This step is done" }).click();
-  await expect(page).toHaveURL(projectUrl);
+  await expect(page).toHaveURL(projectUrl.split("?")[0]);
   await expect(page.getByText("1 done so far")).toBeVisible();
 
-  // The answers are kept on the project page, folded up until opened.
+  // The answers are kept in the project's Notes, folded up until opened.
+  await page.getByRole("navigation", { name: "Project sections" }).getByRole("link", { name: "Notes" }).click();
   const worked = page.locator("section[aria-labelledby=worked-title]");
   await expect(worked.getByRole("heading", { name: "What you've worked out" })).toBeVisible();
   await expect(worked.getByText("Done · 1 answer · notes")).toBeVisible();
@@ -206,7 +215,7 @@ test("Help me say more suggests a longer answer the person can use or ignore; ti
   await questions.first().getByLabel("Your answer").blur();
   await expect(questions.first().locator("[data-status=saved]")).toBeVisible();
   sql(`update public.step_questions set answer_tidied = 'A café where people fix things.' where answer = 'a cafe were people fix stuff'`);
-  await page.goto(projectUrl);
+  await page.goto(`${projectUrl.split("?")[0]}?tab=notes`);
   const worked = page.locator("section[aria-labelledby=worked-title]");
   await worked.getByText("Write your idea in three sentences").click();
   await expect(worked.getByText("A café where people fix things.")).toBeVisible();
@@ -221,7 +230,7 @@ test("Help me say more suggests a longer answer the person can use or ignore; ti
 test("the plan grows one stage at a time, with a calm moment when a stage is done", async ({ page }) => {
   await projectWithSteps(page);
   await expect(page.getByText("Stage 1", { exact: true })).toBeVisible();
-  await expect(page.getByText("Getting clear on the idea")).toBeVisible();
+  await expect(page.getByText("Getting clear on the idea", { exact: true })).toBeVisible();
 
   for (const title of ["Write your idea in three sentences", "List three people you could tell about it", "Choose one small thing to try this week"]) {
     await page.getByLabel(`Done: ${title}`).check();
@@ -244,14 +253,16 @@ test("the plan grows one stage at a time, with a calm moment when a stage is don
   await page.reload();
   await page.locator("section[aria-labelledby=finished-title]").getByRole("button", { name: "Plan the next stage" }).click();
   await expect(page.getByText("Stage 2", { exact: true })).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByText("Sharing it with a few people")).toBeVisible();
+  await expect(page.getByText("Sharing it with a few people", { exact: true })).toBeVisible();
   await expect(stepTitle(page, "Pick one person to tell about your idea")).toBeVisible();
   await expect(page.getByText("3 done so far")).toBeVisible();
 
   // The bigger picture: where you've been, the same three steps in focus, then a quieter look ahead.
   await mode(page, "The bigger picture").click();
-  await expect(page.getByRole("heading", { name: "Your immediate focus" })).toBeVisible();
-  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(3);
+  // The step in focus is the card at the top; the rest of the stage follows.
+  await expect(nextCard(page).getByRole("heading", { name: "Pick one person to tell about your idea" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Coming up in this stage" })).toBeVisible();
+  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(2);
   const past = page.locator("section[aria-labelledby=past-title]");
   await expect(past.getByText("Stage 1: Getting clear on the idea")).toBeVisible();
   await past.getByText("Stage 1: Getting clear on the idea").click();
@@ -267,7 +278,7 @@ test("the plan grows one stage at a time, with a calm moment when a stage is don
   await page.getByRole("button", { name: "Add", exact: true }).click();
   await expect(ahead.getByRole("link", { name: "Ask the librarian about Saturdays" })).toBeVisible();
   await expect(ahead.getByText("3 more", { exact: true })).toBeVisible();
-  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(3);
+  await expect(page.locator("ol[aria-label='Your next steps'] > li")).toHaveCount(2);
   const journeyScan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(journeyScan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 });
@@ -309,7 +320,7 @@ test("Help me summarise it sums up the answers, and a kept summary stays the per
   await page.reload();
   await expect(page.getByLabel("Your summary")).toHaveValue("A café where neighbours fix things together, every Saturday.");
 
-  await page.goto(projectUrl);
+  await page.goto(`${projectUrl.split("?")[0]}?tab=notes`);
   const worked = page.locator("section[aria-labelledby=worked-title]");
   await worked.getByText("Write your idea in three sentences").click();
   await expect(worked.getByRole("heading", { name: "Summary (started by Gusty)" })).toBeVisible();
