@@ -28,13 +28,18 @@ import { getWorkedOut } from "@/modules/step-work/data";
 import { WorkedOut } from "@/modules/step-work/WorkedOut";
 import { getSuggestions } from "@/modules/idea-loop/data";
 import { Suggestions } from "@/modules/idea-loop/Suggestions";
+import { MIN_VOICE_WORDS } from "@/ai/tasks/voice";
+import { getBank } from "@/modules/bank/data";
+import { ExperienceSection } from "@/modules/bank/ExperienceSection";
+import { ResearchSection } from "@/modules/bank/ResearchSection";
+import { VoiceSection } from "@/modules/bank/VoiceSection";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getMessages();
   return { title: t.projects.title, robots: { index: false, follow: false } };
 }
 
-const TABS = ["plan", "idea", "funding", "notes"] as const;
+const TABS = ["plan", "idea", "funding", "story"] as const;
 type Tab = (typeof TABS)[number];
 
 export default async function ProjectPage({ params, searchParams }: PageProps<"/[lang]/projects/[id]">) {
@@ -78,7 +83,8 @@ async function ProjectContent({
   const projectPath = `/${lang}/projects/${project.id}`;
   // Plan opens first once there's a plan. Before that, the Idea tab does: it's where Gusty reads the idea
   // and the person checks what Gusty understood.
-  const asked = TABS.find((name) => name === query.tab);
+  // "notes" was the Story tab's old name: old links still open it.
+  const asked = TABS.find((name) => name === (query.tab === "notes" ? "story" : query.tab));
   const tab: Tab = asked ?? (overview && !overview.hasDirection ? "idea" : "plan");
 
   return (
@@ -143,9 +149,10 @@ async function ProjectContent({
         </>
       )}
 
-      {tab === "notes" && (
+      {tab === "story" && (
         <>
           <p className="-mt-2 text-sm text-text-muted">{t.workedOut.explainer}</p>
+          <BankBlock projectId={project.id} lang={lang} t={t} />
           <WorkedOutSection projectId={project.id} lang={lang} t={t} />
           <DocumentsBlock projectId={project.id} lang={lang} t={t} />
         </>
@@ -259,6 +266,20 @@ function NextCard({ overview, projectId, projectPath, lang, t }: {
 /** What Gusty learned from the project's own documents, and a way to add one. */
 async function DocumentsBlock({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
   return <DocumentsSection docs={await getDocuments(projectId)} projectId={projectId} lang={lang} copy={t.documents} />;
+}
+
+/** The project bank: the person's experience, research Gusty found, and how they write. */
+async function BankBlock({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
+  const bank = await getBank(projectId);
+  if (!bank) return null;
+  return (
+    <>
+      <ExperienceSection items={bank.evidence} projectId={projectId} copy={t.bank} />
+      <ResearchSection sources={bank.research} state={bank.researchState} projectId={projectId} lang={lang} copy={t.bank} />
+      <VoiceSection voice={bank.voice} ownWords={bank.ownWords} minWords={MIN_VOICE_WORDS} demo={bank.voiceDemo}
+        projectId={projectId} lang={lang} copy={t.bank} />
+    </>
+  );
 }
 
 /** Answers and notes from the steps, once there are any. */

@@ -227,7 +227,7 @@
     "assisted": "Gusty added ideas",
     "draft": "Summary (started by Gusty)",
     "draftCount": "summary",
-    "explainer": "Everything you've written while doing steps, and your documents. When you finish a step, Gusty uses it to keep your idea up to date: you'll see \"Updated from\" on the Idea tab, and you can undo anything."
+    "explainer": "Everything about your project in one place: your experience, research that backs it, how you write, your notes from steps and your documents. Gusty uses it to keep your idea up to date, and it'll help you write applications."
   },
   "errorPage": {
     "title": "Something went wrong on our side.",
@@ -558,6 +558,7 @@
           "paragraphs": [
             "When Gusty reads your idea or suggests steps, the text of that project is sent to Anthropic, the company that makes the Claude AI, to prepare the answer. Under Anthropic's commercial terms, this text isn't used to train their models.",
             "When you ask Gusty to search for opportunities, Claude searches the web for you. The search words describe your idea's theme and the area you gave (for example “community repair café, Hackney”), and go to the search engine Anthropic uses. They never include your name or email. What Gusty finds is saved with your project, only for you.",
+            "Looking for research that backs your idea works the same way: the search words describe your idea's theme, never you, and the sources Gusty finds are saved with your project, only for you. When you ask Gusty to describe how you write, only your own writing about that project is sent.",
             "If you bring in a PDF, it's sent to Anthropic for Claude to read, then discarded: Gusty doesn't keep the file. It keeps only its notes (a short summary and what the document says you've done), which you can read and delete on the project page.",
             "Your projects are private to you. We never show them to other people who use Gusty, and we never use one person's ideas to make suggestions for someone else: each request only includes the project you're working on.",
             "AI suggestions can be wrong. Please avoid including sensitive details, such as health information, about yourself or other people in your ideas."
@@ -1039,7 +1040,7 @@
       "plan": "Plan",
       "idea": "Idea",
       "funding": "Funding",
-      "notes": "Notes"
+      "story": "Story"
     },
     "stageChip": "Stage {n} · {title}",
     "readyChip": "Ready for funding: {n} of {total}",
@@ -1117,5 +1118,93 @@
     "chip": "Gusty has an update for your idea",
     "chipMany": "Gusty has {n} updates for your idea",
     "chipGrew": "Your idea grew from your steps"
+  },
+  "bank": {
+    "experienceTitle": "Your experience",
+    "experienceIntro": "What you've done before, what you've won, what people have said and numbers that matter. In your own words: funders love real examples.",
+    "kinds": {
+      "past_project": "Something I've done before",
+      "win": "Funding or an award I've had",
+      "quote": "What someone said",
+      "number": "A number that matters",
+      "other": "Something else"
+    },
+    "kindLabel": "What is it?",
+    "textLabel": "Tell it in your own words",
+    "textHint": "For example: “Ran a summer bike club for 12 kids in 2024. Every one of them kept riding.”",
+    "urlLabel": "A link, if there is one (optional)",
+    "add": "Add to your story",
+    "adding": "Adding…",
+    "addAnother": "Add something",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "yourWords": "Your words",
+    "emptyExperience": "Nothing here yet. Even small things count: a stall you ran, a thank-you note, a number of people who came.",
+    "link": "Link",
+    "errors": {
+      "invalid": "Please write something first.",
+      "link": "That link doesn't look right. Use a full https:// address, or leave it empty.",
+      "error": "That didn't save. Please try again."
+    },
+    "researchTitle": "Research that backs your idea",
+    "researchIntro": "Gusty looks for recent studies, official figures and trusted reports that show the need for your idea, or the good it does. Funders often ask for this.",
+    "researchWhat": "A research search reads real web pages, so each one costs Gusty a little to run (about 10p to 30p). That's why there's a small daily allowance, separate from deep searches.",
+    "researchAllowance": "Research searches left today: {n} of {max}",
+    "researchAllowanceProject": "One research search per project each day.",
+    "research": "Find research",
+    "researchAgain": "Find more research",
+    "researchStarting": "Starting…",
+    "researchRunning": "Gusty is looking for research. This can take a minute or two, and you can leave this page: anything it finds will be here.",
+    "researchFailed": "The last research search didn't finish. Nothing was used up: you can try again.",
+    "researchLimitProject": "You've already looked for research for this project today. You can look again tomorrow.",
+    "researchLimitPerson": "You've used today's {max} research searches. They reset within a day.",
+    "researchNone": "Nothing yet. Gusty only keeps sources it actually read, with a link to each.",
+    "researchErrors": {
+      "limit": "Gusty is resting for today. Please try again tomorrow.",
+      "unavailable": "Gusty can't search right now. Please try again later.",
+      "error": "That didn't start. Please try again."
+    },
+    "foundBy": "Found by Gusty on {date}. Check the source before you use it in an application.",
+    "whyItHelps": "Why it could help:",
+    "gustysLink": "Gusty's suggestion",
+    "openSource": "Read the source",
+    "demoNotice": "Demo mode: these are made-up examples, not real research. Real searches start once the AI key is set up.",
+    "demoSources": [
+      {
+        "title": "Example: a study about your kind of project",
+        "url": "https://example.org/study",
+        "finding": "This is where Gusty would say what a real study shows, in plain words.",
+        "relevance": "Here Gusty would say why it supports your idea."
+      },
+      {
+        "title": "Example: official figures for your area",
+        "url": "https://example.org/figures",
+        "finding": "This is where Gusty would quote what official figures say, with the source.",
+        "relevance": "Here Gusty would link the figures to your project."
+      }
+    ],
+    "voiceTitle": "How you write",
+    "voiceIntro": "So anything Gusty helps you write, like an application, sounds like you and not like a template.",
+    "voiceFromGusty": "Gusty's description, from your own words only. Change anything.",
+    "voiceYours": "Your words",
+    "voiceDescribe": "Describe how I write",
+    "voiceDescribeAgain": "Describe it again",
+    "voiceDescribing": "Reading your words…",
+    "voiceEdit": "Edit",
+    "voiceLabel": "How you write",
+    "voiceTooShort": "Gusty needs a little more of your own writing first ({n} of about {min} words). Answer a step's questions or add to your experience, then come back.",
+    "voiceExampleLabel": "Something you might write:",
+    "voiceErrors": {
+      "tooShort": "Gusty needs a little more of your own writing first.",
+      "limit": "Gusty is resting for today. Please try again tomorrow.",
+      "busy": "Gusty is a little busy right now. Please try again in a minute.",
+      "declined": "Gusty couldn't describe this one.",
+      "unavailable": "Gusty can't do this right now. Please try again later.",
+      "error": "That didn't work. Please try again."
+    },
+    "demoVoice": "- Demo: Gusty's description of how you write will go here\n- For example: short sentences, warm, uses “we”\nSomething you might write: (Demo: an example sentence in your voice will go here.)",
+    "voiceDemoNotice": "Demo mode: this is an example. Gusty's real description appears once the AI key is set up."
   }
 }

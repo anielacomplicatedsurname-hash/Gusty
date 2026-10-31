@@ -151,7 +151,7 @@ test("working on a step with Gusty: questions, rewording, answers, notes, done",
   await expect(page.getByText("1 done so far")).toBeVisible();
 
   // The answers are kept in the project's Notes, folded up until opened.
-  await page.getByRole("navigation", { name: "Project sections" }).getByRole("link", { name: "Notes" }).click();
+  await page.getByRole("navigation", { name: "Project sections" }).getByRole("link", { name: "Story" }).click();
   const worked = page.locator("section[aria-labelledby=worked-title]");
   await expect(worked.getByRole("heading", { name: "What you've worked out" })).toBeVisible();
   await expect(worked.getByText("Done · 1 answer · notes")).toBeVisible();

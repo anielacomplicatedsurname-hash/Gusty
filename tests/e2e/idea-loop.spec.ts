@@ -134,8 +134,8 @@ test("undo puts back what Gusty had before", async ({ page }) => {
   await expect(summary.getByText("Updated from one of your steps")).toHaveCount(0);
 });
 
-test("the Notes tab says what it's for", async ({ page }) => {
+test("the Story tab (old Notes links still work) says what it's for", async ({ page }) => {
   const id = await newProject(page);
   await page.goto(`/en/projects/${id}?tab=notes`);
-  await expect(page.getByText("Everything you've written while doing steps, and your documents.", { exact: false })).toBeVisible();
+  await expect(page.getByText("Everything about your project in one place", { exact: false })).toBeVisible();
 });

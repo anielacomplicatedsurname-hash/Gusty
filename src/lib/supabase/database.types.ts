@@ -255,6 +255,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"project_evidence": {
+                  Row: {
+                    "created_at": string,"found_at": string | null,"id": string,"kind": string,"origin": string,"owner_id": string,"position": number,"project_id": string,"publisher": string,"relevance": string,"text": string,"title": string,"updated_at": string,"url": string,"year": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"found_at"?: string | null,"id"?: string,"kind": string,"origin"?: string,"owner_id"?: string,"position"?: number,"project_id": string,"publisher"?: string,"relevance"?: string,"text": string,"title"?: string,"updated_at"?: string,"url"?: string,"year"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"found_at"?: string | null,"id"?: string,"kind"?: string,"origin"?: string,"owner_id"?: string,"position"?: number,"project_id"?: string,"publisher"?: string,"relevance"?: string,"text"?: string,"title"?: string,"updated_at"?: string,"url"?: string,"year"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "project_evidence_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"project_facts": {
                   Row: {
                     "created_at": string,"id": string,"kind": string,"owner_id": string,"position": number,"project_id": string,"source": string,"status": string,"updated_at": string,"value": string
@@ -335,6 +355,26 @@ isOneToOne: true
                   Relationships: [
                     
                   ]
+                },"project_voice": {
+                  Row: {
+                    "description": string,"owner_id": string,"project_id": string,"source": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "description": string,"owner_id"?: string,"project_id": string,"source"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "description"?: string,"owner_id"?: string,"project_id"?: string,"source"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "project_voice_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: true
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"projects": {
                   Row: {
                     "created_at": string,"funding_need": string | null,"id": string,"idea": string,"organisation_id": string,"owner_id": string,"title": string,"title_source": string,"updated_at": string
@@ -352,6 +392,26 @@ isOneToOne: true
       columns: ["organisation_id"]
 isOneToOne: false
       referencedRelation: "organisations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"research_runs": {
+                  Row: {
+                    "created_at": string,"finished_at": string | null,"id": string,"owner_id": string,"project_id": string,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"finished_at"?: string | null,"id"?: string,"owner_id"?: string,"project_id": string,"status"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"finished_at"?: string | null,"id"?: string,"owner_id"?: string,"project_id"?: string,"status"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "research_runs_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
       referencedColumns: ["id"]
     }
                   ]

@@ -340,3 +340,21 @@ won't change it without asking. Guesses say "Edit to make it yours". "Ready for 
 person's words and Gusty restating them, but not Gusty's own guesses. Items confirmed before this change
 still count and stay protected. The Idea tab also says that editing there doesn't change Notes: Notes is the
 person's record of their steps and feeds the idea, never the other way round.
+
+## 2026-11-01 — The project bank: the first slice of "Help me apply"
+The founder wants applications to draw on everything about a project and sound like the founder, not a
+template. So before drafting, Gusty keeps a bank in the Story tab (renamed from Notes; old `?tab=notes` links
+still work). It holds:
+- **Your experience:** past projects, past wins, what people said, numbers. These are the person's own words,
+  with an optional https link.
+- **Research that backs your idea:** credible studies, official figures and trusted reports, found with web
+  search. Gusty keeps only sources it read during the search, each with a safe https link, publisher and year,
+  and shows "Found by Gusty on [date]. Check the source before you use it in an application". The link to
+  the project is marked "Gusty's suggestion". Research has its own small allowance (1 per project and 2 per
+  person a day), separate from deep search, and runs can't be deleted to reset it.
+- **How you write:** three to five traits and an example sentence. Gusty builds them only from the person's own
+  writing (idea, their answers and notes, their own facts and experience; never Gusty's drafts, tidied copies
+  or helped answers), once there are at least 60 words. The person can edit it, and it becomes theirs.
+
+Next slices: an application space per opportunity (bring in the form, questions, T&Cs and guidance by upload,
+paste or public link), then drafting answers in the person's voice using the funder's key terms.

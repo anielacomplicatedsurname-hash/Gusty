@@ -17,7 +17,7 @@ test("a calm project home: one next step, a line of progress, four areas, and a 
 
   // New projects open on Idea, where Gusty reads them; the next step points to the plan.
   const tabs = page.getByRole("navigation", { name: "Project sections" });
-  await expect(tabs.getByRole("link")).toHaveText(["Plan", "Idea", "Funding", "Notes"]);
+  await expect(tabs.getByRole("link")).toHaveText(["Plan", "Idea", "Funding", "Story"]);
   await expect(tabs.getByRole("link", { name: "Idea" })).toHaveAttribute("aria-current", "page");
   const next = page.locator("section[aria-labelledby=next-title]");
   await expect(next.getByText("Choose where your idea could go next")).toBeVisible({ timeout: 15_000 });
