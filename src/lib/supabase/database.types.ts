@@ -97,6 +97,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"funding_routes": {
+                  Row: {
+                    "created_at": string,"first_step": string,"fit": string,"focus": string,"id": string,"owner_id": string,"position": number,"project_id": string,"route": string,"why": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"first_step"?: string,"fit"?: string,"focus"?: string,"id"?: string,"owner_id"?: string,"position"?: number,"project_id": string,"route": string,"why"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"first_step"?: string,"fit"?: string,"focus"?: string,"id"?: string,"owner_id"?: string,"position"?: number,"project_id"?: string,"route"?: string,"why"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "funding_routes_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"next_steps": {
                   Row: {
                     "created_at": string,"detail": string,"direction_id": string | null,"done_at": string | null,"draft": string,"explanation": string | null,"id": string,"minutes": number | null,"notes": string,"notes_tidied": string,"owner_id": string,"position": number,"project_id": string,"source": string,"stage_id": string | null,"starter": string | null,"status": string,"title": string,"updated_at": string
@@ -245,14 +265,14 @@ isOneToOne: false
                   ]
                 },"projects": {
                   Row: {
-                    "created_at": string,"id": string,"idea": string,"organisation_id": string,"owner_id": string,"title": string,"title_source": string,"updated_at": string
+                    "created_at": string,"funding_need": string | null,"id": string,"idea": string,"organisation_id": string,"owner_id": string,"title": string,"title_source": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"id"?: string,"idea": string,"organisation_id"?: string,"owner_id"?: string,"title": string,"title_source"?: string,"updated_at"?: string
+                    "created_at"?: string,"funding_need"?: string | null,"id"?: string,"idea": string,"organisation_id"?: string,"owner_id"?: string,"title": string,"title_source"?: string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"id"?: string,"idea"?: string,"organisation_id"?: string,"owner_id"?: string,"title"?: string,"title_source"?: string,"updated_at"?: string
+                    "created_at"?: string,"funding_need"?: string | null,"id"?: string,"idea"?: string,"organisation_id"?: string,"owner_id"?: string,"title"?: string,"title_source"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
