@@ -1252,7 +1252,7 @@
     "linkHint": "Gusty can open public pages only. If it needs a login (like a private Google Doc or a funder portal), download it as a PDF or paste the text instead.",
     "read": "Read this",
     "reading": "Gusty is reading it. This can take up to a minute.",
-    "added": "Gusty has read it. What it found is below.",
+    "added": "Gusty has read it and kept what matters.",
     "limitNote": "Up to 8 papers a day.",
     "errors": {
       "limit": "You've brought in today's 8 papers. You can add more tomorrow.",
@@ -1414,6 +1414,29 @@
     "demoDraftNotice": "Demo mode: this is a made-up example, not a real draft. Gusty's real drafts start once the AI key is set up.",
     "demoDraft": "(Demo: Gusty's draft of this answer will go here, written in your voice from your story.) We started because [why you started]. Last summer [what happened], and [how many people] took part.",
     "demoGap": "Example: a number that shows the need",
-    "demoGapSuggestion": "Example: one small way you could find it"
+    "demoGapSuggestion": "Example: one small way you could find it",
+    "viewsLabel": "Application sections",
+    "views": {
+      "papers": "Papers",
+      "brief": "What they want",
+      "fit": "Your fit",
+      "answers": "Answers"
+    },
+    "answeredCount": "{n} of {total} answered",
+    "nextPapers": "Start by bringing in the funder's papers.",
+    "nextForm": "Bring in the form or the list of questions to start your answers.",
+    "nextAnswer": "Next: question {n}.",
+    "nextDone": "Every question has an answer. Read them through, fill any [brackets], then download.",
+    "addAnother": "Add another paper",
+    "seeBrief": "See what they're looking for",
+    "questionsInAnswers": "Their questions are under Answers, ready to write.",
+    "moreFromPapers": "More from their papers",
+    "moreFit": "Their words, your way, and rules to check",
+    "status": {
+      "empty": "Not started",
+      "ai": "Gusty's draft",
+      "user": "Your words"
+    },
+    "openQuestion": "Open"
   }
 }

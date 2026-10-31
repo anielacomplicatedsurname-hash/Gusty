@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { MATERIAL_KINDS } from "@/ai/tasks/funder-material";
@@ -11,8 +12,11 @@ type Copy = typeof en.applications;
 const WAYS = ["pdf", "paste", "link"] as const;
 
 /** Bring in one of the funder's papers: upload a PDF, paste the text, or give a public link. */
-export function AddMaterial({ appId, lang, copy }: { appId: string; lang: string; copy: Copy }) {
+export function AddMaterial({ appId, lang, copy, startOpen, nextHref, papersHref }: {
+  appId: string; lang: string; copy: Copy; startOpen: boolean; nextHref: string; papersHref: string;
+}) {
   const router = useRouter();
+  const [open, setOpen] = useState(startOpen);
   const [kind, setKind] = useState<string>("form");
   const [way, setWay] = useState<(typeof WAYS)[number]>("pdf");
   const [file, setFile] = useState<File | null>(null);
@@ -43,11 +47,30 @@ export function AddMaterial({ appId, lang, copy }: { appId: string; lang: string
       else result = await addLink(appId, kind, url, lang);
       if (!result.ok) return setError(copy.errors[result.error] ?? copy.errors.error);
       setDone(true);
+      setOpen(false);
       setFile(null);
       setText("");
       setUrl("");
+      // Stay on Papers to see what was added (with papers, the space would otherwise open on Answers).
+      router.replace(papersHref, { scroll: false });
       router.refresh();
     });
+
+  const read_ = done ? (
+    <div role="status" className="flex flex-col items-start gap-2 rounded-xl bg-confirmed/60 p-3 text-ink">
+      <p>{copy.added}</p>
+      <Link href={nextHref} className="font-medium underline underline-offset-4">{copy.seeBrief} →</Link>
+    </div>
+  ) : null;
+
+  if (!open) {
+    return (
+      <div className="flex flex-col items-start gap-3">
+        {read_}
+        <button type="button" className="btn-secondary" onClick={() => { setOpen(true); setDone(false); }}>{copy.addAnother}</button>
+      </div>
+    );
+  }
 
   return (
     <section aria-labelledby="add-title" className="flex flex-col gap-4 rounded-(--radius-card) bg-surface-raised p-5 sm:p-6" aria-busy={pending}>
@@ -106,7 +129,7 @@ export function AddMaterial({ appId, lang, copy }: { appId: string; lang: string
           {copy.reading}
         </p>
       )}
-      {done && <p role="status" className="rounded-xl bg-confirmed/60 p-3 text-ink">{copy.added}</p>}
+      {read_}
       {error && <p role="alert" className="font-medium">{error}</p>}
     </section>
   );

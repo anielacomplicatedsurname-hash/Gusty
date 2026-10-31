@@ -75,6 +75,10 @@ export function FitSection({ app, lang, copy }: { app: Application; lang: string
               </ul>
             </div>
           )}
+          {(fit.words.length > 0 || fit.check.length > 0) && (
+            <details className="rounded-xl border border-border">
+              <summary className="flex min-h-11 cursor-pointer items-center px-4 font-medium">{copy.moreFit}</summary>
+              <div className="flex flex-col gap-5 border-t border-border p-4">
           {fit.words.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold">{copy.wordsTitle}</h3>
@@ -99,6 +103,9 @@ export function FitSection({ app, lang, copy }: { app: Application; lang: string
                 ))}
               </ul>
             </div>
+          )}
+              </div>
+            </details>
           )}
           {app.fitAt && <p className="text-sm text-text-muted">{fill(copy.fitLabel, { date: formatDate(app.fitAt, lang) })}</p>}
           <div className="flex flex-col gap-1"><p className="text-sm text-text-muted">{copy.fitAgainHint}</p>{again}</div>
