@@ -4,7 +4,9 @@ import { Suspense } from "react";
 import { BrandSymbol } from "@/components/BrandSymbol";
 import { getMessages, type Messages } from "@/i18n/dictionaries";
 import { fill } from "@/i18n/format";
-import { getExploreState } from "@/modules/explore/data";
+import { getExploreState, getLastSearches } from "@/modules/explore/data";
+import { SEARCHES_PER_PERSON_PER_DAY } from "@/modules/explore/limits";
+import { ProjectList } from "@/modules/explore/ProjectList";
 import { Results } from "@/modules/explore/Results";
 import { SearchPanel } from "@/modules/explore/SearchPanel";
 import { listProjects } from "@/modules/projects/data";
@@ -18,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ExplorePage({ params, searchParams }: PageProps<"/[lang]/explore">) {
   const t = await getMessages();
   return (
-    <section className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-10 sm:px-6 md:py-14">
+    <section className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 md:py-14">
       <header className="flex flex-col items-start gap-4">
         <BrandSymbol name="horizon-hill" size={56} />
         <h1 className="type-display text-5xl sm:text-6xl">{t.explore.title}</h1>
@@ -48,20 +50,12 @@ async function ExploreContent({ params, searchParams, t }: {
   }
 
   const chosen = projects.find((p) => p.id === query.project) ?? (projects.length === 1 ? projects[0] : null);
+  const last = await getLastSearches();
   if (!chosen) {
     return (
-      <nav aria-labelledby="choose-title" className="flex flex-col gap-3">
-        <h2 id="choose-title" className="text-xl font-semibold">{e.chooseTitle}</h2>
-        <ul className="flex flex-col gap-2">
-          {projects.map((p) => (
-            <li key={p.id}>
-              <Link href={`/${lang}/explore?project=${p.id}`} className="flex min-h-12 items-center rounded-xl border border-border px-4 font-medium hover:bg-oat/60">
-                {p.title}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <div className="max-w-xl">
+        <ProjectList projects={projects} last={last} chosenId={null} lang={lang} copy={e} />
+      </div>
     );
   }
 
@@ -72,27 +66,29 @@ async function ExploreContent({ params, searchParams, t }: {
   const hasDone = !!latest && (latest.status === "done" || results.length > 0);
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
+    <div className="grid gap-10 lg:grid-cols-[16rem_1fr] lg:items-start">
+      <div className="order-last lg:order-first lg:sticky lg:top-24">
+        <ProjectList projects={projects} last={last} chosenId={chosen.id} lang={lang} copy={e} />
+      </div>
+      <div className="flex min-w-0 flex-col gap-6">
         <h2 className="text-2xl font-semibold">{fill(e.forProject, { title: chosen.title })}</h2>
-        {projects.length > 1 && (
-          <Link href={`/${lang}/explore`} className="self-start text-sm font-medium underline underline-offset-4">{e.chooseAnother}</Link>
+        <SearchPanel
+          key={chosen.id}
+          projectId={chosen.id}
+          lang={lang}
+          place={state.place}
+          running={latest?.status === "running"}
+          failed={latest?.status === "failed"}
+          limit={state.limit}
+          left={state.left}
+          max={SEARCHES_PER_PERSON_PER_DAY}
+          hasResults={hasDone}
+          copy={e}
+        />
+        {hasDone && latest && (
+          <Results results={results} foundOn={latest.createdAt} place={latest.place} lang={lang} demo={state.demo} copy={e} />
         )}
       </div>
-      <SearchPanel
-        key={chosen.id}
-        projectId={chosen.id}
-        lang={lang}
-        place={state.place}
-        running={latest?.status === "running"}
-        failed={latest?.status === "failed"}
-        limit={state.limit}
-        hasResults={hasDone}
-        copy={e}
-      />
-      {hasDone && latest && (
-        <Results results={results} foundOn={latest.createdAt} place={latest.place} lang={lang} demo={state.demo} copy={e} />
-      )}
     </div>
   );
 }

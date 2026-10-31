@@ -256,3 +256,15 @@ checks back. Search words describe the idea's theme and area only, never names o
 updated). The founder-curated opportunities table and admin page were removed. Explore is no longer indexed.
 Next: "Save to my project" turns a result into a step.
 
+## 2026-10-31 — Explore: deep search allowance, freshness lights, saving, more kinds of support
+Founder feedback after trying Explore. "Not checked by Gusty" undersold the work, so results now read "Found
+by Gusty on [date]. Details can change, so confirm with the funder before you apply": still honest that the
+details come from the web and can change. The search is called "Deep search", shows the day's allowance and
+what each one costs Gusty, and widens to residencies, fellowships, prizes, commissions, sponsorship, in-kind
+support, accelerators, crowdfunding and social investment, each labelled by kind. A side list shows each
+project with a freshness light (up to date within a week, worth refreshing up to four weeks, out of date
+after), always with a word, never colour alone; the three status colours are functional, not brand colours.
+Results can be saved to the project, where they appear with "Add a step to check it". Decided for later:
+paying for deep searches (free monthly allowance, extra for feedback, then credit packs and supporter
+allowances, priced from real costs), and community-shared opportunities.
+

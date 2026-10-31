@@ -57,7 +57,7 @@ async function runSearch(supabase: Supabase, project: { id: string; title: strin
       // Demo: clearly labelled made-up examples, so the layout can be seen without an AI key.
       const blank: FoundRaw = {
         title: "", funder: "", url: "", summary: "", whoFor: "", amount: "", deadline: "", deadlineNote: "",
-        scale: "", complexity: "", complexityReason: "", fit: "",
+        kind: "other", scale: "", complexity: "", complexityReason: "", fit: "",
       };
       raw = messagesFor(lang).explore.demoResults.map((d) => ({ ...blank, ...d }));
       await logRun(supabase, { projectId: project.id, task: "opportunity_search", promptVersion: SEARCH_PROMPT_VERSION, model: "demo", status: "demo" });
@@ -92,7 +92,7 @@ async function runSearch(supabase: Supabase, project: { id: string; title: strin
         found.map((f, rank) => ({
           search_id: searchId, project_id: project.id, rank, title: f.title, funder: f.funder, url: f.url,
           summary: f.summary, who_for: f.whoFor, amount: f.amount, deadline: f.deadline || null,
-          deadline_note: f.deadlineNote, scale: f.scale, complexity: f.complexity,
+          deadline_note: f.deadlineNote, kind: f.kind, scale: f.scale, complexity: f.complexity,
           complexity_reason: f.complexityReason, fit: f.fit,
         })),
       );
@@ -106,4 +106,35 @@ async function runSearch(supabase: Supabase, project: { id: string; title: strin
     console.error("Opportunity search failed:", error);
     await finish("failed");
   }
+}
+
+/** Saves a result to the project, or removes it from saved. */
+export async function setSaved(foundId: string, saved: boolean): Promise<{ ok: boolean }> {
+  if (!isProjectId(foundId)) return { ok: false };
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { ok: false };
+  const { data, error } = await supabase
+    .from("found_opportunities").update({ saved_at: saved ? new Date().toISOString() : null }).eq("id", foundId).select("id").maybeSingle();
+  return { ok: !error && !!data };
+}
+
+/** Turns a saved opportunity into a small step in the project's current stage: check whether you can apply. */
+export async function addCheckStep(foundId: string, lang: string): Promise<{ ok: boolean }> {
+  if (!isProjectId(foundId)) return { ok: false };
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { ok: false };
+  const { data: found } = await supabase.from("found_opportunities").select("project_id, title, funder, url").eq("id", foundId).maybeSingle();
+  if (!found) return { ok: false };
+  const [{ data: existing }, { data: stage }] = await Promise.all([
+    supabase.from("next_steps").select("position").eq("project_id", found.project_id),
+    supabase.from("project_stages").select("id").eq("project_id", found.project_id).eq("status", "current").maybeSingle(),
+  ]);
+  const t = messagesFor(lang).projects;
+  const title = t.checkStep.replace("{title}", found.title).slice(0, 160);
+  const detail = [found.funder, found.url].filter(Boolean).join(" · ").slice(0, 500);
+  const { error } = await supabase.from("next_steps").insert({
+    project_id: found.project_id, stage_id: stage?.id ?? null, title, detail, source: "user",
+    position: Math.max(0, ...(existing ?? []).map((s) => s.position + 1)),
+  });
+  return { ok: !error };
 }

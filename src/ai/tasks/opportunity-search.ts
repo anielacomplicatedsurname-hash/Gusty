@@ -1,11 +1,16 @@
 import { z } from "zod";
 import { SHARED_RULES } from "./context";
 
-export const SEARCH_PROMPT_VERSION = "opportunity-search@1";
+export const SEARCH_PROMPT_VERSION = "opportunity-search@2";
 export const SCALES = ["neighbourhood", "local", "regional", "national", "continental", "international"] as const;
 export type Scale = (typeof SCALES)[number];
 export const COMPLEXITIES = ["light", "moderate", "involved"] as const;
 export type Complexity = (typeof COMPLEXITIES)[number];
+export const KINDS = [
+  "grant", "crowdfunding", "residency", "fellowship", "prize", "commission", "sponsorship", "in_kind",
+  "accelerator", "social_investment", "other",
+] as const;
+export type Kind = (typeof KINDS)[number];
 /** The most results kept from one search: enough to choose from, never an endless list. */
 export const MAX_FOUND = 15;
 
@@ -18,6 +23,7 @@ const found = z.object({
   amount: z.string(),
   deadline: z.string(),
   deadlineNote: z.string(),
+  kind: z.string(),
   scale: z.string(),
   complexity: z.string(),
   complexityReason: z.string(),
@@ -36,9 +42,12 @@ const RULES = SHARED_RULES.replace(
 );
 
 export const SEARCH_PROMPT = `You are Gusty's researcher. You find real, currently open (or regularly recurring) opportunities
-that could help one person's project happen: grants, funds, small community pots, council and parish
-sponsorships, ward budgets, housing association and local business community funds, community foundations,
-trusts, lottery funds, prizes, bursaries, residencies, crowdfunding match schemes and in-kind support.
+that could help one person's project happen. Look for every kind: grants and funds (from small community pots,
+council and parish budgets, ward funds, housing association and local business community funds, community
+foundations and trusts, to lottery and national funds), crowdfunding platforms and match-funding schemes,
+residencies, fellowships, bursaries, prizes and awards, commissions and open calls, sponsorship, in-kind
+support (free space, equipment, mentoring, pro bono help), accelerators and incubators, and social investment
+(for example community shares or loans for social enterprises).
 
 Search widely at every scale, from the project's own neighbourhood outwards: neighbourhood, local (town,
 borough, council), regional, national, continental (for example Europe-wide) and international. Small local
@@ -52,6 +61,8 @@ Use web_search to find candidates and web_fetch to read their pages. For each on
 - amount: as written on the page, e.g. "Up to £2,000". Empty if not stated.
 - deadline: the next closing date as YYYY-MM-DD only if the page states it. Otherwise empty.
 - deadlineNote: if no single date, how the page describes timing ("Rolling", "Opens each spring"). Otherwise empty.
+- kind: one of grant, crowdfunding, residency, fellowship, prize, commission, sponsorship, in_kind,
+  accelerator, social_investment, other.
 - scale: one of neighbourhood, local, regional, national, continental, international.
 - complexity: your estimate of how hard applying is: light (short form or email, quick decision),
   moderate (written application, simple budget), involved (full proposal, detailed budget, partners,
@@ -116,6 +127,7 @@ export function normaliseFound(raw: FoundRaw[], today = new Date().toISOString()
     if (!(SCALES as readonly string[]).includes(scale) || !(COMPLEXITIES as readonly string[]).includes(complexity)) continue;
     const deadline = cleanDate(r.deadline);
     if (deadline && deadline < today) continue;
+    const kind = r.kind.trim().toLowerCase().replace(/[\s-]+/g, "_");
     seen.add(url.toLowerCase());
     out.push({
       title, url,
@@ -125,6 +137,7 @@ export function normaliseFound(raw: FoundRaw[], today = new Date().toISOString()
       amount: tidy(r.amount, 120),
       deadline,
       deadlineNote: tidy(r.deadlineNote, 120),
+      kind: ((KINDS as readonly string[]).includes(kind) ? kind : "other") as Kind,
       scale: scale as Scale,
       complexity: complexity as Complexity,
       complexityReason: tidy(r.complexityReason, 300),

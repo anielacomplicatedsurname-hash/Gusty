@@ -27,6 +27,7 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 13. `20261029160000_drafts.sql` ("Help me write it": the draft a person keeps for a step)
 14. `20261029180000_opportunities.sql` (Explore: funding opportunities the founder curates; removed again by 15)
 15. `20261029200000_explore_search.sql` (Explore: per-project online search and what it found)
+16. `20261031120000_explore_save.sql` (Explore: kinds of opportunity, saving results to a project)
 
 ## Making yourself an admin
 Sign in to Gusty with your email first, then in the SQL Editor run (with your own email):

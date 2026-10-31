@@ -114,7 +114,12 @@
     "deleteAccountYes": "Yes, delete everything",
     "exploreTitle": "Opportunities for this project",
     "exploreBody": "Gusty can search online for funding and support that fit this idea, from your neighbourhood to international funds.",
-    "exploreLink": "Find opportunities"
+    "exploreLink": "Find opportunities",
+    "savedTitle": "Saved opportunities",
+    "savedIntro": "Opportunities you saved from Explore. Confirm the details with the funder before you apply.",
+    "addStep": "Add a step to check it",
+    "stepAdded": "Added to your steps",
+    "checkStep": "Check whether you can apply: {title}"
   },
   "emailLink": {
     "label": "Email address",
@@ -753,16 +758,16 @@
     "forProject": "Opportunities for {title}",
     "placeLabel": "Where is the project?",
     "placeHint": "A neighbourhood, town or city, and country. For example “Hackney, London, UK”. No addresses.",
-    "search": "Search online for this project",
-    "searchAgain": "Search again",
+    "search": "Start a deep search for this project",
+    "searchAgain": "Start a new deep search",
     "searchHint": "Gusty looks from your neighbourhood outwards, then nationally, across Europe and internationally. It takes a minute or two: you can leave this page and come back.",
     "privacy": "Gusty searches using your idea's theme and area, never your name or email.",
     "starting": "Starting the search…",
-    "running": "Gusty is searching online. This can take a couple of minutes, and you can leave this page: the results will be here when you come back.",
+    "running": "Gusty is doing a deep search. This can take a couple of minutes, and you can leave this page: the results will be here when you come back.",
     "failed": "The last search didn't finish. Please try again.",
-    "limitProject": "You can search again for this project tomorrow. Your results are kept here.",
-    "limitPerson": "You've used today's 3 searches. They reset within a day, and your results are kept.",
-    "foundOn": "Found online on {date}{place}. Not checked by Gusty: always confirm details with the funder before you apply.",
+    "limitProject": "You've already run today's deep search for this project. You can run another tomorrow, and your results are kept here.",
+    "limitPerson": "You've used today's {max} deep searches. They reset within a day, and your results are kept.",
+    "foundOn": "Found by Gusty on {date}{place}. Details can change, so confirm with the funder before you apply.",
     "around": " around {place}",
     "none": "Gusty didn't find anything that clearly fits this time. Try a wider area, or add more about your idea in “Here's what I understood” and search again tomorrow.",
     "bestTitle": "Best places to start",
@@ -810,7 +815,8 @@
         "scale": "neighbourhood",
         "complexity": "light",
         "complexityReason": "Example: short online form",
-        "fit": "Example only: shows how Gusty explains a fit."
+        "fit": "Example only: shows how Gusty explains a fit.",
+        "kind": "grant"
       },
       {
         "title": "Example: council community fund",
@@ -822,7 +828,8 @@
         "scale": "local",
         "complexity": "moderate",
         "complexityReason": "Example: written form and simple budget",
-        "fit": "Example only: shows how Gusty explains a fit."
+        "fit": "Example only: shows how Gusty explains a fit.",
+        "kind": "grant"
       },
       {
         "title": "Example: national arts fund",
@@ -834,7 +841,8 @@
         "scale": "national",
         "complexity": "involved",
         "complexityReason": "Example: full proposal, budget and reporting",
-        "fit": "Example only: shows how Gusty explains a fit."
+        "fit": "Example only: shows how Gusty explains a fit.",
+        "kind": "grant"
       },
       {
         "title": "Example: international open call",
@@ -845,8 +853,38 @@
         "scale": "international",
         "complexity": "moderate",
         "complexityReason": "Example: online application",
-        "fit": "Example only: shows how Gusty explains a fit."
+        "fit": "Example only: shows how Gusty explains a fit.",
+        "kind": "residency"
       }
-    ]
+    ],
+    "kinds": {
+      "grant": "Grant",
+      "crowdfunding": "Crowdfunding",
+      "residency": "Residency",
+      "fellowship": "Fellowship",
+      "prize": "Prize or award",
+      "commission": "Commission or open call",
+      "sponsorship": "Sponsorship",
+      "in_kind": "In-kind support",
+      "accelerator": "Accelerator",
+      "social_investment": "Social investment",
+      "other": "Other support"
+    },
+    "deepSearchTitle": "Deep search",
+    "deepSearchWhat": "A deep search reads dozens of web pages, from your neighbourhood to international funds. Each one costs Gusty about £0.50 to £1 to run, so there's a daily allowance.",
+    "allowance": "Deep searches left today: {n} of {max}",
+    "allowanceProject": "One deep search per project each day.",
+    "sideTitle": "Your projects",
+    "fresh": {
+      "fresh": "Up to date",
+      "aging": "Worth refreshing",
+      "old": "Out of date",
+      "never": "Not searched yet"
+    },
+    "freshHint": "Up to date: searched in the last week. Worth refreshing: 2 to 4 weeks. Out of date: older than 4 weeks.",
+    "lastSearched": "Last deep search {date}",
+    "save": "Save to my project",
+    "saved": "Saved to your project",
+    "unsave": "Remove from saved"
   }
 }

@@ -40,6 +40,9 @@ All three fonts cover Latin and Latin Extended (most European languages). None c
 Arabic or Hebrew: when such a language is added, choose fallbacks then.
 
 ## Colour
+Functional status colours (not brand colours): small dots for Explore's freshness lights, always shown with a
+word. Fresh `#4F8A3C` · Worth refreshing `#C99A1E` · Out of date `#B5503A`.
+
 Palette: Ink `#111111` · Paper `#F7F6F0` · Oat `#E8E6DA` · Sage `#B8C3AB` · Signal `#E4E6AB` ·
 Sky `#DEEBF0` · Water `#93B5BE` · Lilac `#E8DFF4` · Stone `#777671`.
 

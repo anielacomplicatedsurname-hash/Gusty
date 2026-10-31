@@ -1,7 +1,9 @@
+import type { ReactNode } from "react";
 import { SCALES, type Scale } from "@/ai/tasks/opportunity-search";
 import type { Messages } from "@/i18n/dictionaries";
 import { fill, formatDate } from "@/i18n/format";
 import type { FoundOpportunity } from "./data";
+import { SaveButton } from "./SaveButton";
 
 type Copy = Messages["explore"];
 /** The three-step principle: a few clear places to start, everything else folded away by scale. */
@@ -26,7 +28,7 @@ export function Results({ results, foundOn, place, lang, demo, copy }: {
         <>
           <section aria-labelledby="best-title" className="flex flex-col gap-3">
             <div>
-              <h2 id="best-title" className="text-xl font-semibold">{copy.bestTitle}</h2>
+              <h3 id="best-title" className="text-xl font-semibold">{copy.bestTitle}</h3>
               <p className="text-sm text-text-muted">{copy.bestHint}</p>
             </div>
             <ul className="flex flex-col gap-4">
@@ -35,7 +37,7 @@ export function Results({ results, foundOn, place, lang, demo, copy }: {
           </section>
           {byScale.length > 0 && (
             <section aria-labelledby="more-title" className="flex flex-col gap-3">
-              <h2 id="more-title" className="text-xl font-semibold">{copy.moreTitle}</h2>
+              <h3 id="more-title" className="text-xl font-semibold">{copy.moreTitle}</h3>
               {byScale.map(([scale, list]) => (
                 <details key={scale} className="rounded-xl border border-border">
                   <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-3 p-4 font-semibold">
@@ -55,11 +57,15 @@ export function Results({ results, foundOn, place, lang, demo, copy }: {
   );
 }
 
-function ResultCard({ item, lang, copy }: { item: FoundOpportunity; lang: string; copy: Copy }) {
+export function ResultCard({ item, lang, copy, titleLevel = "h4", children }: {
+  item: FoundOpportunity; lang: string; copy: Copy; titleLevel?: "h3" | "h4"; children?: ReactNode;
+}) {
+  const Title = titleLevel;
   const titleId = `found-${item.id}`;
   return (
     <article aria-labelledby={titleId} className="flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-5">
       <div className="flex flex-wrap gap-2 text-sm">
+        <span className="rounded-full bg-sky px-3 py-0.5 text-ink">{copy.kinds[item.kind]}</span>
         <span className="rounded-full bg-oat px-3 py-0.5 text-ink">{copy.scales[item.scale]}</span>
         <span className="rounded-full bg-lilac px-3 py-0.5 text-ink" title={copy.complexityNote}>
           {copy.complexity[item.complexity]}
@@ -67,7 +73,7 @@ function ResultCard({ item, lang, copy }: { item: FoundOpportunity; lang: string
         </span>
       </div>
       <div>
-        <h3 id={titleId} className="text-lg font-semibold">{item.title}</h3>
+        <Title id={titleId} className="text-lg font-semibold">{item.title}</Title>
         {item.funder && <p className="text-text-muted">{fill(copy.from, { funder: item.funder })}</p>}
       </div>
       {item.summary && <p>{item.summary}</p>}
@@ -87,9 +93,13 @@ function ResultCard({ item, lang, copy }: { item: FoundOpportunity; lang: string
           <p className="mt-1">{item.fit}</p>
         </div>
       )}
-      <a href={item.url} target="_blank" rel="noopener noreferrer nofollow" className="self-start font-medium underline underline-offset-4">
-        {copy.source} <span aria-hidden="true">↗</span><span className="sr-only"> {copy.opensNewTab}</span>
-      </a>
+      <div className="flex flex-col gap-3 border-t border-border pt-3 sm:flex-row sm:items-center sm:justify-between">
+        <a href={item.url} target="_blank" rel="noopener noreferrer nofollow" className="self-start font-medium underline underline-offset-4">
+          {copy.source} <span aria-hidden="true">↗</span><span className="sr-only"> {copy.opensNewTab}</span>
+        </a>
+        <SaveButton id={item.id} title={item.title} initial={item.saved} copy={copy} />
+      </div>
+      {children}
     </article>
   );
 }

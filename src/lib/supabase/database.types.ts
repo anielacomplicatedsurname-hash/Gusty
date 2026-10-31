@@ -73,14 +73,14 @@ isOneToOne: false
                   ]
                 },"found_opportunities": {
                   Row: {
-                    "amount": string,"complexity": string,"complexity_reason": string,"created_at": string,"deadline": string | null,"deadline_note": string,"fit": string,"funder": string,"id": string,"owner_id": string,"project_id": string,"rank": number,"scale": string,"search_id": string,"summary": string,"title": string,"url": string,"who_for": string
+                    "amount": string,"complexity": string,"complexity_reason": string,"created_at": string,"deadline": string | null,"deadline_note": string,"fit": string,"funder": string,"id": string,"kind": string,"owner_id": string,"project_id": string,"rank": number,"saved_at": string | null,"scale": string,"search_id": string,"summary": string,"title": string,"url": string,"who_for": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "amount"?: string,"complexity": string,"complexity_reason"?: string,"created_at"?: string,"deadline"?: string | null,"deadline_note"?: string,"fit"?: string,"funder"?: string,"id"?: string,"owner_id"?: string,"project_id": string,"rank"?: number,"scale": string,"search_id": string,"summary"?: string,"title": string,"url": string,"who_for"?: string
+                    "amount"?: string,"complexity": string,"complexity_reason"?: string,"created_at"?: string,"deadline"?: string | null,"deadline_note"?: string,"fit"?: string,"funder"?: string,"id"?: string,"kind"?: string,"owner_id"?: string,"project_id": string,"rank"?: number,"saved_at"?: string | null,"scale": string,"search_id": string,"summary"?: string,"title": string,"url": string,"who_for"?: string
                   }
                   Update: {
-                    "amount"?: string,"complexity"?: string,"complexity_reason"?: string,"created_at"?: string,"deadline"?: string | null,"deadline_note"?: string,"fit"?: string,"funder"?: string,"id"?: string,"owner_id"?: string,"project_id"?: string,"rank"?: number,"scale"?: string,"search_id"?: string,"summary"?: string,"title"?: string,"url"?: string,"who_for"?: string
+                    "amount"?: string,"complexity"?: string,"complexity_reason"?: string,"created_at"?: string,"deadline"?: string | null,"deadline_note"?: string,"fit"?: string,"funder"?: string,"id"?: string,"kind"?: string,"owner_id"?: string,"project_id"?: string,"rank"?: number,"saved_at"?: string | null,"scale"?: string,"search_id"?: string,"summary"?: string,"title"?: string,"url"?: string,"who_for"?: string
                   }
                   Relationships: [
                     {
