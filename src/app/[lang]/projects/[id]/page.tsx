@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 import { BrandSymbol } from "@/components/BrandSymbol";
 import { getMessages, type Messages } from "@/i18n/dictionaries";
 import { fill, formatDateTime } from "@/i18n/format";
@@ -16,6 +16,8 @@ import { NextSteps, TopStep } from "@/modules/steps/NextSteps";
 import { getProjectOverview, type ProjectOverview } from "@/modules/projects/overview";
 import { aiProvider } from "@/ai";
 import { getDocuments } from "@/modules/documents/data";
+import { getIdeaSummary } from "@/modules/idea-summary/data";
+import { IdeaSummarySection } from "@/modules/idea-summary/IdeaSummarySection";
 import { DocumentsSection } from "@/modules/documents/DocumentsSection";
 import { AddStepButton } from "@/modules/explore/AddStepButton";
 import { getReadiness } from "@/modules/readiness/data";
@@ -111,13 +113,15 @@ async function ProjectContent({
 
       {tab === "idea" && (
         <>
-          <div className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
-            <IdeaEditor
-              projectId={project.id}
-              initialIdea={project.idea}
-              copy={{ label: t.projects.ideaLabel, hint: t.projects.ideaHint, status: t.projects.save }}
-            />
-          </div>
+          <SummaryBlock projectId={project.id} lang={lang} t={t}
+            original={
+              <IdeaEditor
+                projectId={project.id}
+                initialIdea={project.idea}
+                copy={{ label: t.projects.ideaLabel, hint: t.projects.ideaHint, status: t.projects.save }}
+              />
+            }
+          />
           <section aria-labelledby="reading-title" className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
             <div className="flex items-center gap-3">
               <BrandSymbol name="spark" size={28} />
@@ -181,6 +185,13 @@ async function ReadingSection({ projectId, lang, t }: { projectId: string; lang:
       copy={t.interpretation}
     />
   );
+}
+
+/** "Your idea, as it stands", with the person's own words folded underneath. */
+async function SummaryBlock({ projectId, lang, t, original }: { projectId: string; lang: string; t: Messages; original: ReactNode }) {
+  const summary = await getIdeaSummary(projectId);
+  if (!summary) return <div className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">{original}</div>;
+  return <IdeaSummarySection summary={summary} projectId={projectId} lang={lang} copy={t.ideaSummary} original={original} />;
 }
 
 /** One line of where the project is: its stage, how ready it is for funding, and what's been saved. */

@@ -300,3 +300,12 @@ The home page greets returning people with their most recent project and its nex
 show each project's stage, next step, readiness and how fresh its deep search is, and guests see "Keep your
 projects" before anything else.
 
+## 2026-10-31 — "Your idea, as it stands": one summary that grows with the project
+The founder wants the Idea area to show a neat summary of everything said so far, focused on what makes the
+idea different (the "idea master" from earlier feedback). Gusty writes 2 to 4 sentences and up to three
+"what makes it different" points from the person's own material only (idea, confirmed reading, step answers
+and notes, documents), labelled as Gusty's summary with its date. It's written automatically the first time,
+then only refreshed when the person asks ("You've added more since this summary"), so it never changes under
+them and doesn't spend money on every visit. The person's original words are folded underneath, still
+editable and never changed. Stored in its own table so a refresh doesn't count as editing the project.
+

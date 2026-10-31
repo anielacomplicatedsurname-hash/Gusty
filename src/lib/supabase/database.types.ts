@@ -269,6 +269,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"project_summaries": {
+                  Row: {
+                    "owner_id": string,"points": (string)[],"project_id": string,"summary": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "owner_id"?: string,"points"?: (string)[],"project_id": string,"summary": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "owner_id"?: string,"points"?: (string)[],"project_id"?: string,"summary"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "project_summaries_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: true
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"project_transfers": {
                   Row: {
                     "created_at": string,"from_user": string,"token_hash": string
