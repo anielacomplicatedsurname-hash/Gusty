@@ -219,6 +219,9 @@ function ProgressChips({ overview, projectPath, t }: { overview: ProjectOverview
           {overview.suggestions === 1 ? t.ideaLoop.chip : fill(t.ideaLoop.chipMany, { n: String(overview.suggestions) })}
         </Link></li>
       )}
+      {overview.suggestions === 0 && overview.grew > 0 && (
+        <li><Link href={`${projectPath}?tab=idea#reading-title`} className={chip}>{t.ideaLoop.chipGrew}</Link></li>
+      )}
       {overview.saved > 0 && (
         <li><Link href={`${projectPath}?tab=funding`} className={chip}>{overview.saved === 1 ? h.oneSavedChip : fill(h.manySavedChip, { n: String(overview.saved) })}</Link></li>
       )}

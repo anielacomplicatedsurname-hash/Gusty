@@ -45,7 +45,7 @@ test("Gusty suggests updates from a finished step; the person decides", async ({
   // A quiet chip points to them; nothing has changed yet.
   await expect(page.getByRole("link", { name: "Gusty has 2 updates for your idea" })).toBeVisible();
   const box = page.locator("section[aria-labelledby=suggestions-title]");
-  await expect(box.getByRole("heading", { name: "Gusty noticed something new" })).toBeVisible();
+  await expect(box.getByRole("heading", { name: "Gusty would like to check something" })).toBeVisible();
   await expect(box.getByText("Retired neighbours who like fixing things")).toBeVisible();
   await expect(box.getByText("You mentioned retired neighbours")).toBeVisible();
   const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
@@ -65,6 +65,73 @@ test("Gusty suggests updates from a finished step; the person decides", async ({
   await page.reload();
   await expect(page.locator("section[aria-labelledby=suggestions-title]")).toHaveCount(0);
   await expect(page.getByRole("link", { name: /updates? for your idea/ })).toHaveCount(0);
+});
+
+test("Gusty's changes from steps show where they came from, and can be undone", async ({ page }) => {
+  const id = await newProject(page);
+  // As if a finished step had added who it's for, and answered "Who would this help most?".
+  sql(`with f as (
+         insert into public.project_facts (project_id, owner_id, kind, value, source, status, position)
+         select id, owner_id, 'audience', 'Retired neighbours who fix radios', 'ai_from_user', 'proposed', 50
+         from public.projects where id = '${id}' returning id, project_id, owner_id)
+       insert into public.fact_suggestions (project_id, owner_id, kind, value, status, fact_id)
+       select project_id, owner_id, 'audience', 'Retired neighbours who fix radios', 'applied', id from f`);
+  sql(`insert into public.fact_suggestions (project_id, owner_id, kind, value, status, fact_id)
+       select project_id, owner_id, 'question', 'Older people living alone nearby', 'applied', id
+       from public.project_facts where project_id = '${id}' and value = 'Who would this help most?'`);
+  await page.reload();
+
+  await expect(page.getByRole("link", { name: "Your idea grew from your steps" })).toBeVisible();
+  const audience = fact(page, "Who it's for");
+  await expect(audience.getByText("Retired neighbours who fix radios")).toBeVisible();
+  await expect(audience.getByText("Updated from one of your steps")).toBeVisible();
+
+  // The answered question is folded away, with its answer.
+  const questions = page.locator("section[aria-labelledby=open-questions]");
+  await expect(questions.getByText("Who would this help most?")).toBeHidden();
+  await questions.getByText("1 answered in your steps").click();
+  await expect(questions.getByText("Older people living alone nearby")).toBeVisible();
+  const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+
+  // Undo takes Gusty's addition away; "Bring it back" reopens the question.
+  await audience.getByRole("button", { name: "Undo: Retired neighbours who fix radios" }).click();
+  await expect(page.getByText("Retired neighbours who fix radios")).toHaveCount(0);
+  await questions.getByRole("button", { name: "Bring it back: Who would this help most?" }).click();
+  await expect(questions.getByText("1 answered in your steps")).toHaveCount(0);
+  await expect(questions.getByText("Who would this help most?")).toBeVisible();
+});
+
+test("confirming an item Gusty changed keeps it, without the Undo", async ({ page }) => {
+  const id = await newProject(page);
+  sql(`with f as (
+         update public.project_facts set value = 'A monthly repair café run by retired neighbours', source = 'ai_from_user'
+         where project_id = '${id}' and kind = 'summary' returning id, project_id, owner_id)
+       insert into public.fact_suggestions (project_id, owner_id, kind, value, status, fact_id, previous, previous_source)
+       select project_id, owner_id, 'summary', 'A monthly repair café run by retired neighbours', 'applied', id,
+              'A repair café in the old library.', 'ai_from_user' from f`);
+  await page.reload();
+  const summary = fact(page, "In one sentence");
+  await expect(summary.getByText("Updated from one of your steps")).toBeVisible();
+  await summary.getByRole("button", { name: /^That's right/ }).click();
+  await expect(summary.getByText("Confirmed")).toBeVisible();
+  await expect(summary.getByText("Updated from one of your steps")).toHaveCount(0);
+  await expect(summary.getByText("A monthly repair café run by retired neighbours")).toBeVisible();
+});
+
+test("undo puts back what Gusty had before", async ({ page }) => {
+  const id = await newProject(page);
+  sql(`with f as (
+         update public.project_facts set value = 'A monthly repair café', source = 'ai_from_user'
+         where project_id = '${id}' and kind = 'summary' returning id, project_id, owner_id)
+       insert into public.fact_suggestions (project_id, owner_id, kind, value, status, fact_id, previous, previous_source)
+       select project_id, owner_id, 'summary', 'A monthly repair café', 'applied', id,
+              'A repair café in the old library.', 'ai_from_user' from f`);
+  await page.reload();
+  const summary = fact(page, "In one sentence");
+  await summary.getByRole("button", { name: "Undo: A monthly repair café" }).click();
+  await expect(summary.getByText("A repair café in the old library.")).toBeVisible();
+  await expect(summary.getByText("Updated from one of your steps")).toHaveCount(0);
 });
 
 test("the Notes tab says what it's for", async ({ page }) => {

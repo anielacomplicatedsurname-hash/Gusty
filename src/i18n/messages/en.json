@@ -202,7 +202,15 @@
       "failed": "That change didn't save. Please try again.",
       "busy": "Gusty is a little busy right now. Your idea is saved. Please try again in a minute."
     },
-    "demoNoticeReady": "This reading was made in demo mode, before Gusty's AI was switched on. Press “Read my idea again” for Gusty's real reading."
+    "demoNoticeReady": "This reading was made in demo mode, before Gusty's AI was switched on. Press “Read my idea again” for Gusty's real reading.",
+    "updatedFrom": "Updated from: {step}",
+    "updatedFromSteps": "Updated from one of your steps",
+    "undo": "Undo",
+    "allAnswered": "Your steps have answered these. Nice work.",
+    "answeredOne": "1 answered in your steps",
+    "answeredMany": "{n} answered in your steps",
+    "answeredIn": "Answered in: {step}",
+    "bringBack": "Bring it back"
   },
   "workedOut": {
     "title": "What you've worked out",
@@ -220,7 +228,7 @@
     "assisted": "Gusty added ideas",
     "draft": "Summary (started by Gusty)",
     "draftCount": "summary",
-    "explainer": "Everything you've written while doing steps, and your documents. Gusty uses it to keep your idea and plan up to date, and may suggest updates on the Idea tab when you finish a step."
+    "explainer": "Everything you've written while doing steps, and your documents. When you finish a step, Gusty uses it to keep your idea up to date: you'll see \"Updated from\" on the Idea tab, and you can undo anything."
   },
   "errorPage": {
     "title": "Something went wrong on our side.",
@@ -1100,14 +1108,15 @@
     }
   },
   "ideaLoop": {
-    "title": "Gusty noticed something new",
-    "intro": "From a step you finished. Use it to update your idea, or leave it: nothing changes unless you say so.",
+    "title": "Gusty would like to check something",
+    "intro": "From a step you finished. This would change something you wrote or confirmed, so it's your call.",
     "from": "From: {step}",
     "label": "Gusty's suggestion, from your own words",
     "use": "Use this",
     "notNow": "Not now",
     "error": "That didn't work. Please try again.",
     "chip": "Gusty has an update for your idea",
-    "chipMany": "Gusty has {n} updates for your idea"
+    "chipMany": "Gusty has {n} updates for your idea",
+    "chipGrew": "Your idea grew from your steps"
   }
 }

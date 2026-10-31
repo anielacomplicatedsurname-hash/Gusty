@@ -97,7 +97,11 @@ export async function interpretProject(projectId: string, mode: "first" | "refre
     await supabase.from("projects").update({ title: reading.title, title_source: "ai" }).eq("id", projectId);
   }
 
-  const { remove, add } = planRefresh(existing, interpretationToFacts(reading));
+  const { data: fromSteps } = await supabase
+    .from("fact_suggestions").select("fact_id").eq("project_id", projectId).eq("status", "applied");
+  const { remove, add } = planRefresh(
+    existing, interpretationToFacts(reading), new Set((fromSteps ?? []).flatMap((c) => (c.fact_id ? [c.fact_id] : []))),
+  );
   if (remove.length) {
     const { error } = await supabase.from("project_facts").delete().in("id", remove);
     if (error) return { ok: false, error: "error" };

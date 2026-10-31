@@ -325,3 +325,24 @@ describe("suggested updates to the idea", () => {
     expect((await owner.from("fact_suggestions").update({ status: "dismissed" }).eq("id", s!.id)).error).toBeNull();
   });
 });
+
+describe("changes Gusty makes from steps", () => {
+  it("can only point at an item in the same project", async () => {
+    const owner = client();
+    const other = client();
+    expect((await owner.auth.signInAnonymously()).error).toBeNull();
+    expect((await other.auth.signInAnonymously()).error).toBeNull();
+    const { data: mine } = await owner.from("projects").insert({ title: "Mine", idea: "Private" }).select("id").single();
+    const { data: second } = await owner.from("projects").insert({ title: "Second", idea: "Also mine" }).select("id").single();
+    const { data: theirs } = await other.from("projects").insert({ title: "Theirs", idea: "Not yours" }).select("id").single();
+    const { data: fact } = await owner.from("project_facts")
+      .insert({ project_id: mine!.id, kind: "question", value: "Who?", source: "ai_suggestion" }).select("id").single();
+    const { data: theirFact } = await other.from("project_facts")
+      .insert({ project_id: theirs!.id, kind: "question", value: "Where?", source: "ai_suggestion" }).select("id").single();
+    const change = { kind: "question", value: "Older people", status: "applied", fact_id: fact!.id };
+    expect((await owner.from("fact_suggestions").insert({ ...change, project_id: mine!.id })).error).toBeNull();
+    expect((await owner.from("fact_suggestions").insert({ ...change, project_id: second!.id })).error).not.toBeNull();
+    expect((await owner.from("fact_suggestions").insert({ ...change, project_id: mine!.id, fact_id: theirFact!.id })).error).not.toBeNull();
+    expect((await owner.from("fact_suggestions").insert({ ...change, project_id: mine!.id, status: "wild" })).error).not.toBeNull();
+  });
+});
