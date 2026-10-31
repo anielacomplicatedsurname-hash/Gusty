@@ -411,3 +411,21 @@ describe("application spaces", () => {
     expect(changed ?? []).toEqual([]);
   });
 });
+
+describe("application answers", () => {
+  it("belong only to the project's owner, one per question", async () => {
+    const owner = client();
+    const other = client();
+    expect((await owner.auth.signInAnonymously()).error).toBeNull();
+    expect((await other.auth.signInAnonymously()).error).toBeNull();
+    const { data: project } = await owner.from("projects").insert({ title: "Mine", idea: "Private" }).select("id").single();
+    const { data: app } = await owner.from("applications").insert({ project_id: project!.id, title: "A fund" }).select("id").single();
+    const row = { application_id: app!.id, project_id: project!.id, question_key: "who benefits", question: "Who benefits?", answer: "Older women." };
+    expect((await owner.from("application_answers").insert(row)).error).toBeNull();
+    expect((await owner.from("application_answers").insert(row)).error).not.toBeNull();
+    expect((await other.from("application_answers").select("id").eq("application_id", app!.id)).data).toEqual([]);
+    expect((await other.from("application_answers").insert({ ...row, question_key: "other" })).error).not.toBeNull();
+    const { data: changed } = await other.from("application_answers").update({ answer: "Hijacked" }).eq("application_id", app!.id).select("id");
+    expect(changed ?? []).toEqual([]);
+  });
+});

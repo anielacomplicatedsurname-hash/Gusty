@@ -1,6 +1,7 @@
 import type { Messages } from "@/i18n/dictionaries";
 import { fill } from "@/i18n/format";
 import type { Material } from "./data";
+import { keyOf } from "./questions";
 
 type Copy = Messages["applications"];
 
@@ -26,7 +27,6 @@ function Sources({ found, copy }: { found: Found[]; copy: Copy }) {
   return <span className="block text-xs text-text-muted">{fill(copy.from, { label })}</span>;
 }
 
-const keyOf = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 
 /**
  * The same question or rule often appears in more than one paper (the form and the guidance): show it once,

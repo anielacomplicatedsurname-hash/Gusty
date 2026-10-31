@@ -1,5 +1,5 @@
 import { aiProvider } from "@/ai";
-import { FIT_PROMPT, FIT_PROMPT_VERSION, FitSchema, fitMessage, normaliseFit } from "@/ai/tasks/application-fit";
+import { type BankForFit, FIT_PROMPT, FIT_PROMPT_VERSION, FitSchema, fitMessage, normaliseFit } from "@/ai/tasks/application-fit";
 import { projectContext } from "@/ai/tasks/context";
 import {
   FUNDER_MATERIAL_PROMPT_VERSION, MaterialSchema, MATERIALS_PER_PERSON_PER_DAY, materialPrompt, normaliseMaterial,
@@ -86,6 +86,27 @@ export async function saveMaterial(
   return true;
 }
 
+/** The project as Gusty frames it for any task, plus its story: experience, research and voice. */
+export async function loadProjectInputs(supabase: Supabase, projectId: string): Promise<{ context: string; bank: BankForFit } | null> {
+  const [{ data: project }, { data: facts }, work, docs, { data: evidence }, { data: voice }] = await Promise.all([
+    supabase.from("projects").select("title, idea").eq("id", projectId).maybeSingle(),
+    supabase.from("project_facts").select("kind, value").eq("project_id", projectId).order("position"),
+    loadWorkedOut(supabase, projectId),
+    loadDocuments(supabase, projectId),
+    supabase.from("project_evidence").select("origin, kind, text, title").eq("project_id", projectId),
+    supabase.from("project_voice").select("description").eq("project_id", projectId).maybeSingle(),
+  ]);
+  if (!project) return null;
+  return {
+    context: projectContext(project.title, project.idea, facts ?? [], work, docs),
+    bank: {
+      experience: (evidence ?? []).filter((e) => e.origin === "person").map((e) => ({ kind: e.kind, text: e.text })),
+      research: (evidence ?? []).filter((e) => e.origin === "research").map((e) => ({ title: e.title, finding: e.text })),
+      voice: voice?.description ?? "",
+    },
+  };
+}
+
 /**
  * Works out how the project fits this funder, from the project, its bank and everything read so far.
  * Runs in the background after new material; the page shows "working it out" meanwhile.
@@ -108,26 +129,12 @@ export async function updateFit(supabase: Supabase, appId: string, lang: string)
       await logRun(supabase, { projectId: app.project_id, task: "application_fit", promptVersion: FIT_PROMPT_VERSION, model: "demo", status: "demo" });
     } else {
       if (!(await withinDailyLimit(supabase))) return void (await fail());
-      const [{ data: project }, { data: facts }, work, docs, { data: evidence }, { data: voice }] = await Promise.all([
-        supabase.from("projects").select("title, idea").eq("id", app.project_id).maybeSingle(),
-        supabase.from("project_facts").select("kind, value").eq("project_id", app.project_id).order("position"),
-        loadWorkedOut(supabase, app.project_id),
-        loadDocuments(supabase, app.project_id),
-        supabase.from("project_evidence").select("origin, kind, text, title").eq("project_id", app.project_id),
-        supabase.from("project_voice").select("description").eq("project_id", app.project_id).maybeSingle(),
-      ]);
-      if (!project) return void (await fail());
+      const inputs = await loadProjectInputs(supabase, app.project_id);
+      if (!inputs) return void (await fail());
       const result = await provider.generate({
         system: FIT_PROMPT.replace("{lang}", lang),
-        user: fitMessage(
-          projectContext(project.title, project.idea, facts ?? [], work, docs),
-          {
-            experience: (evidence ?? []).filter((e) => e.origin === "person").map((e) => ({ kind: e.kind, text: e.text })),
-            research: (evidence ?? []).filter((e) => e.origin === "research").map((e) => ({ title: e.title, finding: e.text })),
-            voice: voice?.description ?? "",
-          },
-          { title: app.title, funder: app.funder, readings: materials.map((m) => m.reading as MaterialReading) },
-        ),
+        user: fitMessage(inputs.context, inputs.bank,
+          { title: app.title, funder: app.funder, readings: materials.map((m) => m.reading as MaterialReading) }),
         schema: FitSchema,
         effort: "medium",
         maxTokens: 6000,

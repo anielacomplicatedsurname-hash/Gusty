@@ -385,3 +385,23 @@ After each paper, Gusty works out in the background how the project fits:
 The fit uses the project, its story (experience, research and voice) and the papers. It never says whether
 someone is eligible, and it never invents evidence. Up to 8 papers per person a day. A fit stuck "running"
 for 5 minutes is shown as failed, with "Work it out again". Drafting answers is the next slice.
+
+## 2026-11-01 — Drafting answers, one question at a time
+The third slice of "Help me apply". Every question from the funder's papers (shown once, even if it's in
+several papers) gets an answer box with a word or character counter against the funder's limit.
+
+**"Help me draft this":** Gusty drafts the answer:
+- in the person's voice, following "How you write";
+- from their project and Story only, using the funder's key phrases where they fit naturally;
+- aiming for about 90% of the limit.
+
+It never invents anything. Whatever the answer needs but the person's material doesn't show is left as a
+short placeholder [in brackets] and listed under "To make this stronger", with one small way to find it.
+
+**Ownership:** a draft is labelled "Gusty's draft"; editing and saving makes it "Your words". "Draft it
+again" builds on what's there and keeps the person's words where it can.
+
+**Getting answers out:** a copy button on each answer, and a plain-text download of every answer to paste
+into the funder's form. Nothing is ever sent to a funder.
+
+Limit: 30 drafts per person a day, inside the daily AI limit.

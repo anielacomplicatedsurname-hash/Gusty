@@ -106,3 +106,59 @@ test("a saved opportunity opens its own application space, once", async ({ page 
   await page.getByRole("button", { name: "Prepare an application: Example: Active Communities Grant" }).click();
   await expect(page).toHaveURL(url);
 });
+
+test("drafting answers: Gusty drafts in the person's voice, leaves gaps in brackets, and the answer becomes theirs", async ({ page }) => {
+  const id = await newProject(page);
+  await page.goto(`/en/projects/${id}?tab=funding`);
+  const list = page.locator("section[aria-labelledby=applications-title]");
+  await list.getByRole("button", { name: "Start an application" }).click();
+  await list.getByLabel("What are you applying for?").fill("Active Lives Fund");
+  await list.getByRole("button", { name: "Create the application space" }).click();
+  const answers = page.locator("section[aria-labelledby=answers-title]");
+  await expect(answers.getByText("Bring in the application form or the questions to start writing answers.")).toBeVisible();
+
+  const add = page.locator("section[aria-labelledby=add-title]");
+  await add.getByRole("radio", { name: "Paste the text" }).check();
+  await add.getByLabel("Paste it here").fill("1. Tell us about your project. (300 words)\n2. What difference will it make? (250 words)");
+  await add.getByRole("button", { name: "Read this" }).click();
+  await expect(add.getByText("Gusty has read it.", { exact: false })).toBeVisible({ timeout: 20_000 });
+
+  const first = answers.locator("ol > li").first();
+  await expect(first.getByRole("heading", { name: /Example: Tell us about your project and who it's for\./ })).toBeVisible();
+  await first.getByRole("button", { name: "Help me draft this" }).click();
+  const box = first.getByLabel(/^Your answer to: /);
+  await expect(box).toHaveValue(/\(Demo: Gusty's draft of this answer will go here/, { timeout: 20_000 });
+  await expect(first.getByText("Demo mode: this is a made-up example, not a real draft.")).toBeVisible();
+  await expect(first.getByText("Fill in the parts in [brackets] before you send it.")).toBeVisible();
+  await expect(first.getByText("Example: a number that shows the need")).toBeVisible();
+  await expect(first.getByText(/^\d+ of 300 words$/)).toBeVisible();
+  await expect(first.getByText("Gusty's draft, from your story. Change anything: it becomes yours.")).toBeVisible();
+  const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+
+  // Editing makes it the person's.
+  await box.fill("We started because nobody in our street had been on a bike for years. Twelve women came last summer.");
+  await expect(first.getByText("Not saved yet")).toBeVisible();
+  await first.getByRole("button", { name: "Save" }).click();
+  await expect(first.getByRole("button", { name: "Saved" })).toBeDisabled();
+  await expect(first.getByText("Your words", { exact: true })).toBeVisible();
+
+  // Writing one from scratch.
+  const second = answers.locator("ol > li").nth(1);
+  await second.getByRole("button", { name: "Write it myself" }).click();
+  await second.getByLabel(/^Your answer to: /).fill("Women who'd stopped going out will ride together every Saturday.");
+  await second.getByRole("button", { name: "Save" }).click();
+  await expect(second.getByRole("button", { name: "Saved" })).toBeDisabled();
+
+  await page.reload();
+  await expect(answers.locator("ol > li").first().getByLabel(/^Your answer to: /)).toHaveValue(/Twelve women came last summer\./);
+  const download = page.waitForEvent("download");
+  await answers.getByRole("button", { name: "Download all my answers" }).click();
+  const file = await download;
+  expect(file.suggestedFilename()).toBe("Active Lives Fund.txt");
+  const { readFile } = await import("node:fs/promises");
+  const text = await readFile((await file.path())!, "utf8");
+  expect(text).toContain("Answers for: Active Lives Fund");
+  expect(text).toContain("Twelve women came last summer.");
+  expect(text).toContain("ride together every Saturday");
+});

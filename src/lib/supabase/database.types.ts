@@ -57,6 +57,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"application_answers": {
+                  Row: {
+                    "answer": string,"application_id": string,"created_at": string,"drafted_at": string | null,"gaps": NonNullable<Json>,"id": string,"owner_id": string,"project_id": string,"question": string,"question_key": string,"source": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "answer"?: string,"application_id": string,"created_at"?: string,"drafted_at"?: string | null,"gaps"?: NonNullable<Json>,"id"?: string,"owner_id"?: string,"project_id": string,"question": string,"question_key": string,"source"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "answer"?: string,"application_id"?: string,"created_at"?: string,"drafted_at"?: string | null,"gaps"?: NonNullable<Json>,"id"?: string,"owner_id"?: string,"project_id"?: string,"question"?: string,"question_key"?: string,"source"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "application_answers_application_id_fkey"
+      columns: ["application_id"]
+isOneToOne: false
+      referencedRelation: "applications"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "application_answers_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"application_materials": {
                   Row: {
                     "application_id": string,"created_at": string,"id": string,"kind": string,"label": string,"origin": string,"owner_id": string,"pages": number | null,"project_id": string,"reading": NonNullable<Json>,"url": string
