@@ -20,9 +20,10 @@ test("ready for funding: what's in place, what would help next, the amount, and 
   const bar = section.getByRole("progressbar", { name: "Ready for funding" });
   // Gusty restating their first sentence counts as "the idea is clear"; its own guesses don't.
   await expect(bar).toHaveAttribute("aria-valuetext", "1 of 7 in place");
-  // At most three next things, each a link to where it's done.
-  await expect(section.getByRole("heading", { name: "What would help next" })).toBeVisible();
-  await expect(section.locator("h3 + ul > li")).toHaveCount(3);
+  // No separate "what would help next" list: each missing piece links straight to where it's done.
+  await expect(section.getByRole("heading", { name: "What would help next" })).toHaveCount(0);
+  await expect(section.getByRole("link", { name: /^Who it's for\s*: Not yet$/ })).toHaveAttribute("href", /\?tab=idea#reading-title$/);
+  await expect(section.getByText("It's fine not to know yet.", { exact: false })).toBeVisible();
 
   await section.getByText("Under £1,000").click();
   await expect(section.getByText("Saved", { exact: true })).toBeVisible();
@@ -35,6 +36,10 @@ test("ready for funding: what's in place, what would help next, the amount, and 
   await expect(section.getByText("Demo mode: these are example routes")).toBeVisible();
   await expect(section.getByText("Gusty's estimate").first()).toBeVisible();
   await expect(section.getByRole("link", { name: "Find opportunities like these" })).toHaveAttribute("href", /\/en\/explore\?project=/);
+
+  // A route can become a step in the plan.
+  await section.getByRole("button", { name: "Add as a step: Small grant or community pot" }).click();
+  await expect(section.getByText("Added to your plan")).toBeVisible();
 
   const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);

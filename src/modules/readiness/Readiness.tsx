@@ -5,8 +5,9 @@ import { fill } from "@/i18n/format";
 import { AREAS, type Area, type Readiness } from "./data";
 import { NeedPicker } from "./NeedPicker";
 import { SuggestRoutes } from "./SuggestRoutes";
+import { AddRouteStep } from "./AddRouteStep";
 
-/** Where each "what would help next" points: the part of the page (or Explore) that does it. */
+/** Where each area that isn't in place yet points: the part of the page (or Explore) that does it. */
 const HREF: Record<Area, (project: string, explore: string) => string> = {
   clear: (p) => `${p}?tab=idea#reading-title`,
   who: (p) => `${p}?tab=idea#reading-title`,
@@ -23,7 +24,6 @@ export function ReadinessSection({ readiness, projectId, lang, copy }: {
 }) {
   const total = AREAS.length;
   const done = AREAS.filter((a) => readiness.inPlace[a]).length;
-  const missing = AREAS.filter((a) => !readiness.inPlace[a]).slice(0, 3);
   const explore = `/${lang}/explore?project=${projectId}`;
   const countText = fill(copy.count, { n: String(done), total: String(total) });
 
@@ -45,29 +45,22 @@ export function ReadinessSection({ readiness, projectId, lang, copy }: {
         <p className="text-sm font-medium">{countText}</p>
         <ul className="grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
           {AREAS.map((a) => (
-            <li key={a} className={`flex items-center gap-2 ${readiness.inPlace[a] ? "" : "text-text-muted"}`}>
+            <li key={a} className="flex min-h-6 items-center gap-2">
               <span aria-hidden="true">{readiness.inPlace[a] ? "✓" : "○"}</span>
-              {copy.areas[a]}
-              <span className="sr-only">: {readiness.inPlace[a] ? copy.inPlace : copy.notYet}</span>
+              {readiness.inPlace[a] ? (
+                <>{copy.areas[a]}<span className="sr-only">: {copy.inPlace}</span></>
+              ) : (
+                // Each missing piece links straight to where it's done: no separate list to read.
+                <Link href={HREF[a](`/${lang}/projects/${projectId}`, explore)} className="inline-flex min-h-6 items-center text-text-muted underline underline-offset-4 hover:text-ink">
+                  {copy.areas[a]}<span className="sr-only">: {copy.notYet}</span>
+                </Link>
+              )}
             </li>
           ))}
         </ul>
       </div>
 
-      {missing.length > 0 ? (
-        <div>
-          <h3 className="font-semibold">{copy.nextTitle}</h3>
-          <ul className="mt-2 flex flex-col gap-1">
-            {missing.map((a) => (
-              <li key={a}>
-                <Link href={HREF[a](`/${lang}/projects/${projectId}`, explore)} className="font-medium underline underline-offset-4">{copy.next[a]}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <p className="rounded-xl bg-confirmed/60 p-3 text-ink">{copy.allInPlace}</p>
-      )}
+      {done === total && <p className="rounded-xl bg-confirmed/60 p-3 text-ink">{copy.allInPlace}</p>}
 
       <NeedPicker projectId={projectId} initial={readiness.need} copy={copy} />
 
@@ -89,6 +82,7 @@ export function ReadinessSection({ readiness, projectId, lang, copy }: {
                 <h4 className="text-lg font-semibold">{copy.routes[r.route]}</h4>
                 {r.why && <p>{r.why}</p>}
                 {r.firstStep && <p className="text-sm"><span className="font-semibold">{copy.firstStep}:</span> {r.firstStep}</p>}
+                <AddRouteStep id={r.id} title={copy.routes[r.route]} lang={lang} copy={copy} />
               </li>
             ))}
           </ol>

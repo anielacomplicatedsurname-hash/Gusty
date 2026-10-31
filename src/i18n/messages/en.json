@@ -8,7 +8,7 @@
     "skipToContent": "Skip to content",
     "home": "Gusty home",
     "previewBadge": "Preview build",
-    "signedInAs": "Signed in as {email}. Go to My Projects"
+    "signedInAs": "Signed in as {email}. Go to your account"
   },
   "nav": {
     "label": "Main",
@@ -103,7 +103,7 @@
     "renameCancel": "Cancel",
     "renameFailed": "That title didn't save. Please try again.",
     "deleteProject": "Delete this project",
-    "deleteProjectConfirm": "Delete this project, Gusty's reading and all its steps? This can't be undone.",
+    "deleteProjectConfirm": "Delete this project and everything in it: steps, notes, your story and applications? It can't be brought back.",
     "deleteProjectYes": "Yes, delete this project",
     "cancel": "Cancel",
     "yourData": "Your data",
@@ -120,7 +120,12 @@
     "addStep": "Add a step to check it",
     "stepAdded": "Added to your steps",
     "checkStep": "Check whether you can apply: {title}",
-    "prepareApplication": "Prepare an application"
+    "prepareApplication": "Prepare an application",
+    "deleteFromCard": "Delete project",
+    "deleteWarning": "This deletes “{title}” and everything in it: steps, notes, your story and applications. It can't be brought back.",
+    "deleteTypeName": "To be sure, type the project's name: {title}",
+    "deleteForever": "Delete it for ever",
+    "deleteFailed": "That didn't work. Please check the name and try again."
   },
   "emailLink": {
     "label": "Email address",
@@ -228,7 +233,7 @@
     "assisted": "Gusty added ideas",
     "draft": "Summary (started by Gusty)",
     "draftCount": "summary",
-    "explainer": "Everything about your project in one place: your experience, research that backs it, how you write, your notes from steps and your documents. Gusty uses it to keep your idea up to date, and it'll help you write applications."
+    "explainer": "Everything about your project in one place: your experience, research that backs it, how you write, and your documents. Your notes from steps are with your plan. Gusty uses all of it to keep your idea up to date and to help with applications."
   },
   "errorPage": {
     "title": "Something went wrong on our side.",
@@ -919,18 +924,8 @@
     },
     "inPlace": "In place",
     "notYet": "Not yet",
-    "nextTitle": "What would help next",
-    "next": {
-      "clear": "Add “In one sentence” in Here's what I understood",
-      "who": "Add who it's for in Here's what I understood",
-      "where": "Add where it happens in Here's what I understood",
-      "amount": "Choose roughly how much it would need, below",
-      "plan": "Choose a direction in Your next steps",
-      "progress": "Tick off a first small step",
-      "opportunities": "Save an opportunity from a deep search"
-    },
     "allInPlace": "Everything funders usually look for is in place. Lovely work.",
-    "needLabel": "Roughly how much money would this project need?",
+    "needLabel": "Roughly how much might it need?",
     "needs": {
       "under_1k": "Under £1,000",
       "1k_10k": "£1,000 to £10,000",
@@ -996,7 +991,11 @@
       "error": "Something went wrong. Please try again.",
       "limit": "You've reached today's limit for Gusty's suggestions. It resets within a day.",
       "failed": "That didn't save. Please try again."
-    }
+    },
+    "needHint": "It's fine not to know yet. Pick “Not sure yet” and come back to it any time.",
+    "addRouteStep": "Add as a step",
+    "routeStepAdded": "Added to your plan",
+    "routeStep": "Look into {route}"
   },
   "documents": {
     "newTitle": "Already working on something?",
@@ -1413,11 +1412,6 @@
       "fit": "Your fit",
       "answers": "Answers"
     },
-    "answeredCount": "{n} of {total} answered",
-    "nextPapers": "Start by bringing in the funder's papers.",
-    "nextForm": "Bring in the form or the list of questions to start your answers.",
-    "nextAnswer": "Next: question {n}.",
-    "nextDone": "Every question has an answer. Read them through, fill any [brackets], then download.",
     "addAnother": "Add another paper",
     "seeBrief": "See what they're looking for",
     "questionsInAnswers": "Their questions are under Answers, ready to write.",
@@ -1446,6 +1440,38 @@
       "eligible": "Who can apply",
       "requirement": "What you'll need",
       "excluded": "What they won't fund"
+    }
+  },
+  "account": {
+    "title": "Your account",
+    "link": "Your account and data",
+    "youTitle": "You",
+    "guest": "You're using Gusty as a guest. Add your email so your projects are kept safe and you can sign in on any device.",
+    "signedOut": "You're not signed in. Sign in with your email to see your account.",
+    "download": "Download my projects",
+    "downloadHint": "A plain document with everything you've saved: your ideas, plans, notes, story and applications.",
+    "downloadData": "Or download it as a data file (for moving to another tool)",
+    "leaveTitle": "Leaving Gusty",
+    "leaveBody": "You can delete your account and everything in it at any time. This can't be undone, so you may want to download your projects first.",
+    "backToProjects": "Back to My Projects",
+    "file": {
+      "heading": "Your projects in Gusty",
+      "exported": "Downloaded on {date}",
+      "idea": "Your idea",
+      "understood": "What Gusty understood",
+      "plan": "Your plan",
+      "done": "Done",
+      "open": "To do",
+      "notes": "Notes",
+      "answers": "Answers",
+      "experience": "Your experience",
+      "research": "Research Gusty found (check before using)",
+      "voice": "How you write",
+      "applications": "Applications",
+      "question": "Question",
+      "noAnswer": "(No answer yet)",
+      "documents": "From your documents",
+      "foundBy": "Found by Gusty on {date}"
     }
   }
 }

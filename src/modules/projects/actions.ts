@@ -192,6 +192,24 @@ export async function deleteProject(formData: FormData) {
   redirect(`/${lang}/projects`);
 }
 
+/**
+ * Deletes a project from My Projects. The person has to type its name first, checked here too, because a
+ * deleted project can't be brought back.
+ */
+export async function deleteProjectNamed(projectId: string, typed: string): Promise<{ ok: boolean }> {
+  if (!isProjectId(projectId)) return { ok: false };
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { ok: false };
+  const { data: project } = await supabase.from("projects").select("title").eq("id", projectId).maybeSingle();
+  if (!project || !sameName(project.title, typed)) return { ok: false };
+  const { error } = await supabase.from("projects").delete().eq("id", projectId);
+  return { ok: !error };
+}
+
+/** Typed names match without worrying about capitals or extra spaces. */
+const sameName = (a: string, b: string) => norm(a) === norm(b);
+const norm = (s: string) => s.replace(/\s+/g, " ").trim().toLowerCase();
+
 /** Deletes the person's account and everything they own, then signs them out. */
 export async function deleteAccount(formData: FormData) {
   const lang = localeFrom(formData);

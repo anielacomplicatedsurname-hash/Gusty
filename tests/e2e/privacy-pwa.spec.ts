@@ -14,15 +14,29 @@ test.describe("data controls", () => {
     await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/);
   }
 
-  test("people can download everything they've saved", async ({ page }) => {
+  const read = async (download: import("@playwright/test").Download) =>
+    (await (await download.createReadStream()).toArray().then((c) => Buffer.concat(c).toString()));
+
+  test("people can download everything they've saved, as a readable document or a data file", async ({ page }) => {
     await newProject(page, "A tool library for the street");
     await page.goto("/en/projects");
-    const [download] = await Promise.all([
-      page.waitForEvent("download"),
-      page.getByRole("link", { name: "Download my projects" }).click(),
-    ]);
-    expect(download.suggestedFilename()).toMatch(/^gusty-projects-\d{4}-\d{2}-\d{2}\.json$/);
-    const json = JSON.parse(await (await download.createReadStream()).toArray().then((c) => Buffer.concat(c).toString()));
+    await page.getByRole("link", { name: "Your account and data" }).click();
+    await expect(page).toHaveURL(/\/en\/account$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Your account" })).toBeVisible();
+    const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+    expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+
+    const [doc] = await Promise.all([page.waitForEvent("download"), page.getByRole("link", { name: "Download my projects" }).click()]);
+    expect(doc.suggestedFilename()).toMatch(/^gusty-projects-\d{4}-\d{2}-\d{2}\.txt$/);
+    const text = await read(doc);
+    expect(text).toContain("Your projects in Gusty");
+    expect(text).toContain("Your idea");
+    expect(text).toContain("A tool library for the street");
+    expect(text).not.toContain("{");
+
+    const [data] = await Promise.all([page.waitForEvent("download"), page.getByRole("link", { name: /as a data file/ }).click()]);
+    expect(data.suggestedFilename()).toMatch(/^gusty-projects-\d{4}-\d{2}-\d{2}\.json$/);
+    const json = JSON.parse(await read(data));
     expect(json.projects).toHaveLength(1);
     expect(json.projects[0].idea).toBe("A tool library for the street");
   });
@@ -42,10 +56,26 @@ test.describe("data controls", () => {
     await expect(page.getByText("We couldn't find that project.")).toBeVisible();
   });
 
+  test("a project can be deleted from My Projects, only after typing its name", async ({ page }) => {
+    await newProject(page, "A seed swap for the street");
+    await page.goto("/en/projects");
+    const title = (await page.getByRole("list", { name: "My Projects" }).getByRole("link").first().locator("span.text-lg").textContent())!;
+    await page.getByRole("button", { name: `Delete project: ${title}` }).click();
+    const box = page.getByRole("group", { name: `Delete project: ${title}` });
+    await expect(box.getByText("It can't be brought back.", { exact: false })).toBeVisible();
+    const forever = box.getByRole("button", { name: "Delete it for ever" });
+    await expect(forever).toBeDisabled();
+    await box.getByLabel(/To be sure, type the project's name/).fill("something else");
+    await expect(forever).toBeDisabled();
+    await box.getByLabel(/To be sure, type the project's name/).fill(`  ${title.toUpperCase()} `);
+    await forever.click();
+    await expect(page.getByText("No projects yet")).toBeVisible();
+  });
+
   test("an account can be deleted with everything in it", async ({ page }) => {
     await newProject(page, "A project that goes with the account");
     const url = page.url();
-    await page.goto("/en/projects");
+    await page.goto("/en/account");
     await page.getByRole("button", { name: "Delete my account" }).click();
     await page.getByRole("button", { name: "Yes, delete everything" }).click();
     await expect(page).toHaveURL(/\/en$/);

@@ -447,3 +447,19 @@ label repeated on every line:
 This is for people who scan rather than read, and who need "Can I apply?" answered first.
 
 Fits saved before this change have no light until "Work it out again".
+
+## 2026-11-01 — Founder feedback, round 1: simpler readiness, careful deleting, an Account page
+- **Ready for funding:** the separate "What would help next" list is gone. Each piece that isn't in place yet
+  now links straight to where it's done.
+- **The money question** says it's fine not to know yet.
+- **Funding routes:** each one has "Add as a step", which puts its first step into the plan so it can be acted on.
+- **"What you've worked out"** moves to the Plan tab, next to the steps it came from. Story keeps the project
+  bank and documents.
+- **Deleting from My Projects:** projects can be deleted from their card. The confirmation says exactly what
+  goes and that it can't be brought back, and the person must type the project's name first (checked on
+  the server too).
+- **Application space:** the progress line above the tabs is gone; the founder found it cluttered.
+- **New Account page** (the header badge links to it), holding sign-in, sign-out, the data download and
+  "Delete my account".
+- **The download** is now a readable plain-text document of everything saved (ideas, plan, notes, story,
+  applications). The data file (JSON) is still offered for moving to another tool.

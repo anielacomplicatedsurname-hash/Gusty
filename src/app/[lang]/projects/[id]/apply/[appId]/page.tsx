@@ -7,10 +7,10 @@ import { fill } from "@/i18n/format";
 import { deleteApplication } from "@/modules/applications/actions";
 import { AddMaterial, RemoveMaterial } from "@/modules/applications/AddMaterial";
 import { Brief } from "@/modules/applications/Brief";
-import { getApplication, type Application } from "@/modules/applications/data";
+import { getApplication } from "@/modules/applications/data";
 import { FitSection } from "@/modules/applications/FitSection";
 import { AnswersSection } from "@/modules/applications/AnswersSection";
-import { questionsOf, type Question } from "@/modules/applications/questions";
+import { questionsOf } from "@/modules/applications/questions";
 import { aiProvider } from "@/ai";
 import { ConfirmButton } from "@/modules/projects/ConfirmButton";
 
@@ -55,7 +55,6 @@ async function ApplicationContent({ params, searchParams, t }: {
   }
   const path = `/${lang}/projects/${id}/apply/${app.id}`;
   const questions = questionsOf(app.materials);
-  const answered = questions.filter((q) => app.answers.some((a) => a.key === q.key && a.answer.trim())).length;
   // Papers first until there are some; then straight to the answers, the main work.
   const asked = VIEWS.find((name) => name === query.view);
   const view: View = asked ?? (app.materials.length === 0 ? "papers" : "answers");
@@ -74,8 +73,6 @@ async function ApplicationContent({ params, searchParams, t }: {
           </p>
         )}
       </header>
-
-      <ProgressLine app={app} questions={questions} answered={answered} copy={copy} />
 
       <nav aria-label={copy.viewsLabel} className="flex gap-1 rounded-full bg-oat p-1">
         {VIEWS.map((name) => (
@@ -131,22 +128,3 @@ async function ApplicationContent({ params, searchParams, t }: {
   );
 }
 
-/** One calm line of where this application is, and the one next thing to do. */
-function ProgressLine({ app, questions, answered, copy }: {
-  app: Application; questions: Question[]; answered: number; copy: Messages["applications"];
-}) {
-  const papers = app.materials.length;
-  const parts = [
-    papers === 1 ? copy.oneMaterial : papers > 1 ? fill(copy.materialsCount, { n: String(papers) }) : copy.noMaterials,
-    ...(questions.length ? [fill(copy.answeredCount, { n: String(answered), total: String(questions.length) })] : []),
-  ];
-  const next = papers === 0 ? copy.nextPapers
-    : questions.length === 0 ? copy.nextForm
-      : answered < questions.length ? fill(copy.nextAnswer, { n: String(answered + 1) }) : copy.nextDone;
-  return (
-    <div className="-mt-2 flex flex-col gap-1">
-      <p className="text-sm text-text-muted">{parts.join(" · ")}</p>
-      <p className="font-medium">{next}</p>
-    </div>
-  );
-}

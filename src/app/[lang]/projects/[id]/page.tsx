@@ -118,7 +118,10 @@ async function ProjectContent({
       </nav>
 
       {tab === "plan" && (
-        <NextStepsSection projectId={project.id} lang={lang} t={t} hideCurrent={overview?.next.kind === "step"} />
+        <>
+          <NextStepsSection projectId={project.id} lang={lang} t={t} hideCurrent={overview?.next.kind === "step"} />
+          <WorkedOutSection projectId={project.id} lang={lang} t={t} />
+        </>
       )}
 
       {tab === "idea" && (
@@ -156,7 +159,6 @@ async function ProjectContent({
         <>
           <p className="-mt-2 text-sm text-text-muted">{t.workedOut.explainer}</p>
           <BankBlock projectId={project.id} lang={lang} t={t} />
-          <WorkedOutSection projectId={project.id} lang={lang} t={t} />
           <DocumentsBlock projectId={project.id} lang={lang} t={t} />
         </>
       )}

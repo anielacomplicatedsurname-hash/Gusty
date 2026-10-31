@@ -4,8 +4,7 @@ import { Suspense } from "react";
 import { BrandSymbol } from "@/components/BrandSymbol";
 import { getMessages, type Messages } from "@/i18n/dictionaries";
 import { fill, formatDateTime } from "@/i18n/format";
-import { deleteAccount, signOut } from "@/modules/projects/actions";
-import { ConfirmButton } from "@/modules/projects/ConfirmButton";
+import { DeleteProjectCard } from "@/modules/projects/DeleteProjectCard";
 import { getCurrentUser, listProjects, type ProjectSummary } from "@/modules/projects/data";
 import { DocumentUpload } from "@/modules/documents/DocumentUpload";
 import { freshness } from "@/modules/explore/data";
@@ -102,32 +101,9 @@ async function ProjectsContent({
         <DocumentUpload lang={lang} copy={t.documents} />
       </section>
 
-      <section aria-labelledby="your-data" className="mt-10 flex flex-col items-start gap-3">
-        <h2 id="your-data" className="type-label text-text-muted">{t.projects.yourData}</h2>
-        <p className="text-sm text-text-muted">{t.projects.yourDataBody}</p>
-        <a href="/api/export" download className="text-sm font-medium underline underline-offset-4">
-          {t.projects.download}
-        </a>
-        <form action={deleteAccount}>
-          <input type="hidden" name="lang" value={lang} />
-          <ConfirmButton
-            label={t.projects.deleteAccount}
-            confirmText={t.projects.deleteAccountConfirm}
-            confirmLabel={t.projects.deleteAccountYes}
-            cancelLabel={t.projects.cancel}
-          />
-        </form>
-      </section>
-
-      {!user.isAnonymous && (
-        <form action={signOut} className="mt-10 flex flex-wrap items-center gap-3 text-sm text-text-muted">
-          <input type="hidden" name="lang" value={lang} />
-          <span>{fill(t.projects.signedInAs, { email: user.email ?? "" })}</span>
-          <button type="submit" className="font-medium text-ink underline underline-offset-4">
-            {t.projects.signOut}
-          </button>
-        </form>
-      )}
+      <p className="mt-10 text-sm">
+        <Link href={`/${lang}/account`} className="font-medium underline underline-offset-4">{t.account.link}</Link>
+      </p>
     </>
   );
 }
@@ -149,8 +125,9 @@ async function ProjectCard({ project, lang, t }: { project: ProjectSummary; lang
   const overview = await getProjectOverview(project.id);
   const fresh = overview?.lastSearch ? freshness(overview.lastSearch) : null;
   return (
+    <div className="flex flex-col gap-2 rounded-(--radius-card) bg-surface-raised p-2">
     <Link href={`/${lang}/projects/${project.id}`}
-      className="flex items-center gap-4 rounded-(--radius-card) bg-surface-raised p-5 transition-colors hover:bg-oat">
+      className="flex items-center gap-4 rounded-(--radius-card) p-3 transition-colors hover:bg-oat">
       <BrandSymbol name="sprout" size={28} />
       <span className="flex min-w-0 flex-1 flex-col gap-1">
         <span className="text-lg font-semibold">{project.title}</span>
@@ -173,5 +150,9 @@ async function ProjectCard({ project, lang, t }: { project: ProjectSummary; lang
       </span>
       <span aria-hidden="true">→</span>
     </Link>
+    <div className="flex px-3 pb-2">
+      <DeleteProjectCard id={project.id} title={project.title} copy={t.projects} />
+    </div>
+    </div>
   );
 }
