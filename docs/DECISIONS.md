@@ -289,3 +289,14 @@ not verified, and are part of every later AI request for the project. Uploads go
 (`/api/documents`) so the larger body limit applies only there; it checks the request comes from Gusty's own
 pages, the size before reading, and that the file really is a PDF.
 
+## 2026-10-31 — A calm project home, and welcoming people back
+A UX review found the project page had grown to about seven phone screens, with the next step around the
+third. The page now has one "Your next step" card at the top (chosen in order: let Gusty read the idea, choose
+a direction, the current step, plan the next stage, then look for opportunities), a line of progress (stage,
+"Ready for funding: n of 7", opportunities saved) and four areas as tabs: Plan, Idea, Funding, Notes. Plan
+opens first once there's a plan; before that, Idea does, so people see Gusty's reading. Funding is always
+there but isn't pushed early. Tabs are links (`?tab=`), so they work without JavaScript and can be shared.
+The home page greets returning people with their most recent project and its next step, My Projects cards
+show each project's stage, next step, readiness and how fresh its deep search is, and guests see "Keep your
+projects" before anything else.
+

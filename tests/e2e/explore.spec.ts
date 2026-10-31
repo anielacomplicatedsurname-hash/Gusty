@@ -23,6 +23,7 @@ test("searching for a project's opportunities: best places first, the rest by sc
   await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/);
   const projectUrl = page.url();
 
+  await page.getByRole("navigation", { name: "Project sections" }).getByRole("link", { name: "Funding" }).click();
   await page.getByRole("link", { name: "Find opportunities" }).click();
   await expect(page).toHaveURL(/\/en\/explore\?project=[0-9a-f-]{36}$/);
   await expect(page.getByRole("heading", { level: 2, name: /^Opportunities for / })).toBeVisible();
@@ -68,7 +69,7 @@ test("searching for a project's opportunities: best places first, the rest by sc
   // Saving a result puts it on the project page, where it can become a step.
   await best.getByRole("button", { name: "Save to my project: Example: neighbourhood small grant" }).click();
   await expect(best.getByRole("button", { name: "Remove from saved: Example: neighbourhood small grant" })).toHaveAttribute("aria-pressed", "true");
-  await page.goto(projectUrl);
+  await page.goto(`${projectUrl}?tab=funding`);
   const saved = page.locator("section[aria-labelledby=saved-title]");
   await expect(saved.getByRole("heading", { name: "Example: neighbourhood small grant" })).toBeVisible();
   await saved.getByRole("button", { name: "Add a step to check it: Example: neighbourhood small grant" }).click();

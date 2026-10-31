@@ -386,7 +386,8 @@
         ]
       }
     ],
-    "moreBeyond": "{n} more steps are in this stage. They'll show here as you go."
+    "moreBeyond": "{n} more steps are in this stage. They'll show here as you go.",
+    "comingUp": "Coming up in this stage"
   },
   "offline": {
     "title": "You're offline right now.",
@@ -1020,6 +1021,56 @@
       "unavailable": "Gusty can't read documents right now. Please try again later.",
       "busy": "Gusty is a little busy right now. Please try again in a minute.",
       "error": "Something went wrong. Please try again."
+    }
+  },
+  "projectHome": {
+    "nextLabel": "Your next step",
+    "tabsLabel": "Project sections",
+    "tabs": {
+      "plan": "Plan",
+      "idea": "Idea",
+      "funding": "Funding",
+      "notes": "Notes"
+    },
+    "stageChip": "Stage {n} · {title}",
+    "readyChip": "Ready for funding: {n} of {total}",
+    "savedChip": "{n} saved",
+    "oneSavedChip": "1 opportunity saved",
+    "manySavedChip": "{n} opportunities saved",
+    "next": {
+      "reading": {
+        "title": "Gusty is reading your idea",
+        "body": "It only takes a moment. Then check what Gusty understood.",
+        "action": "See Gusty's reading"
+      },
+      "directions": {
+        "title": "Choose where your idea could go next",
+        "body": "Gusty suggests a few directions. Pick the one that feels right.",
+        "action": "See directions"
+      },
+      "nextStage": {
+        "title": "Plan the next stage",
+        "body": "You finished this stage. Gusty can plan a few new steps from everything you've done.",
+        "action": "Go to your plan"
+      },
+      "explore": {
+        "title": "Look for opportunities",
+        "body": "Do a deep search for funding and support that fit this project.",
+        "action": "Find opportunities"
+      }
+    },
+    "welcome": {
+      "label": "Welcome back",
+      "title": "Pick up where you left off",
+      "next": "Next: {step}",
+      "continue": "Continue",
+      "all": "All my projects"
+    },
+    "cardNext": "Next: {step}",
+    "searched": {
+      "fresh": "Searched this week",
+      "aging": "Searched a few weeks ago",
+      "old": "Searched over a month ago"
     }
   }
 }

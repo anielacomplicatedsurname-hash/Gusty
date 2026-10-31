@@ -1,6 +1,8 @@
+import { Suspense } from "react";
 import { BrandSymbol, type SymbolName } from "@/components/BrandSymbol";
 import { Logo } from "@/components/Logo";
 import { getMessages } from "@/i18n/dictionaries";
+import { WelcomeBack } from "@/modules/projects/WelcomeBack";
 import { supportChoices } from "@/config/support";
 import { supabaseConfig } from "@/lib/supabase/config";
 import { IdeaForm } from "@/modules/projects/IdeaForm";
@@ -26,6 +28,9 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
     <>
       <section className="mx-auto grid max-w-(--content-max) gap-10 px-4 pb-16 pt-10 sm:px-6 md:pt-16 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:pt-20">
         <div>
+          <Suspense fallback={null}>
+            <WelcomeBack lang={lang} t={t} />
+          </Suspense>
           <p className="type-accent-hand text-lg">{t.home.overline}</p>
           <HandUnderline className="mt-1" />
           <h1 className="type-display mt-6 text-[3.75rem] sm:text-8xl lg:text-[6.5rem]">

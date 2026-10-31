@@ -11,7 +11,7 @@ import {
   type StepsResult,
 } from "./actions";
 import type { DirectionView, StageView } from "./data";
-import { BIGGER_PICTURE_LIMIT, MODES, visibleSteps, type Mode, type StepView } from "./modes";
+import { BIGGER_PICTURE_LIMIT, currentStage, MODES, visibleSteps, type Mode, type StepView } from "./modes";
 
 type Copy = typeof en.steps;
 type Act = (run: () => Promise<StepsResult | { ok: boolean }>, busyText?: string) => void;
@@ -25,6 +25,7 @@ export function NextSteps({
   steps,
   initialMode,
   demo,
+  hideCurrent = false,
   copy,
 }: {
   projectId: string;
@@ -34,6 +35,8 @@ export function NextSteps({
   steps: StepView[];
   initialMode: Mode;
   demo: boolean;
+  /** The current step is shown above, in the project's "Your next step" card. */
+  hideCurrent?: boolean;
   copy: Copy;
 }) {
   const router = useRouter();
@@ -60,13 +63,10 @@ export function NextSteps({
 
   const chosen = directions.find((d) => d.chosen) ?? null;
   // Only the current stage's steps are planned out; earlier stages are history.
-  const current = stages.find((st) => st.status === "current") ?? null;
-  const stageSteps = current ? steps.filter((st) => st.stage_id === current.id) : steps;
+  const { current, stageSteps, finished: stageFinished, number: stageNumber } = currentStage(stages, steps);
   const view = visibleSteps(stageSteps, mode);
   const totalDone = steps.filter((st) => st.status === "done").length;
-  const stageFinished = stageSteps.length > 0 && stageSteps.every((st) => st.status === "done");
   const past = stages.filter((st) => st.status === "done");
-  const stageNumber = past.length + 1;
   const showDirections = directions.length > 0 && (!chosen || changing);
 
   return (
@@ -153,6 +153,17 @@ export function NextSteps({
           {stageFinished && current ? (
             <StageFinished stage={current} steps={stageSteps} projectId={projectId} lang={lang} copy={copy}
               disabled={pending} onNext={() => act(() => planNextStage(projectId, lang), copy.planning)} />
+          ) : view.current && hideCurrent ? (
+            view.upcoming.length > 0 && (
+              <section aria-labelledby="upcoming-title" className="flex flex-col gap-3">
+                <h3 id="upcoming-title" className="type-label text-text-muted">{copy.comingUp}</h3>
+                <ol className="flex flex-col gap-3" aria-label={copy.title}>
+                  {view.upcoming.map((s) => (
+                    <li key={s.id}><StepCard step={s} projectId={projectId} lang={lang} copy={copy} act={act} disabled={pending} /></li>
+                  ))}
+                </ol>
+              </section>
+            )
           ) : view.current ? (
             <>
               {mode === "everything" && <h3 className="type-label -mb-3 text-text-muted">{copy.journey.focus}</h3>}
@@ -229,10 +240,35 @@ function ModeSwitch({ mode, copy, onChange }: { mode: Mode; copy: Copy; onChange
   );
 }
 
+/** The step to do now, on its own (the project's "Your next step" card), with ticking and "I'm stuck". */
+export function TopStep({ step, projectId, lang, copy }: { step: StepView; projectId: string; lang: string; copy: Copy }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [busyText, setBusyText] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const act: Act = (run, text) => {
+    setError(null);
+    setBusyText(text ?? null);
+    startTransition(async () => {
+      const result = await run();
+      setBusyText(null);
+      if (result.ok) router.refresh();
+      else setError("error" in result ? copy.errors[result.error] : copy.errors.failed);
+    });
+  };
+  return (
+    <div className="flex flex-col gap-2" aria-busy={pending}>
+      <StepCard key={step.id} step={step} highlighted showLabel={false} projectId={projectId} lang={lang} copy={copy} act={act} disabled={pending} />
+      {busyText && <p role="status" className="text-sm text-text-muted">{busyText}</p>}
+      {error && <p role="alert" className="font-medium">{error}</p>}
+    </div>
+  );
+}
+
 function StepCard({
-  step, highlighted = false, projectId, lang, copy, act, disabled,
+  step, highlighted = false, showLabel = true, projectId, lang, copy, act, disabled,
 }: {
-  step: StepView; highlighted?: boolean; projectId: string; lang: string; copy: Copy; act: Act; disabled: boolean;
+  step: StepView; highlighted?: boolean; showLabel?: boolean; projectId: string; lang: string; copy: Copy; act: Act; disabled: boolean;
 }) {
   const [stuckOpen, setStuckOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -245,7 +281,7 @@ function StepCard({
 
   return (
     <article className={`rounded-xl p-4 ${highlighted ? "bg-signal text-ink" : "border border-border"}`}>
-      {highlighted && <p className="type-label mb-2">{copy.startHere}</p>}
+      {highlighted && showLabel && <p className="type-label mb-2">{copy.startHere}</p>}
       <div className="flex items-start gap-3">
         <input type="checkbox" checked={ticked} disabled={disabled} className="mt-1 h-5 w-5 shrink-0 accent-ink"
           aria-label={`${copy.markDone}: ${step.title}`}
