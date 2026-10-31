@@ -487,3 +487,12 @@ and instant, with no AI call. A step Gusty creates for a mood keeps that mood.
 current stage. It's counted in the daily AI limit, and in demo mode it adds a labelled example.
 
 The choice is kept in the address (`?mood=`), not stored.
+## 2026-11-01 — The slogan in Gusty's own type, moved to "How it works"
+**Font:** the founder didn't like the hand-lettered Caveat Brush, and on reflection didn't want a marker font
+either. "Big possibilities. Small steps." now uses the same type as the headline: Instrument Serif, with
+"Small steps." in italic, like "deserve to move.". A hand-drawn swipe in Signal sits behind it.
+
+**Where it goes:** it heads the "How it works" section, right above the three small steps it describes. The
+hero keeps one message: "Good ideas deserve to move.".
+
+**One less font:** there's no hand font any more. Gusty uses just Google Sans Flex and Instrument Serif.

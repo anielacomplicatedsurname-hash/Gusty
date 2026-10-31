@@ -32,7 +32,6 @@ chosen by the founder on 2026-10-29; the others are the closest matches to the o
 | Role | Font | Usage |
 |---|---|---|
 | Display serif | **Instrument Serif**, regular, slightly tight tracking (`.type-display`). The home headline sets its second line in italic ("Good ideas / *deserve to move.*") | Page titles and key brand moments only |
-| Hand accent | Caveat Brush, uppercase, spaced (`.type-accent-hand`) | Short overlines and brand messages |
 | UI sans | **Google Sans Flex** | Everything functional: body, forms, navigation |
 | Label | Google Sans Flex, uppercase, 0.2em tracking (`.type-label`) | Section labels, metadata |
 

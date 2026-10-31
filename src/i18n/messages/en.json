@@ -17,7 +17,6 @@
     "connections": "Connections"
   },
   "home": {
-    "overline": "Big possibilities. Small steps.",
     "headline": "Good ideas",
     "headlineItalic": "deserve to move.",
     "lead": "Tell Gusty about your idea. Gusty helps you understand it, shape it and take the next small step towards the funding, people and tools that make it happen.",
@@ -48,7 +47,9 @@
       "tooLong": "That's a lot of words! Please keep it under 5,000 characters for now.",
       "unavailable": "Saving isn't available right now. Your text is still here; please try again later.",
       "failed": "Something went wrong while saving. Your text is still here; please try again."
-    }
+    },
+    "sloganBig": "Big possibilities.",
+    "sloganSmall": "Small steps."
   },
   "comingNext": {
     "label": "Coming next",

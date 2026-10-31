@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Caveat_Brush, Google_Sans_Flex, Instrument_Serif } from "next/font/google";
+import { Google_Sans_Flex, Instrument_Serif } from "next/font/google";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { ServiceWorker } from "@/components/ServiceWorker";
@@ -24,13 +24,6 @@ const displaySerif = Instrument_Serif({
   variable: "--font-serif",
   display: "swap",
 });
-const displayHand = Caveat_Brush({
-  weight: "400",
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-hand",
-  display: "swap",
-});
-
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }
@@ -71,7 +64,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
     <html
       lang={lang}
       dir={textDirection(lang)}
-      className={`${uiSans.variable} ${displaySerif.variable} ${displayHand.variable} h-full antialiased`}
+      className={`${uiSans.variable} ${displaySerif.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <AppShell locale={lang}>{children}</AppShell>

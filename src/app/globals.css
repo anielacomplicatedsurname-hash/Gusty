@@ -76,7 +76,6 @@
 
   --font-sans: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-serif), Georgia, "Times New Roman", serif;
-  --font-hand-accent: var(--font-hand), "Comic Sans MS", cursive;
 
   --radius-card: 1.25rem;
   --radius-pill: 999px;
@@ -110,14 +109,6 @@ body {
     font-weight: 400;
     line-height: 1;
     letter-spacing: -0.015em;
-  }
-
-  /* Small accent copy in the hand style: overlines, short brand messages. */
-  .type-accent-hand {
-    font-family: var(--font-hand-accent);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    -webkit-text-stroke: 0.02em currentColor;
   }
 
   /* Spaced uppercase labels in the UI sans. */

@@ -19,6 +19,16 @@ function HandUnderline({ className = "" }: { className?: string }) {
   );
 }
 
+/** A hand-drawn marker swipe behind a few words, in Signal. Decorative: hidden from screen readers. */
+function MarkerSwipe() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 200 40" preserveAspectRatio="none"
+      className="absolute -inset-x-3 -bottom-[0.08em] h-[72%] w-[calc(100%+1.5rem)] -rotate-1 fill-signal">
+      <path d="M6 10 C 50 4, 110 12, 160 6 S 196 8, 198 12 L 194 36 C 140 32, 90 40, 40 34 S 8 38, 3 34 Z" />
+    </svg>
+  );
+}
+
 export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   const t = await getMessages();
@@ -31,9 +41,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
           <Suspense fallback={null}>
             <WelcomeBack lang={lang} t={t} />
           </Suspense>
-          <p className="type-accent-hand text-lg">{t.home.overline}</p>
-          <HandUnderline className="mt-1" />
-          <h1 className="type-display mt-6 text-[3.75rem] sm:text-8xl lg:text-[6.5rem]">
+          <h1 className="type-display text-[3.75rem] sm:text-8xl lg:text-[6.5rem]">
             {t.home.headline}{" "}
             <br />
             <em className="italic">{t.home.headlineItalic}</em>
@@ -63,8 +71,14 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
 
       <section aria-labelledby="how" className="bg-oat/60">
         <div className="mx-auto max-w-(--content-max) px-4 py-14 sm:px-6">
-          <h2 id="how" className="type-label text-ink">
-            {t.home.howTitle}
+          <p className="type-label text-text-muted">{t.home.howTitle}</p>
+          {/* The brand line, where it means most: right above the three small steps. */}
+          <h2 id="how" className="type-display mb-4 mt-3 text-5xl sm:text-6xl">
+            {t.home.sloganBig}{" "}
+            <span className="relative inline-block whitespace-nowrap">
+              <MarkerSwipe />
+              <em className="relative italic">{t.home.sloganSmall}</em>
+            </span>
           </h2>
           <ol className="mt-6 grid gap-4 md:grid-cols-3">
             {t.home.steps.map((step, i) => (
