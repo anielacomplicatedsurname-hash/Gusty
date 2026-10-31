@@ -464,13 +464,12 @@ Fits saved before this change have no light until "Work it out again".
 - **The download** is now a readable plain-text document of everything saved (ideas, plan, notes, story,
   applications). The data file (JSON) is still offered for moving to another tool.
 
-## 2026-11-01 — The slogan: a marker hand with a swipe, moved to "How it works"
-**Font:** the founder didn't like Caveat Brush, which looked handwritten. She chose a marker font, Permanent
-Marker, with a hand-drawn swipe in Signal behind "Small steps.".
+## 2026-11-01 — The slogan in Gusty's own type, moved to "How it works"
+**Font:** the founder didn't like the hand-lettered Caveat Brush, and on reflection didn't want a marker font
+either. "Big possibilities. Small steps." now uses the same type as the headline: Instrument Serif, with
+"Small steps." in italic, like "deserve to move.". A hand-drawn swipe in Signal sits behind it.
 
-**Where it goes:** with "Good ideas deserve to move." as the headline, two slogans side by side was too much.
-So "Big possibilities. Small steps." now heads the "How it works" section, right above the three small
-steps it describes. The hero has one message.
+**Where it goes:** it heads the "How it works" section, right above the three small steps it describes. The
+hero keeps one message: "Good ideas deserve to move.".
 
-**Accessibility:** hand fonts are harder for many dyslexic readers, so the marker is used only for this one
-short line, at a large size, and never for body text.
+**One less font:** there's no hand font any more. Gusty uses just Google Sans Flex and Instrument Serif.

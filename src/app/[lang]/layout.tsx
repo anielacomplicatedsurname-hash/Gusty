@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Google_Sans_Flex, Instrument_Serif, Permanent_Marker } from "next/font/google";
+import { Google_Sans_Flex, Instrument_Serif } from "next/font/google";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { ServiceWorker } from "@/components/ServiceWorker";
@@ -24,14 +24,6 @@ const displaySerif = Instrument_Serif({
   variable: "--font-serif",
   display: "swap",
 });
-// A marker hand for the one brand line ("Big possibilities. Small steps."), used large and sparingly.
-const displayHand = Permanent_Marker({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-hand",
-  display: "swap",
-});
-
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }
@@ -72,7 +64,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
     <html
       lang={lang}
       dir={textDirection(lang)}
-      className={`${uiSans.variable} ${displaySerif.variable} ${displayHand.variable} h-full antialiased`}
+      className={`${uiSans.variable} ${displaySerif.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <AppShell locale={lang}>{children}</AppShell>

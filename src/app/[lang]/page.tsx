@@ -73,11 +73,11 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         <div className="mx-auto max-w-(--content-max) px-4 py-14 sm:px-6">
           <p className="type-label text-text-muted">{t.home.howTitle}</p>
           {/* The brand line, where it means most: right above the three small steps. */}
-          <h2 id="how" className="type-marker mb-4 mt-3 text-4xl sm:text-5xl">
+          <h2 id="how" className="type-display mb-4 mt-3 text-5xl sm:text-6xl">
             {t.home.sloganBig}{" "}
             <span className="relative inline-block whitespace-nowrap">
               <MarkerSwipe />
-              <span className="relative">{t.home.sloganSmall}</span>
+              <em className="relative italic">{t.home.sloganSmall}</em>
             </span>
           </h2>
           <ol className="mt-6 grid gap-4 md:grid-cols-3">
