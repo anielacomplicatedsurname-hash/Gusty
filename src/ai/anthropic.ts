@@ -18,7 +18,14 @@ export function anthropicProvider(apiKey: string): AiProvider {
     async generate<S extends z.ZodType>(request: StructuredRequest<S>): Promise<StructuredResult<z.infer<S>>> {
       try {
         type Params = Parameters<typeof client.beta.messages.parse>[0];
-        const messages: Anthropic.Beta.Messages.BetaMessageParam[] = [{ role: "user", content: request.user }];
+        const content: Anthropic.Beta.Messages.BetaContentBlockParam[] = [
+          ...(request.documents ?? []).map((d) => ({
+            type: "document" as const,
+            source: { type: "base64" as const, media_type: "application/pdf" as const, data: d.base64 },
+          })),
+          { type: "text", text: request.user },
+        ];
+        const messages: Anthropic.Beta.Messages.BetaMessageParam[] = [{ role: "user", content }];
         const toolList: NonNullable<Params["tools"]> = [];
         if (request.webSearch) toolList.push({ type: "web_search_20260209", name: "web_search", max_uses: request.webSearch.maxUses });
         if (request.webFetch) toolList.push({ type: "web_fetch_20260209", name: "web_fetch", max_uses: request.webFetch.maxUses });

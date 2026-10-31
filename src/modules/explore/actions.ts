@@ -10,6 +10,7 @@ import { logRun, withinDailyLimit } from "@/ai/usage";
 import { messagesFor } from "@/i18n/messages-for";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isProjectId } from "@/modules/projects/validation";
+import { loadDocuments } from "@/modules/documents/data";
 import { loadWorkedOut } from "@/modules/step-work/data";
 import { SEARCHES_PER_PERSON_PER_DAY, SEARCHES_PER_PROJECT_PER_DAY } from "./limits";
 
@@ -62,13 +63,14 @@ async function runSearch(supabase: Supabase, project: { id: string; title: strin
       raw = messagesFor(lang).explore.demoResults.map((d) => ({ ...blank, ...d }));
       await logRun(supabase, { projectId: project.id, task: "opportunity_search", promptVersion: SEARCH_PROMPT_VERSION, model: "demo", status: "demo" });
     } else {
-      const [{ data: facts }, work] = await Promise.all([
+      const [{ data: facts }, work, docs] = await Promise.all([
         supabase.from("project_facts").select("kind, value").eq("project_id", project.id).order("position"),
         loadWorkedOut(supabase, project.id),
+        loadDocuments(supabase, project.id),
       ]);
       const result = await provider.generate({
         system: SEARCH_PROMPT,
-        user: searchMessage(projectContext(project.title, project.idea, facts ?? [], work), place),
+        user: searchMessage(projectContext(project.title, project.idea, facts ?? [], work, docs), place),
         schema: SearchSchema,
         effort: "medium",
         maxTokens: 16000,

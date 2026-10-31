@@ -14,6 +14,7 @@ import { logRun, withinDailyLimit, withinTidyLimit } from "@/ai/usage";
 import { messagesFor } from "@/i18n/messages-for";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isProjectId } from "@/modules/projects/validation";
+import { loadDocuments } from "@/modules/documents/data";
 import { loadWorkedOut } from "./data";
 
 export type WorkResult = { ok: true } | { ok: false; error: "unavailable" | "busy" | "declined" | "invalid" | "error" | "limit" };
@@ -27,16 +28,17 @@ const failed = (reason: string): WorkResult => ({
 async function loadStep(supabase: Supabase, stepId: string) {
   const { data: step } = await supabase.from("next_steps").select("id, project_id, title, detail, status, notes").eq("id", stepId).maybeSingle();
   if (!step || step.status === "replaced") return null;
-  const [{ data: project }, { data: facts }, { data: questions }, work] = await Promise.all([
+  const [{ data: project }, { data: facts }, { data: questions }, work, docs] = await Promise.all([
     supabase.from("projects").select("title, idea").eq("id", step.project_id).maybeSingle(),
     supabase.from("project_facts").select("kind, value").eq("project_id", step.project_id).order("position"),
     supabase.from("step_questions").select("id, question, answer, status").eq("step_id", stepId).order("created_at"),
     loadWorkedOut(supabase, step.project_id),
+    loadDocuments(supabase, step.project_id),
   ]);
   if (!project) return null;
   // This step's own answers go to Gusty separately, so only the other steps are added here.
   const others = work.filter((w) => w.id !== stepId);
-  return { step, context: projectContext(project.title, project.idea, facts ?? [], others), questions: questions ?? [] };
+  return { step, context: projectContext(project.title, project.idea, facts ?? [], others, docs), questions: questions ?? [] };
 }
 
 /** Asks Gusty for questions to fill the free places (up to three in total). Answered questions always stay. */

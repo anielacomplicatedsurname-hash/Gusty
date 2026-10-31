@@ -39,18 +39,38 @@ function workedOut(work: ContextWork[]): string {
   return neutralise(out.trimEnd());
 }
 
-export function projectContext(title: string, idea: string, facts: ContextFact[], work: ContextWork[] = []): string {
+/** What Gusty learned from the person's own documents about the project. */
+export type ContextDocument = { summary: string; done: string[] };
+
+function fromDocuments(docs: ContextDocument[]): string {
+  let out = "";
+  for (const d of docs) {
+    const lines = [
+      `- Document: ${cut(d.summary, 800)}`,
+      ...d.done.map((x) => `  - Already done: ${cut(x, 200)}`),
+    ].join("\n");
+    if (out.length + lines.length > MAX_WORK) break;
+    out += `${lines}\n`;
+  }
+  return neutralise(out.trimEnd());
+}
+
+export function projectContext(
+  title: string, idea: string, facts: ContextFact[], work: ContextWork[] = [], docs: ContextDocument[] = [],
+): string {
   const understood = facts
     .filter((f) => LABELS[f.kind])
     .map((f) => `- ${LABELS[f.kind]}: ${neutralise(f.value)}`)
     .join("\n");
   const worked = workedOut(work);
+  const documents = fromDocuments(docs);
   return `<project>
 Title: ${neutralise(title)}
 Their idea, in their words:
 ${neutralise(idea)}
 ${understood ? `What they have confirmed or accepted so far:\n${understood}` : ""}
 ${worked ? `What they have worked out in earlier steps, in their own words:\n${worked}` : ""}
+${documents ? `From their own documents about the project (their material, not verified):\n${documents}` : ""}
 </project>`;
 }
 

@@ -9,7 +9,7 @@ export async function GET() {
   const { data: claims } = supabase ? await supabase.auth.getClaims() : { data: null };
   if (!supabase || !claims?.claims) return new Response("Not signed in", { status: 401 });
 
-  const [projects, facts, directions, stages, steps, answers] = await Promise.all([
+  const [projects, facts, directions, stages, steps, answers, documents] = await Promise.all([
     supabase.from("projects").select("id, title, idea, created_at, updated_at").order("created_at"),
     supabase.from("project_facts").select("project_id, kind, value, source, status"),
     supabase.from("project_directions").select("project_id, label, reason, recommended, chosen"),
@@ -23,6 +23,7 @@ export async function GET() {
       .select("step_id, project_id, question, answer, answer_tidied, assisted")
       .eq("status", "active")
       .order("position"),
+    supabase.from("project_documents").select("project_id, filename, pages, summary, done, created_at").order("created_at"),
   ]);
   const byProject = <T extends { project_id: string }>(rows: T[] | null, id: string) =>
     (rows ?? []).filter((r) => r.project_id === id);
@@ -34,6 +35,7 @@ export async function GET() {
       reading: byProject(facts.data, p.id),
       directions: byProject(directions.data, p.id),
       stages: byProject(stages.data, p.id),
+      documents: byProject(documents.data, p.id),
       steps: byProject(steps.data, p.id).map(({ id, ...step }) => ({
         ...step,
         answers: byProject(answers.data, p.id)

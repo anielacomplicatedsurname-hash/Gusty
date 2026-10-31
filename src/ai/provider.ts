@@ -24,6 +24,8 @@ export type StructuredRequest<S extends z.ZodType> = {
   webFetch?: { maxUses: number };
   /** Lets the model search the web (billed per search). Same trust rules as webFetch. */
   webSearch?: { maxUses: number };
+  /** PDFs for the model to read alongside the message (base64). Treated as untrusted content. */
+  documents?: { base64: string }[];
   /** For long jobs such as a deep search: how long one request may take, and how often a paused one resumes. */
   timeoutMs?: number;
   maxContinuations?: number;

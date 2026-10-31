@@ -203,6 +203,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"project_documents": {
+                  Row: {
+                    "created_at": string,"done": (string)[],"filename": string,"id": string,"owner_id": string,"pages": number | null,"project_id": string,"summary": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"done"?: (string)[],"filename"?: string,"id"?: string,"owner_id"?: string,"pages"?: number | null,"project_id": string,"summary"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"done"?: (string)[],"filename"?: string,"id"?: string,"owner_id"?: string,"pages"?: number | null,"project_id"?: string,"summary"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "project_documents_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"project_facts": {
                   Row: {
                     "created_at": string,"id": string,"kind": string,"owner_id": string,"position": number,"project_id": string,"source": string,"status": string,"updated_at": string,"value": string
