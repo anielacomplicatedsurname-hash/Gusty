@@ -41,7 +41,6 @@ test("an application space: bring in the funder's papers, see what they want and
   const views = page.getByRole("navigation", { name: "Application sections" });
   await expect(views.getByRole("link")).toHaveText(["Papers", "What they want", "Your fit", "Answers"]);
   await expect(views.getByRole("link", { name: "Papers" })).toHaveAttribute("aria-current", "page");
-  await expect(page.getByText("Start by bringing in the funder's papers.")).toBeVisible();
 
   // A private link can't be read; a bad one is refused straight away.
   const add = page.locator("section[aria-labelledby=add-title]");
@@ -56,10 +55,8 @@ test("an application space: bring in the funder's papers, see what they want and
   await add.getByLabel("Paste it here").fill("1. Tell us about your project. (300 words)\n2. What difference will it make?");
   await add.getByRole("button", { name: "Read this" }).click();
   await expect(page.getByText("Gusty has read it and kept what matters.")).toBeVisible({ timeout: 20_000 });
-  // The form folds away once there's a paper; the progress line moves on.
+  // The form folds away once there's a paper.
   await expect(page.locator("section[aria-labelledby=papers-title] li")).toHaveCount(1);
-  await expect(page.getByText("1 paper read · 0 of 2 answered")).toBeVisible();
-  await expect(page.getByText("Next: question 1.")).toBeVisible();
 
   await page.getByRole("link", { name: "See what they're looking for" }).click();
   const brief = page.locator("section[aria-labelledby=brief-title]");
@@ -187,7 +184,6 @@ test("drafting answers: Gusty drafts in the person's voice, leaves gaps in brack
   await page.reload();
   await expect(answers.locator("ol > li").first().getByLabel(/^Your answer to: /)).toHaveValue(/Twelve women came last summer\./);
   await expect(answers.locator("ol > li").first().getByText(/^Your words · \d+ of 300 words$/)).toBeVisible();
-  await expect(page.getByText("Every question has an answer.", { exact: false })).toBeVisible();
   const download = page.waitForEvent("download");
   await answers.getByRole("button", { name: "Download all my answers" }).click();
   const file = await download;

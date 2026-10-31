@@ -65,3 +65,24 @@ export async function suggestRoutes(projectId: string, lang: string): Promise<Ro
   );
   return error ? { ok: false, error: "error" } : { ok: true };
 }
+
+/** Turns one of Gusty's funding routes into a step in the project's current stage, so it can be acted on. */
+export async function addRouteStep(routeId: string, lang: string): Promise<{ ok: boolean }> {
+  if (!isProjectId(routeId)) return { ok: false };
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) return { ok: false };
+  const { data: route } = await supabase.from("funding_routes").select("project_id, route, first_step").eq("id", routeId).maybeSingle();
+  if (!route) return { ok: false };
+  const [{ data: existing }, { data: stage }] = await Promise.all([
+    supabase.from("next_steps").select("position").eq("project_id", route.project_id),
+    supabase.from("project_stages").select("id").eq("project_id", route.project_id).eq("status", "current").maybeSingle(),
+  ]);
+  const t = messagesFor(lang).readiness;
+  const name = t.routes[route.route as keyof typeof t.routes] ?? route.route;
+  const title = (route.first_step || t.routeStep.replace("{route}", name)).slice(0, 160);
+  const { error } = await supabase.from("next_steps").insert({
+    project_id: route.project_id, stage_id: stage?.id ?? null, title, detail: name.slice(0, 500), source: "user",
+    position: Math.max(0, ...(existing ?? []).map((s) => s.position + 1)),
+  });
+  return { ok: !error };
+}

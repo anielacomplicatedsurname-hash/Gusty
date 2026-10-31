@@ -12,7 +12,7 @@ export async function AccountBadge({ locale, label }: { locale: string; label: s
 
   return (
     <Link
-      href={`/${locale}/projects`}
+      href={`/${locale}/account`}
       title={fill(label, { email })}
       aria-label={fill(label, { email })}
       className="flex min-h-11 min-w-0 items-center gap-2 rounded-full px-1 text-sm font-medium hover:bg-oat/70 sm:pr-3"

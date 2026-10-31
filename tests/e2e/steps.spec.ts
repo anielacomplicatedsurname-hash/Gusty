@@ -150,8 +150,8 @@ test("working on a step with Gusty: questions, rewording, answers, notes, done",
   await expect(page).toHaveURL(projectUrl.split("?")[0]);
   await expect(page.getByText("1 done so far")).toBeVisible();
 
-  // The answers are kept in the project's Notes, folded up until opened.
-  await page.getByRole("navigation", { name: "Project sections" }).getByRole("link", { name: "Story" }).click();
+  // The answers are kept with the plan, folded up until opened.
+  await page.getByRole("navigation", { name: "Project sections" }).getByRole("link", { name: "Plan" }).click();
   const worked = page.locator("section[aria-labelledby=worked-title]");
   await expect(worked.getByRole("heading", { name: "What you've worked out" })).toBeVisible();
   await expect(worked.getByText("Done · 1 answer · notes")).toBeVisible();
@@ -215,7 +215,7 @@ test("Help me say more suggests a longer answer the person can use or ignore; ti
   await questions.first().getByLabel("Your answer").blur();
   await expect(questions.first().locator("[data-status=saved]")).toBeVisible();
   sql(`update public.step_questions set answer_tidied = 'A café where people fix things.' where answer = 'a cafe were people fix stuff'`);
-  await page.goto(`${projectUrl.split("?")[0]}?tab=notes`);
+  await page.goto(`${projectUrl.split("?")[0]}?tab=plan`);
   const worked = page.locator("section[aria-labelledby=worked-title]");
   await worked.getByText("Write your idea in three sentences").click();
   await expect(worked.getByText("A café where people fix things.")).toBeVisible();
@@ -320,7 +320,7 @@ test("Help me summarise it sums up the answers, and a kept summary stays the per
   await page.reload();
   await expect(page.getByLabel("Your summary")).toHaveValue("A café where neighbours fix things together, every Saturday.");
 
-  await page.goto(`${projectUrl.split("?")[0]}?tab=notes`);
+  await page.goto(`${projectUrl.split("?")[0]}?tab=plan`);
   const worked = page.locator("section[aria-labelledby=worked-title]");
   await worked.getByText("Write your idea in three sentences").click();
   await expect(worked.getByRole("heading", { name: "Summary (started by Gusty)" })).toBeVisible();

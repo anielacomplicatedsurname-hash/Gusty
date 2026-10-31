@@ -1,10 +1,13 @@
+import { defaultLocale, hasLocale } from "@/i18n/config";
+import { messagesFor } from "@/i18n/messages-for";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { readableExport } from "@/modules/account/readable";
 
 /**
  * Everything a person has saved in Gusty, as a JSON file they can keep. Row Level Security means
  * this can only ever contain the caller's own data.
  */
-export async function GET() {
+export async function GET(request: Request) {
   const supabase = await createSupabaseServerClient();
   const { data: claims } = supabase ? await supabase.auth.getClaims() : { data: null };
   if (!supabase || !claims?.claims) return new Response("Not signed in", { status: 401 });
@@ -60,6 +63,19 @@ export async function GET() {
     })),
   };
   const date = body.exportedAt.slice(0, 10);
+  // A readable document by default; the raw data file only when asked for (for moving to another tool).
+  const query = new URL(request.url).searchParams;
+  if (query.get("format") !== "json") {
+    const lang = query.get("lang") ?? "";
+    const t = messagesFor(hasLocale(lang) ? lang : defaultLocale);
+    return new Response(readableExport(body, t.account.file, t.interpretation.sections), {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Content-Disposition": `attachment; filename="gusty-projects-${date}.txt"`,
+        "Cache-Control": "no-store",
+      },
+    });
+  }
   return new Response(JSON.stringify(body, null, 2), {
     headers: {
       "Content-Type": "application/json; charset=utf-8",

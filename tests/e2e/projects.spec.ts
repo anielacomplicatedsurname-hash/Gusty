@@ -70,12 +70,12 @@ test("a guest keeps their projects by confirming an email link", async ({ page }
   await page.goto(link!);
 
   await expect(page).toHaveURL(/\/en\/projects$/);
-  await expect(page.getByText(`Signed in as ${email}`)).toBeVisible();
+  await expect(page.getByRole("link", { name: `Signed in as ${email}` })).toBeVisible();
   await expect(page.getByRole("link", { name: /Repair café in the old library/ })).toBeVisible();
 
   // Who is signed in shows on every page, not only My Projects.
   await page.goto("/en");
-  await expect(page.getByRole("link", { name: `Signed in as ${email}. Go to My Projects` })).toBeVisible();
+  await expect(page.getByRole("link", { name: `Signed in as ${email}. Go to your account` })).toBeVisible();
 });
 
 test("guests don't see a signed-in badge", async ({ page }) => {
@@ -97,7 +97,7 @@ test("a guest whose email already has an account can bring their projects into i
   await other.getByRole("button", { name: "Send me a link" }).click();
   await expect(other.getByRole("status").filter({ hasText: "Check your inbox" })).toBeVisible();
   await other.goto((await waitForLink(email, 1))!);
-  await expect(other.getByText(`Signed in as ${email}`)).toBeVisible();
+  await expect(other.getByRole("link", { name: `Signed in as ${email}` })).toBeVisible();
   await laptop.close();
 
   // On a new device they start as a guest, then use the same email.
@@ -122,7 +122,7 @@ test("a guest whose email already has an account can bring their projects into i
 
   await page.goto((await waitForLink(email, 2))!);
   await expect(page).toHaveURL(/\/en\/projects$/);
-  await expect(page.getByText(`Signed in as ${email}`)).toBeVisible();
+  await expect(page.getByRole("link", { name: `Signed in as ${email}` })).toBeVisible();
   await expect(page.getByRole("link", { name: /A second idea, from my phone/ })).toBeVisible();
   await expect(page.getByRole("link", { name: /My first project, from my laptop/ })).toBeVisible();
 });
@@ -153,7 +153,7 @@ test("a guest can keep their projects by typing the code from the email", async 
   await page.getByLabel("Or type the code from the email").fill((await waitForCode(email))!);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/\/en\/projects$/);
-  await expect(page.getByText(`Signed in as ${email}`)).toBeVisible();
+  await expect(page.getByRole("link", { name: `Signed in as ${email}` })).toBeVisible();
   await expect(page.getByRole("link", { name: /Community fridge by the station/ })).toBeVisible();
 });
 
@@ -168,7 +168,7 @@ test("a returning person can bring guest projects by typing the code", async ({ 
   await other.getByRole("button", { name: "Send me a link" }).click();
   await other.getByLabel("Or type the code from the email").fill((await waitForCode(email))!);
   await other.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(other.getByText(`Signed in as ${email}`)).toBeVisible();
+  await expect(other.getByRole("link", { name: `Signed in as ${email}` })).toBeVisible();
   await laptop.close();
 
   await createProject(page, "Phone project");
@@ -189,10 +189,10 @@ test("a returning person can bring guest projects by typing the code", async ({ 
   await expect(page.getByRole("status").filter({ hasText: "your projects will come with you" })).toBeVisible();
   await page.getByLabel("Or type the code from the email").fill((await waitForCode(email, 2))!);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(page.getByText(`Signed in as ${email}`)).toBeVisible();
+  await expect(page.getByRole("link", { name: `Signed in as ${email}` })).toBeVisible();
   await expect(page.getByRole("link", { name: /Phone project/ })).toBeVisible();
   await expect(page.getByRole("link", { name: /Laptop project/ })).toBeVisible();
-  await page.goto(`${phoneProject}?tab=notes`);
+  await page.goto(`${phoneProject}?tab=plan`);
   const worked = page.locator("section[aria-labelledby=worked-title]");
   await worked.getByText("Write your idea in three sentences").click();
   await expect(worked.getByText("An answer written as a guest")).toBeVisible();
