@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useTransition } from "react";
+import type { FitLevel } from "@/ai/tasks/application-fit";
 import { fill, formatDate } from "@/i18n/format";
 import type en from "@/i18n/messages/en.json";
 import { refreshFit } from "./actions";
@@ -9,7 +10,26 @@ import type { Application } from "./data";
 
 type Copy = typeof en.applications;
 
-/** Gusty's view of how the project fits this funder: matches, gaps, their words your way, rules to check. */
+const LIGHT: Record<FitLevel, { dot: string; edge: string }> = {
+  strong: { dot: "bg-(--status-fresh)", edge: "border-[color:var(--status-fresh)]" },
+  some: { dot: "bg-(--status-aging)", edge: "border-[color:var(--status-aging)]" },
+  weak: { dot: "bg-(--status-old)", edge: "border-[color:var(--status-old)]" },
+};
+
+/** The overall fit: one coloured dot and edge, like Explore's lights, always with words. */
+function FitLight({ level, copy }: { level: FitLevel; copy: Copy }) {
+  return (
+    <div className={`flex flex-col gap-1 rounded-xl border-l-4 bg-paper p-4 ${LIGHT[level].edge}`}>
+      <p className="flex items-center gap-2 text-lg font-semibold">
+        <span aria-hidden="true" className={`inline-block size-3 shrink-0 rounded-full ${LIGHT[level].dot}`} />
+        {copy.levels[level].title}
+      </p>
+      <p className="text-sm text-text-muted">{copy.levels[level].body}</p>
+    </div>
+  );
+}
+
+/** Gusty's view of how the project fits this funder: a light, what matches, and what to add. */
 export function FitSection({ app, lang, copy }: { app: Application; lang: string; copy: Copy }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -48,14 +68,15 @@ export function FitSection({ app, lang, copy }: { app: Application; lang: string
       {fit && !running && (
         <>
           {fit.demo && <p className="rounded-xl bg-sky p-3 text-sm text-ink">{copy.demoFitNotice}</p>}
+          {fit.level && <FitLight level={fit.level} copy={copy} />}
           <p className="text-lg leading-relaxed">{fit.summary}</p>
           {fit.strengths.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold">{copy.strengthsTitle}</h3>
               <ul className="mt-2 flex flex-col gap-2">
                 {fit.strengths.map((s) => (
-                  <li key={s.point} className="flex items-start gap-2">
-                    <span aria-hidden="true">✦</span>
+                  <li key={s.point} className="flex items-start gap-3 rounded-xl border-l-4 border-[color:var(--status-fresh)] bg-paper p-3">
+                    <span aria-hidden="true" className="font-bold">✓</span>
                     <span>{s.point}{s.from && <span className="block text-sm text-text-muted">{s.from}</span>}</span>
                   </li>
                 ))}
@@ -67,43 +88,27 @@ export function FitSection({ app, lang, copy }: { app: Application; lang: string
               <h3 className="text-lg font-semibold">{copy.gapsTitle}</h3>
               <ul className="mt-2 flex flex-col gap-2">
                 {fit.gaps.map((g) => (
-                  <li key={g.point} className="rounded-xl bg-oat p-3 text-ink">
-                    <p>{g.point}</p>
-                    {g.suggestion && <p className="mt-1 text-sm">→ {g.suggestion}</p>}
+                  <li key={g.point} className="flex items-start gap-3 rounded-xl border-l-4 border-[color:var(--status-aging)] bg-paper p-3">
+                    <span aria-hidden="true" className="font-bold">→</span>
+                    <span>{g.point}{g.suggestion && <span className="mt-1 block text-sm">{g.suggestion}</span>}</span>
                   </li>
                 ))}
               </ul>
             </div>
           )}
-          {(fit.words.length > 0 || fit.check.length > 0) && (
-            <details className="rounded-xl border border-border">
-              <summary className="flex min-h-11 cursor-pointer items-center px-4 font-medium">{copy.moreFit}</summary>
-              <div className="flex flex-col gap-5 border-t border-border p-4">
           {fit.words.length > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold">{copy.wordsTitle}</h3>
-              <p className="text-sm text-text-muted">{copy.wordsIntro}</p>
-              <dl className="mt-2 flex flex-col gap-3">
-                {fit.words.map((w) => (
-                  <div key={w.theirs} className="rounded-xl border border-border p-3">
-                    <dt><span className="type-label mr-2 text-text-muted">{copy.theirs}</span>“{w.theirs}”</dt>
-                    <dd className="mt-1"><span className="type-label mr-2 text-text-muted">{copy.yours}</span>{w.yours}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          )}
-          {fit.check.length > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold">{copy.checkTitle}</h3>
-              <p className="text-sm text-text-muted">{copy.checkIntro}</p>
-              <ul className="mt-2 flex flex-col gap-2">
-                {fit.check.map((c) => (
-                  <li key={c.rule}><p className="font-medium">{c.rule}</p>{c.why && <p className="text-sm">{c.why}</p>}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+            <details className="rounded-xl border border-border">
+              <summary className="flex min-h-11 cursor-pointer items-center px-4 font-medium">{copy.wordsTitle}</summary>
+              <div className="flex flex-col gap-3 border-t border-border p-4">
+                <p className="text-sm text-text-muted">{copy.wordsIntro}</p>
+                <dl className="flex flex-col gap-3">
+                  {fit.words.map((w) => (
+                    <div key={w.theirs} className="rounded-xl bg-paper p-3">
+                      <dt><span className="type-label mr-2 text-text-muted">{copy.theirs}</span>“{w.theirs}”</dt>
+                      <dd className="mt-1"><span className="type-label mr-2 text-text-muted">{copy.yours}</span>{w.yours}</dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
             </details>
           )}

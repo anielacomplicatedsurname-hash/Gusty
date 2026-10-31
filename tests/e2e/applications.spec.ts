@@ -66,7 +66,10 @@ test("an application space: bring in the funder's papers, see what they want and
   await expect(brief.getByText("Demo mode: this is a made-up example, not what your paper says.")).toBeVisible();
   await expect(brief.getByText("Their questions are under Answers, ready to write.")).toBeVisible();
   await expect(brief.getByText("From: Pasted text").first()).toBeVisible();
-  await expect(brief.getByText("Can apply", { exact: true })).toBeVisible();
+  // Rules are grouped: who can apply, what you'll need, what they won't fund.
+  await expect(brief.getByRole("heading", { name: "Who can apply" })).toBeVisible();
+  await expect(brief.getByRole("heading", { name: "What they won't fund" })).toBeVisible();
+  await expect(brief.getByText("Example: who can apply would be quoted here.")).toBeVisible();
   await brief.getByText("More from their papers").click();
   await expect(brief.getByText("Amount", { exact: true })).toBeVisible();
   let scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
@@ -76,10 +79,14 @@ test("an application space: bring in the funder's papers, see what they want and
   await views.getByRole("link", { name: "Your fit" }).click();
   const fit = page.locator("section[aria-labelledby=fit-title]");
   await expect(fit.getByText("Demo mode: this is a made-up example. Gusty's real view appears once the AI key is set up.")).toBeVisible({ timeout: 20_000 });
-  await expect(fit.getByRole("heading", { name: "Their words, your way" })).toBeHidden();
-  await fit.getByText("Their words, your way, and rules to check").click();
-  await expect(fit.getByRole("heading", { name: "Their words, your way" })).toBeVisible();
-  await expect(fit.getByText("Only the funder can say whether you're eligible.", { exact: false })).toBeVisible();
+  // A traffic light for the overall fit, in words as well as colour.
+  await expect(fit.getByText("Partly fits", { exact: true })).toBeVisible();
+  await expect(fit.getByText("Check these rules carefully")).toHaveCount(0);
+  await expect(fit.getByRole("heading", { name: "What would make it stronger" })).toBeVisible();
+  await expect(fit.getByText("Example: a rule from their papers your project may not meet.")).toBeVisible();
+  await expect(fit.getByText("They say", { exact: true })).toBeHidden();
+  await fit.getByText("Their words, your way").click();
+  await expect(fit.getByText("They say", { exact: true })).toBeVisible();
   scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 

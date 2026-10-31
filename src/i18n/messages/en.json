@@ -1278,12 +1278,6 @@
     "questionsTitle": "The questions",
     "limit": "Limit: {limit}",
     "prioritiesTitle": "What they care about",
-    "rulesTitle": "Who can apply",
-    "ruleKinds": {
-      "eligible": "Can apply",
-      "excluded": "Ruled out",
-      "requirement": "You'll need to"
-    },
     "detailsTitle": "Key details, as they're written",
     "winnersTitle": "Who they've funded before",
     "toneTitle": "How they write",
@@ -1298,13 +1292,11 @@
     "fitAgain": "Work it out again",
     "fitAgainHint": "Added to your story since? Gusty can look again.",
     "strengthsTitle": "Where you already match",
-    "gapsTitle": "To make this stronger",
+    "gapsTitle": "What would make it stronger",
     "wordsTitle": "Their words, your way",
     "wordsIntro": "The funder's key phrases, and how you might say the same thing in your own voice.",
     "theirs": "They say",
     "yours": "You might say",
-    "checkTitle": "Check these rules carefully",
-    "checkIntro": "Only the funder can say whether you're eligible. These are worth reading closely, or asking them about.",
     "fitLabel": "Gusty's suggestion · {date}",
     "demoFitNotice": "Demo mode: this is a made-up example. Gusty's real view appears once the AI key is set up.",
     "deleteApplication": "Delete this application space",
@@ -1361,6 +1353,10 @@
         {
           "point": "Example: something they'll look for that you haven't shown yet.",
           "suggestion": "Example: one small thing you could add."
+        },
+        {
+          "point": "Example: a rule from their papers your project may not meet.",
+          "suggestion": "Example: check this with them before you apply."
         }
       ],
       "words": [
@@ -1369,12 +1365,7 @@
           "yours": "Example: how you might say it in your own words."
         }
       ],
-      "check": [
-        {
-          "rule": "Example: a rule worth checking.",
-          "why": "Example: why it's worth a closer look."
-        }
-      ]
+      "level": "some"
     },
     "answersTitle": "Your answers",
     "answersIntro": "One question at a time. Gusty can draft an answer in your voice, from your project and your story. Anything it can't find stays [in brackets] for you to fill in: it never makes things up.",
@@ -1431,12 +1422,30 @@
     "seeBrief": "See what they're looking for",
     "questionsInAnswers": "Their questions are under Answers, ready to write.",
     "moreFromPapers": "More from their papers",
-    "moreFit": "Their words, your way, and rules to check",
     "status": {
       "empty": "Not started",
       "ai": "Gusty's draft",
       "user": "Your words"
     },
-    "openQuestion": "Open"
+    "openQuestion": "Open",
+    "levels": {
+      "strong": {
+        "title": "Looks like a good fit",
+        "body": "Your project matches what they care about. Gusty's view, not the funder's decision."
+      },
+      "some": {
+        "title": "Partly fits",
+        "body": "Some of it matches. Filling the gaps below would make it stronger."
+      },
+      "weak": {
+        "title": "Not a clear fit yet",
+        "body": "There's little overlap so far, or a rule to check. It may be worth asking them, or looking elsewhere."
+      }
+    },
+    "ruleGroups": {
+      "eligible": "Who can apply",
+      "requirement": "What you'll need",
+      "excluded": "What they won't fund"
+    }
   }
 }

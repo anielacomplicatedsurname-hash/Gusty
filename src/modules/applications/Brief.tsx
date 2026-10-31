@@ -7,6 +7,13 @@ type Copy = Messages["applications"];
 
 type Found = { m: Material; page: string };
 
+/** "Can I apply?" first: who can, what you'll need, then what's ruled out. Icon, colour and heading together. */
+const GROUPS = [
+  { kind: "eligible", icon: "✓", border: "border-[color:var(--status-fresh)]" },
+  { kind: "requirement", icon: "☐", border: "border-ink" },
+  { kind: "excluded", icon: "✕", border: "border-[color:var(--status-old)]" },
+] as const;
+
 /** A paper's short name: the file name, "Pasted text", or a link's website. */
 function paperName(m: Material, copy: Copy): string {
   if (m.origin === "paste") return copy.pasted;
@@ -67,6 +74,25 @@ export function Brief({ materials, copy }: { materials: Material[]; copy: Copy }
         <>
           {demo && <p className="rounded-xl bg-sky p-3 text-sm text-ink">{copy.demoReadingNotice}</p>}
           {questions.length > 0 && <p className="rounded-xl bg-oat p-3 text-sm text-ink">{copy.questionsInAnswers}</p>}
+          {GROUPS.map((g) => {
+            const items = rules.filter(({ item }) => item.kind === g.kind);
+            if (items.length === 0) return null;
+            return (
+              <div key={g.kind} className={`rounded-xl border-l-4 bg-paper p-4 ${g.border}`}>
+                <h3 className="flex items-center gap-2 text-lg font-semibold">
+                  <span aria-hidden="true" className="w-5 text-center">{g.icon}</span>{copy.ruleGroups[g.kind]}
+                </h3>
+                <ul className="mt-2 flex flex-col gap-3">
+                  {items.map(({ item: r, found }, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span aria-hidden="true" className="w-5 shrink-0 text-center">{g.icon}</span>
+                      <span>{r.text}<Sources found={found} copy={copy} /></span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
           {priorities.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold">{copy.prioritiesTitle}</h3>
@@ -75,19 +101,6 @@ export function Brief({ materials, copy }: { materials: Material[]; copy: Copy }
                   <li key={i}>
                     <p className="font-medium">“{p.phrase}”</p>
                     {p.meaning && <p className="text-sm">{p.meaning}</p>}
-                    <Sources found={found} copy={copy} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {rules.length > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold">{copy.rulesTitle}</h3>
-              <ul className="mt-2 flex flex-col gap-3">
-                {rules.map(({ item: r, found }, i) => (
-                  <li key={i}>
-                    <p><span className="type-label mr-2 text-text-muted">{copy.ruleKinds[r.kind]}</span>{r.text}</p>
                     <Sources found={found} copy={copy} />
                   </li>
                 ))}
