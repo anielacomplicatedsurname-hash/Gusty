@@ -151,7 +151,7 @@
   },
   "interpretation": {
     "title": "Here's what I understood",
-    "intro": "Check this and change anything that isn't right. Your words always win.",
+    "intro": "Built from your idea and your notes. Edit anything and it becomes yours. Your notes stay as you wrote them.",
     "reading": "Gusty is reading your idea. This usually takes a few seconds.",
     "demoNotice": "Demo mode: this is not a real AI reading yet. It only repeats your first sentence and asks general questions. Gusty's real reading switches on once the AI key is set up.",
     "sections": {
@@ -171,12 +171,10 @@
     "sources": {
       "user": "Your words",
       "ai_from_user": "From your words",
-      "ai_suggestion": "Gusty's suggestion"
+      "ai_suggestion": "Gusty's guess"
     },
-    "confirmed": "Confirmed",
     "unknown": "Not mentioned yet",
     "actions": {
-      "confirm": "That's right",
       "edit": "Edit",
       "remove": "Remove",
       "save": "Save",
@@ -185,7 +183,7 @@
       "addPlaceholder": "Type it in your own words",
       "refresh": "Read my idea again",
       "refreshing": "Reading…",
-      "refreshNote": "Your own words and anything you've confirmed stay as they are."
+      "refreshNote": "Your own words, and what your steps added, stay as they are."
     },
     "questionsNote": "Questions to think about when you're ready. No need to answer them now.",
     "demoQuestions": [
@@ -210,7 +208,8 @@
     "answeredOne": "1 answered in your steps",
     "answeredMany": "{n} answered in your steps",
     "answeredIn": "Answered in: {step}",
-    "bringBack": "Bring it back"
+    "bringBack": "Bring it back",
+    "guessHint": "Edit to make it yours"
   },
   "workedOut": {
     "title": "What you've worked out",
@@ -919,9 +918,9 @@
     "notYet": "Not yet",
     "nextTitle": "What would help next",
     "next": {
-      "clear": "Confirm “In one sentence” in Here's what I understood",
-      "who": "Confirm who it's for in Here's what I understood",
-      "where": "Confirm where it happens in Here's what I understood",
+      "clear": "Add “In one sentence” in Here's what I understood",
+      "who": "Add who it's for in Here's what I understood",
+      "where": "Add where it happens in Here's what I understood",
       "amount": "Choose roughly how much it would need, below",
       "plan": "Choose a direction in Your next steps",
       "progress": "Tick off a first small step",
@@ -1007,7 +1006,7 @@
     "readAdd": "Add this document",
     "reading": "Gusty is reading your document. This can take up to a minute…",
     "privacy": "The document is sent to Anthropic to be read, then discarded. Only Gusty's notes are kept, and you can delete them.",
-    "added": "Gusty has read your document. Its suggestions are waiting in “Here's what I understood” for you to confirm.",
+    "added": "Gusty has read your document. What it learned is in “Here's what I understood”: change anything that isn't right.",
     "summaryLabel": "What it covers",
     "doneLabel": "Already done, from your document",
     "pages": "{n} pages",
@@ -1109,7 +1108,7 @@
   },
   "ideaLoop": {
     "title": "Gusty would like to check something",
-    "intro": "From a step you finished. This would change something you wrote or confirmed, so it's your call.",
+    "intro": "From a step you finished. This would change something you wrote, so it's your call.",
     "from": "From: {step}",
     "label": "Gusty's suggestion, from your own words",
     "use": "Use this",

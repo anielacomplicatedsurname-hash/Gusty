@@ -16,7 +16,8 @@ export type Readiness = {
 
 /**
  * How ready a project is for funding, from what's actually in place: no scoring by AI, so it's always clear
- * why. Gusty's reading counts once the person has confirmed it. RLS limits all of it to the owner.
+ * why. What the person wrote counts, and so does Gusty restating their words; Gusty's own guesses don't,
+ * until the person edits them. RLS limits all of it to the owner.
  */
 export async function getReadiness(projectId: string): Promise<Readiness | null> {
   if (!isProjectId(projectId)) return null;
@@ -24,7 +25,7 @@ export async function getReadiness(projectId: string): Promise<Readiness | null>
   if (!supabase) return null;
   const [project, facts, search, stages, done, saved, routes, lastRun] = await Promise.all([
     supabase.from("projects").select("funding_need").eq("id", projectId).maybeSingle(),
-    supabase.from("project_facts").select("kind, status").eq("project_id", projectId),
+    supabase.from("project_facts").select("kind, source, status").eq("project_id", projectId),
     supabase.from("opportunity_searches").select("place").eq("project_id", projectId).neq("place", "").limit(1),
     supabase.from("project_stages").select("id", { count: "exact", head: true }).eq("project_id", projectId).neq("status", "set_aside"),
     supabase.from("next_steps").select("id", { count: "exact", head: true }).eq("project_id", projectId).eq("status", "done"),
@@ -34,7 +35,8 @@ export async function getReadiness(projectId: string): Promise<Readiness | null>
       .order("created_at", { ascending: false }).limit(1),
   ]);
   if (project.error || !project.data) return null;
-  const confirmed = (kind: string) => (facts.data ?? []).some((f) => f.kind === kind && f.status === "confirmed");
+  const confirmed = (kind: string) =>
+    (facts.data ?? []).some((f) => f.kind === kind && (f.source !== "ai_suggestion" || f.status === "confirmed"));
   const need = (project.data.funding_need as Need | null) ?? null;
   return {
     inPlace: {

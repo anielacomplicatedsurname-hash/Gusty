@@ -21,14 +21,14 @@ test("a calm project home: one next step, a line of progress, four areas, and a 
   await expect(tabs.getByRole("link", { name: "Idea" })).toHaveAttribute("aria-current", "page");
   const next = page.locator("section[aria-labelledby=next-title]");
   await expect(next.getByText("Choose where your idea could go next")).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByRole("link", { name: "Ready for funding: 0 of 7" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Ready for funding: 1 of 7" })).toBeVisible();
 
   await next.getByRole("link", { name: "See directions" }).click();
   await page.getByRole("button", { name: "Show me where I could go next" }).click();
   await page.getByRole("button", { name: "Choose this: Shape the idea" }).click();
   await expect(next.getByRole("heading", { name: "Write your idea in three sentences" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Stage 1 · Getting clear on the idea" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Ready for funding: 1 of 7" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Ready for funding: 2 of 7" })).toBeVisible();
 
   // Once there's a plan, the project opens on Plan.
   await page.goto(projectUrl);
@@ -50,5 +50,5 @@ test("a calm project home: one next step, a line of progress, four areas, and a 
   await page.goto("/en/projects");
   const card = page.getByRole("list", { name: "My Projects" }).getByRole("link").first();
   await expect(card).toContainText("Next: Write your idea in three sentences");
-  await expect(card).toContainText("Ready for funding: 1 of 7");
+  await expect(card).toContainText("Ready for funding: 2 of 7");
 });

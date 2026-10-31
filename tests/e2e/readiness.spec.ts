@@ -12,19 +12,21 @@ test("ready for funding: what's in place, what would help next, the amount, and 
   await page.getByLabel("What's your idea?").fill("A repair café in the old library. Volunteers fix things.");
   await page.getByRole("button", { name: "Start with my idea" }).click();
   await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/);
+  await expect(page.getByTestId("demo-notice")).toBeVisible({ timeout: 15_000 });
 
   await page.getByRole("navigation", { name: "Project sections" }).getByRole("link", { name: "Funding" }).click();
   const section = page.locator("section[aria-labelledby=readiness-title]");
   await expect(section.getByRole("heading", { name: "Ready for funding" })).toBeVisible();
   const bar = section.getByRole("progressbar", { name: "Ready for funding" });
-  await expect(bar).toHaveAttribute("aria-valuetext", "0 of 7 in place");
+  // Gusty restating their first sentence counts as "the idea is clear"; its own guesses don't.
+  await expect(bar).toHaveAttribute("aria-valuetext", "1 of 7 in place");
   // At most three next things, each a link to where it's done.
   await expect(section.getByRole("heading", { name: "What would help next" })).toBeVisible();
   await expect(section.locator("h3 + ul > li")).toHaveCount(3);
 
   await section.getByText("Under £1,000").click();
   await expect(section.getByText("Saved", { exact: true })).toBeVisible();
-  await expect(bar).toHaveAttribute("aria-valuetext", "1 of 7 in place");
+  await expect(bar).toHaveAttribute("aria-valuetext", "2 of 7 in place");
   await page.reload();
   await expect(page.locator("section[aria-labelledby=readiness-title]").getByLabel("Under £1,000")).toBeChecked();
 

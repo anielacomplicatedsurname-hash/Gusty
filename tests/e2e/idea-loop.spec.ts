@@ -56,7 +56,6 @@ test("Gusty suggests updates from a finished step; the person decides", async ({
   await expect(box.getByText("Retired neighbours who like fixing things")).toHaveCount(0);
   const audience = fact(page, "Who it's for");
   await expect(audience.getByText("Retired neighbours who like fixing things")).toBeVisible();
-  await expect(audience.getByText("Confirmed")).toBeVisible();
 
   // "Not now" changes nothing.
   await box.getByRole("button", { name: "Not now: Where" }).click();
@@ -102,7 +101,7 @@ test("Gusty's changes from steps show where they came from, and can be undone", 
   await expect(questions.getByText("Who would this help most?")).toBeVisible();
 });
 
-test("confirming an item Gusty changed keeps it, without the Undo", async ({ page }) => {
+test("editing an item Gusty changed makes it the person's, without the Undo", async ({ page }) => {
   const id = await newProject(page);
   sql(`with f as (
          update public.project_facts set value = 'A monthly repair café run by retired neighbours', source = 'ai_from_user'
@@ -113,8 +112,9 @@ test("confirming an item Gusty changed keeps it, without the Undo", async ({ pag
   await page.reload();
   const summary = fact(page, "In one sentence");
   await expect(summary.getByText("Updated from one of your steps")).toBeVisible();
-  await summary.getByRole("button", { name: /^That's right/ }).click();
-  await expect(summary.getByText("Confirmed")).toBeVisible();
+  await summary.getByRole("button", { name: /^Edit/ }).click();
+  await summary.getByRole("button", { name: "Save" }).click();
+  await expect(summary.getByText("Your words")).toBeVisible();
   await expect(summary.getByText("Updated from one of your steps")).toHaveCount(0);
   await expect(summary.getByText("A monthly repair café run by retired neighbours")).toBeVisible();
 });

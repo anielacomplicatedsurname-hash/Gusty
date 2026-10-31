@@ -332,3 +332,11 @@ your steps", with the answer, and "Bring it back" reopens them. A new reading of
 again") keeps everything the steps added. Confirming an item keeps it and drops the Undo. A chip says "Your
 idea grew from your steps" for three days after a change. Changes are recorded in `fact_suggestions` (status
 `applied`, with the previous value), and a change can only point at an item in the same project.
+
+## 2026-10-31 — No "That's right": editing makes something yours
+The founder found the "That's right" button unnecessary. It's gone. Each item already says where it came
+from ("Your words", "From your words", "Gusty's guess"), and editing something makes it the person's, so Gusty
+won't change it without asking. Guesses say "Edit to make it yours". "Ready for funding" now counts the
+person's words and Gusty restating them, but not Gusty's own guesses. Items confirmed before this change
+still count and stay protected. The Idea tab also says that editing there doesn't change Notes: Notes is the
+person's record of their steps and feeds the idea, never the other way round.
