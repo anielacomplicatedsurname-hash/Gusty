@@ -17,6 +17,8 @@ export function AnswersSection({ appId, title, questions, answers, demo, lang, c
 }) {
   const byKey = new Map(answers.map((a) => [a.key, a]));
   const written = questions.filter((q) => byKey.get(q.key)?.answer);
+  // One question open at a time: the first without an answer, so the next thing to do is right there.
+  const [openKey, setOpenKey] = useState<string | null>(() => (questions.find((q) => !byKey.get(q.key)?.answer) ?? questions[0])?.key ?? null);
 
   const download = () => {
     const text = [
@@ -44,7 +46,8 @@ export function AnswersSection({ appId, title, questions, answers, demo, lang, c
           <ol className="flex flex-col gap-4">
             {questions.map((q, i) => (
               <li key={q.key}>
-                <AnswerCard number={i + 1} appId={appId} question={q} saved={byKey.get(q.key)} demo={demo} lang={lang} copy={copy} />
+                <AnswerCard number={i + 1} appId={appId} question={q} saved={byKey.get(q.key)} demo={demo} lang={lang} copy={copy}
+                  expanded={openKey === q.key} onToggle={() => setOpenKey(openKey === q.key ? null : q.key)} />
               </li>
             ))}
           </ol>
@@ -60,8 +63,9 @@ export function AnswersSection({ appId, title, questions, answers, demo, lang, c
   );
 }
 
-function AnswerCard({ number, appId, question, saved, demo, lang, copy }: {
+function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded, onToggle }: {
   number: number; appId: string; question: Question; saved?: Answer; demo: boolean; lang: string; copy: Copy;
+  expanded: boolean; onToggle: () => void;
 }) {
   const id = useId();
   const router = useRouter();
@@ -108,13 +112,22 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy }: {
       router.refresh();
     });
 
+  const status = !text.trim() ? copy.status.empty : source === "ai" ? copy.status.ai : copy.status.user;
+
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-border p-4" aria-busy={drafting}>
-      <div>
-        <h3 id={`${id}-q`} className="font-semibold"><span aria-hidden="true">{number}. </span>{question.question}</h3>
-        {question.limit && <p className="text-sm">{fill(copy.limit, { limit: question.limit })}</p>}
-        {question.help && <p className="text-sm text-text-muted">{question.help}</p>}
-      </div>
+      <h3 id={`${id}-q`}>
+        <button type="button" aria-expanded={expanded} aria-controls={`${id}-body`} onClick={onToggle}
+          className="flex w-full items-start gap-3 text-left">
+          <span aria-hidden="true" className={`mt-0.5 transition-transform motion-reduce:transition-none ${expanded ? "rotate-90" : ""}`}>›</span>
+          <span className="flex flex-1 flex-col gap-1">
+            <span className="font-semibold">{number}. {question.question}</span>
+            <span className="text-sm text-text-muted">{[status, text.trim() ? counter : question.limit].filter(Boolean).join(" · ")}</span>
+          </span>
+        </button>
+      </h3>
+      <div id={`${id}-body`} hidden={!expanded} className="flex flex-col gap-3">
+      {question.help && <p className="text-sm text-text-muted">{question.help}</p>}
 
       {drafting && (
         <p role="status" className="flex items-center gap-3 text-text-muted">
@@ -165,6 +178,7 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy }: {
         </>
       )}
       {error && <p role="alert" className="font-medium">{error}</p>}
+      </div>
     </div>
   );
 }

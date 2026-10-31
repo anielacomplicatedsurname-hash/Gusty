@@ -405,3 +405,22 @@ again" builds on what's there and keeps the person's words where it can.
 into the funder's form. Nothing is ever sent to a funder.
 
 Limit: 30 drafts per person a day, inside the daily AI limit.
+
+## 2026-11-01 — A calmer application space: four short tabs
+The founder found the application space too long. On a phone it was about five screens with only two
+questions, before any answers. It now works like the project home:
+- **Tabs:** Papers · What they want · Your fit · Answers.
+- **Progress:** one line above the tabs ("1 paper read · 0 of 2 answered") and one next thing to do
+  ("Next: question 1").
+- **Opening tab:** a new space opens on Papers. Once it has papers it opens on Answers, the main work. After
+  adding a paper, people stay on Papers.
+
+Each view is shorter:
+- **Papers:** the add-a-paper form folds away into "Add another paper" once there's one.
+- **What they want:** the brief no longer repeats the questions (they're in Answers). Key details, past
+  winners and tone fold under "More from their papers".
+- **Your fit:** "Their words, your way" and the rules to check fold away.
+- **Answers:** each question folds to one line with its status ("Not started", "Gusty's draft", "Your
+  words") and its word count. One question is open at a time, starting with the first unanswered.
+
+Each view is now one to two phone screens.

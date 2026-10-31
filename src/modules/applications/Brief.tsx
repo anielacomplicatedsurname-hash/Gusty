@@ -66,21 +66,7 @@ export function Brief({ materials, copy }: { materials: Material[]; copy: Copy }
       ) : (
         <>
           {demo && <p className="rounded-xl bg-sky p-3 text-sm text-ink">{copy.demoReadingNotice}</p>}
-          {questions.length > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold">{copy.questionsTitle}</h3>
-              <ol className="mt-2 flex list-decimal flex-col gap-3 pl-6">
-                {questions.map(({ item: q, found }, i) => (
-                  <li key={i}>
-                    <p className="font-medium">{q.question}</p>
-                    {q.limit && <p className="text-sm">{fill(copy.limit, { limit: q.limit })}</p>}
-                    {q.help && <p className="text-sm text-text-muted">{q.help}</p>}
-                    <Sources found={found} copy={copy} />
-                  </li>
-                ))}
-              </ol>
-            </div>
-          )}
+          {questions.length > 0 && <p className="rounded-xl bg-oat p-3 text-sm text-ink">{copy.questionsInAnswers}</p>}
           {priorities.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold">{copy.prioritiesTitle}</h3>
@@ -108,6 +94,10 @@ export function Brief({ materials, copy }: { materials: Material[]; copy: Copy }
               </ul>
             </div>
           )}
+          {(details.length > 0 || winners.length > 0 || tones.length > 0) && (
+            <details className="rounded-xl border border-border">
+              <summary className="flex min-h-11 cursor-pointer items-center px-4 font-medium">{copy.moreFromPapers}</summary>
+              <div className="flex flex-col gap-5 border-t border-border p-4">
           {details.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold">{copy.detailsTitle}</h3>
@@ -136,6 +126,9 @@ export function Brief({ materials, copy }: { materials: Material[]; copy: Copy }
               <h3 className="text-lg font-semibold">{copy.toneTitle}</h3>
               {tones.map(({ item: t, found }, i) => <p key={i} className="mt-1">{t.tone} <Sources found={found} copy={copy} /></p>)}
             </div>
+          )}
+              </div>
+            </details>
           )}
         </>
       )}

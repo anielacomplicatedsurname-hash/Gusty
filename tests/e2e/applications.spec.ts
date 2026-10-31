@@ -37,7 +37,11 @@ test("an application space: bring in the funder's papers, see what they want and
   await list.getByRole("button", { name: "Create the application space" }).click();
   await expect(page).toHaveURL(new RegExp(`/en/projects/${id}/apply/[0-9a-f-]{36}$`));
   await expect(page.getByRole("heading", { level: 1, name: "Community Wellbeing Fund 2027" })).toBeVisible();
-  await expect(page.getByText("Bring in at least one of the funder's papers to see this.")).toBeVisible();
+  // A new space opens on Papers, with one clear next thing to do.
+  const views = page.getByRole("navigation", { name: "Application sections" });
+  await expect(views.getByRole("link")).toHaveText(["Papers", "What they want", "Your fit", "Answers"]);
+  await expect(views.getByRole("link", { name: "Papers" })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByText("Start by bringing in the funder's papers.")).toBeVisible();
 
   // A private link can't be read; a bad one is refused straight away.
   const add = page.locator("section[aria-labelledby=add-title]");
@@ -51,24 +55,37 @@ test("an application space: bring in the funder's papers, see what they want and
   await add.getByRole("radio", { name: "Paste the text" }).check();
   await add.getByLabel("Paste it here").fill("1. Tell us about your project. (300 words)\n2. What difference will it make?");
   await add.getByRole("button", { name: "Read this" }).click();
-  await expect(add.getByText("Gusty has read it. What it found is below.")).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText("Gusty has read it and kept what matters.")).toBeVisible({ timeout: 20_000 });
+  // The form folds away once there's a paper; the progress line moves on.
+  await expect(page.locator("section[aria-labelledby=papers-title] li")).toHaveCount(1);
+  await expect(page.getByText("1 paper read · 0 of 2 answered")).toBeVisible();
+  await expect(page.getByText("Next: question 1.")).toBeVisible();
 
+  await page.getByRole("link", { name: "See what they're looking for" }).click();
   const brief = page.locator("section[aria-labelledby=brief-title]");
   await expect(brief.getByText("Demo mode: this is a made-up example, not what your paper says.")).toBeVisible();
-  await expect(brief.getByRole("heading", { name: "The questions" })).toBeVisible();
-  await expect(brief.getByText("Limit: 300 words")).toBeVisible();
+  await expect(brief.getByText("Their questions are under Answers, ready to write.")).toBeVisible();
   await expect(brief.getByText("From: Pasted text").first()).toBeVisible();
   await expect(brief.getByText("Can apply", { exact: true })).toBeVisible();
+  await brief.getByText("More from their papers").click();
+  await expect(brief.getByText("Amount", { exact: true })).toBeVisible();
+  let scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 
-  // Gusty works out the fit in the background, then shows it.
+  // Gusty works out the fit in the background, then shows it; the longer parts are folded.
+  await views.getByRole("link", { name: "Your fit" }).click();
   const fit = page.locator("section[aria-labelledby=fit-title]");
   await expect(fit.getByText("Demo mode: this is a made-up example. Gusty's real view appears once the AI key is set up.")).toBeVisible({ timeout: 20_000 });
+  await expect(fit.getByRole("heading", { name: "Their words, your way" })).toBeHidden();
+  await fit.getByText("Their words, your way, and rules to check").click();
   await expect(fit.getByRole("heading", { name: "Their words, your way" })).toBeVisible();
   await expect(fit.getByText("Only the funder can say whether you're eligible.", { exact: false })).toBeVisible();
-  const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 
   // A PDF too; the file isn't kept, only what was read.
+  await views.getByRole("link", { name: "Papers" }).click();
+  await page.getByRole("button", { name: "Add another paper" }).click();
   await add.getByRole("radio", { name: "Upload a PDF" }).check();
   await add.getByLabel("What is it?").selectOption("guidance");
   await add.getByLabel("Choose a PDF").setInputFiles(pdf);
@@ -115,16 +132,24 @@ test("drafting answers: Gusty drafts in the person's voice, leaves gaps in brack
   await list.getByLabel("What are you applying for?").fill("Active Lives Fund");
   await list.getByRole("button", { name: "Create the application space" }).click();
   const answers = page.locator("section[aria-labelledby=answers-title]");
+  const views = page.getByRole("navigation", { name: "Application sections" });
+  await views.getByRole("link", { name: "Answers" }).click();
   await expect(answers.getByText("Bring in the application form or the questions to start writing answers.")).toBeVisible();
+  await views.getByRole("link", { name: "Papers" }).click();
 
   const add = page.locator("section[aria-labelledby=add-title]");
   await add.getByRole("radio", { name: "Paste the text" }).check();
   await add.getByLabel("Paste it here").fill("1. Tell us about your project. (300 words)\n2. What difference will it make? (250 words)");
   await add.getByRole("button", { name: "Read this" }).click();
-  await expect(add.getByText("Gusty has read it.", { exact: false })).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText("Gusty has read it and kept what matters.")).toBeVisible({ timeout: 20_000 });
 
+  // Once there are papers, the space opens on Answers, with the first unanswered question open.
+  await page.goto(page.url().split("?")[0]);
+  await expect(views.getByRole("link", { name: "Answers" })).toHaveAttribute("aria-current", "page");
   const first = answers.locator("ol > li").first();
-  await expect(first.getByRole("heading", { name: /Example: Tell us about your project and who it's for\./ })).toBeVisible();
+  await expect(first.getByRole("button", { name: /Example: Tell us about your project and who it's for\./ })).toHaveAttribute("aria-expanded", "true");
+  await expect(answers.locator("ol > li").nth(1).getByRole("button", { name: /Example: What difference/ })).toHaveAttribute("aria-expanded", "false");
+  await expect(answers.locator("ol > li").nth(1).getByText("Not started · 250 words")).toBeVisible();
   await first.getByRole("button", { name: "Help me draft this" }).click();
   const box = first.getByLabel(/^Your answer to: /);
   await expect(box).toHaveValue(/\(Demo: Gusty's draft of this answer will go here/, { timeout: 20_000 });
@@ -145,6 +170,8 @@ test("drafting answers: Gusty drafts in the person's voice, leaves gaps in brack
 
   // Writing one from scratch.
   const second = answers.locator("ol > li").nth(1);
+  await second.getByRole("button", { name: /Example: What difference/ }).click();
+  await expect(first.getByLabel(/^Your answer to: /)).toBeHidden();
   await second.getByRole("button", { name: "Write it myself" }).click();
   await second.getByLabel(/^Your answer to: /).fill("Women who'd stopped going out will ride together every Saturday.");
   await second.getByRole("button", { name: "Save" }).click();
@@ -152,6 +179,8 @@ test("drafting answers: Gusty drafts in the person's voice, leaves gaps in brack
 
   await page.reload();
   await expect(answers.locator("ol > li").first().getByLabel(/^Your answer to: /)).toHaveValue(/Twelve women came last summer\./);
+  await expect(answers.locator("ol > li").first().getByText(/^Your words · \d+ of 300 words$/)).toBeVisible();
+  await expect(page.getByText("Every question has an answer.", { exact: false })).toBeVisible();
   const download = page.waitForEvent("download");
   await answers.getByRole("button", { name: "Download all my answers" }).click();
   const file = await download;
