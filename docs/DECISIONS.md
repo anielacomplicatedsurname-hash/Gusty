@@ -463,3 +463,18 @@ Fits saved before this change have no light until "Work it out again".
   "Delete my account".
 - **The download** is now a readable plain-text document of everything saved (ideas, plan, notes, story,
   applications). The data file (JSON) is still offered for moving to another tool.
+
+## 2026-11-01 — Choosing the next step by how you feel
+Project work is often mood-led, so the founder asked to choose the next step by how she feels.
+
+**How it works:** above "Your next step", people can choose "Talking to people", "Writing", "Planning",
+"Looking things up", "Making something" or "Anything". Gusty then shows the first open step of that kind in
+the current stage, still one step at a time.
+
+**How steps get a kind:** steps are sorted by their words, with the opening verb counting most. That's free
+and instant, with no AI call. A step Gusty creates for a mood keeps that mood.
+
+**When nothing matches:** "Suggest a small step: …" asks Gusty for one small step of that kind for the
+current stage. It's counted in the daily AI limit, and in demo mode it adds a labelled example.
+
+The choice is kept in the address (`?mood=`), not stored.

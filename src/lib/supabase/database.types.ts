@@ -59,14 +59,14 @@ isOneToOne: false
                   ]
                 },"application_answers": {
                   Row: {
-                    "answer": string,"application_id": string,"created_at": string,"drafted_at": string | null,"gaps": NonNullable<Json>,"id": string,"owner_id": string,"project_id": string,"question": string,"question_key": string,"source": string,"updated_at": string
+                    "answer": string,"application_id": string,"created_at": string,"drafted_at": string | null,"funder_words": NonNullable<Json>,"gaps": NonNullable<Json>,"id": string,"owner_id": string,"project_id": string,"question": string,"question_key": string,"source": string,"style": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "answer"?: string,"application_id": string,"created_at"?: string,"drafted_at"?: string | null,"gaps"?: NonNullable<Json>,"id"?: string,"owner_id"?: string,"project_id": string,"question": string,"question_key": string,"source"?: string,"updated_at"?: string
+                    "answer"?: string,"application_id": string,"created_at"?: string,"drafted_at"?: string | null,"funder_words"?: NonNullable<Json>,"gaps"?: NonNullable<Json>,"id"?: string,"owner_id"?: string,"project_id": string,"question": string,"question_key": string,"source"?: string,"style"?: string,"updated_at"?: string
                   }
                   Update: {
-                    "answer"?: string,"application_id"?: string,"created_at"?: string,"drafted_at"?: string | null,"gaps"?: NonNullable<Json>,"id"?: string,"owner_id"?: string,"project_id"?: string,"question"?: string,"question_key"?: string,"source"?: string,"updated_at"?: string
+                    "answer"?: string,"application_id"?: string,"created_at"?: string,"drafted_at"?: string | null,"funder_words"?: NonNullable<Json>,"gaps"?: NonNullable<Json>,"id"?: string,"owner_id"?: string,"project_id"?: string,"question"?: string,"question_key"?: string,"source"?: string,"style"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -229,14 +229,14 @@ isOneToOne: false
                   ]
                 },"next_steps": {
                   Row: {
-                    "created_at": string,"detail": string,"direction_id": string | null,"done_at": string | null,"draft": string,"explanation": string | null,"id": string,"minutes": number | null,"notes": string,"notes_tidied": string,"owner_id": string,"position": number,"project_id": string,"source": string,"stage_id": string | null,"starter": string | null,"status": string,"title": string,"updated_at": string
+                    "created_at": string,"detail": string,"direction_id": string | null,"done_at": string | null,"draft": string,"explanation": string | null,"id": string,"minutes": number | null,"mood": string | null,"notes": string,"notes_tidied": string,"owner_id": string,"position": number,"project_id": string,"source": string,"stage_id": string | null,"starter": string | null,"status": string,"title": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"draft"?: string,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"notes"?: string,"notes_tidied"?: string,"owner_id"?: string,"position"?: number,"project_id": string,"source"?: string,"stage_id"?: string | null,"starter"?: string | null,"status"?: string,"title": string,"updated_at"?: string
+                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"draft"?: string,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"mood"?: string | null,"notes"?: string,"notes_tidied"?: string,"owner_id"?: string,"position"?: number,"project_id": string,"source"?: string,"stage_id"?: string | null,"starter"?: string | null,"status"?: string,"title": string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"draft"?: string,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"notes"?: string,"notes_tidied"?: string,"owner_id"?: string,"position"?: number,"project_id"?: string,"source"?: string,"stage_id"?: string | null,"starter"?: string | null,"status"?: string,"title"?: string,"updated_at"?: string
+                    "created_at"?: string,"detail"?: string,"direction_id"?: string | null,"done_at"?: string | null,"draft"?: string,"explanation"?: string | null,"id"?: string,"minutes"?: number | null,"mood"?: string | null,"notes"?: string,"notes_tidied"?: string,"owner_id"?: string,"position"?: number,"project_id"?: string,"source"?: string,"stage_id"?: string | null,"starter"?: string | null,"status"?: string,"title"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {

@@ -23,7 +23,7 @@ export async function getStepsState(projectId: string): Promise<StepsState> {
     supabase.from("project_stages").select("id, title, status, later").eq("project_id", projectId).order("position").order("created_at"),
     supabase
       .from("next_steps")
-      .select("id, title, detail, minutes, status, source, stage_id, position, explanation, starter")
+      .select("id, title, detail, minutes, status, source, stage_id, position, explanation, starter, mood")
       .eq("project_id", projectId)
       .in("status", ["open", "done"])
       .order("position")
