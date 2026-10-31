@@ -9,10 +9,10 @@ type Copy = typeof en.explore;
 
 /** Where to search and the button to start, or a calm "searching" note that checks back by itself. */
 export function SearchPanel({
-  projectId, lang, place: initialPlace, running, failed, limit, hasResults, copy,
+  projectId, lang, place: initialPlace, running, failed, limit, left, max, hasResults, copy,
 }: {
   projectId: string; lang: string; place: string; running: boolean; failed: boolean;
-  limit: "project" | "person" | null; hasResults: boolean; copy: Copy;
+  limit: "project" | "person" | null; left: number; max: number; hasResults: boolean; copy: Copy;
 }) {
   const router = useRouter();
   const [place, setPlace] = useState(initialPlace);
@@ -41,16 +41,23 @@ export function SearchPanel({
       const result = await startSearch(projectId, place, lang);
       if (result.ok) router.refresh();
       else if (result.error === "limitProject") setError(copy.limitProject);
-      else if (result.error === "limitPerson") setError(copy.limitPerson);
+      else if (result.error === "limitPerson") setError(copy.limitPerson.replace("{max}", String(max)));
       else setError(copy.errors[result.error]);
     });
   };
 
   return (
-    <section aria-label={copy.search} className="flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
+    <section aria-labelledby="deep-title" className="flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h3 id="deep-title" className="text-lg font-semibold">{copy.deepSearchTitle}</h3>
+        <p className="rounded-full bg-oat px-3 py-0.5 text-sm text-ink">
+          {copy.allowance.replace("{n}", String(left)).replace("{max}", String(max))}
+        </p>
+      </div>
+      <p className="text-sm text-text-muted">{copy.deepSearchWhat} {copy.allowanceProject}</p>
       {failed && <p role="status" className="font-medium">{copy.failed}</p>}
       {limit ? (
-        <p role="status">{limit === "project" ? copy.limitProject : copy.limitPerson}</p>
+        <p role="status">{limit === "project" ? copy.limitProject : copy.limitPerson.replace("{max}", String(max))}</p>
       ) : (
         <>
           <div>

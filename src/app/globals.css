@@ -32,6 +32,10 @@
   --info: var(--sky);
   --ai: var(--lilac); /* AI suggestions */
   --confirmed: var(--sage);
+  /* Status lights (Explore freshness): small dots, always next to a word, never colour alone. */
+  --status-fresh: #4f8a3c;
+  --status-aging: #c99a1e;
+  --status-old: #b5503a;
 
   /* Layout */
   --bottom-nav-height: 4.25rem;

@@ -14,6 +14,9 @@ import { ConfirmButton } from "@/modules/projects/ConfirmButton";
 import { getStepsState } from "@/modules/steps/data";
 import { NextSteps } from "@/modules/steps/NextSteps";
 import { aiProvider } from "@/ai";
+import { AddStepButton } from "@/modules/explore/AddStepButton";
+import { getSavedOpportunities } from "@/modules/explore/data";
+import { ResultCard } from "@/modules/explore/Results";
 import { getWorkedOut } from "@/modules/step-work/data";
 import { WorkedOut } from "@/modules/step-work/WorkedOut";
 
@@ -101,14 +104,7 @@ async function ProjectContent({
 
       <NextStepsSection projectId={project.id} lang={lang} t={t} />
 
-      <section aria-labelledby="explore-card-title" className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
-        <div className="flex items-center gap-3">
-          <BrandSymbol name="horizon-hill" size={28} />
-          <h2 id="explore-card-title" className="text-xl font-semibold">{t.projects.exploreTitle}</h2>
-        </div>
-        <p className="mt-1 text-text-muted">{t.projects.exploreBody}</p>
-        <Link href={`/${lang}/explore?project=${project.id}`} className="btn-secondary mt-4">{t.projects.exploreLink}</Link>
-      </section>
+      <ExploreSection projectId={project.id} lang={lang} t={t} />
 
       <section aria-labelledby="feedback-card-title" className="rounded-(--radius-card) bg-sky/60 p-6 text-ink">
         <h2 id="feedback-card-title" className="text-lg font-semibold">{t.feedback.cardTitle}</h2>
@@ -151,6 +147,40 @@ async function ReadingSection({ projectId, lang, t }: { projectId: string; lang:
 /** Answers and notes from the steps, once there are any. */
 async function WorkedOutSection({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
   return <WorkedOut steps={await getWorkedOut(projectId)} projectId={projectId} lang={lang} copy={t.workedOut} />;
+}
+
+/** A way into Explore for this project, and the opportunities saved from it. */
+async function ExploreSection({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
+  const saved = await getSavedOpportunities(projectId);
+  return (
+    <section aria-labelledby="explore-card-title" className="flex flex-col gap-4 rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
+      <div>
+        <div className="flex items-center gap-3">
+          <BrandSymbol name="horizon-hill" size={28} />
+          <h2 id="explore-card-title" className="text-xl font-semibold">{t.projects.exploreTitle}</h2>
+        </div>
+        <p className="mt-1 text-text-muted">{t.projects.exploreBody}</p>
+        <Link href={`/${lang}/explore?project=${projectId}`} className="btn-secondary mt-4">{t.projects.exploreLink}</Link>
+      </div>
+      {saved.length > 0 && (
+        <section aria-labelledby="saved-title" className="flex flex-col gap-3 border-t border-border pt-4">
+          <div>
+            <h3 id="saved-title" className="text-lg font-semibold">{t.projects.savedTitle}</h3>
+            <p className="text-sm text-text-muted">{t.projects.savedIntro}</p>
+          </div>
+          <ul className="flex flex-col gap-4">
+            {saved.map((o) => (
+              <li key={o.id}>
+                <ResultCard item={o} lang={lang} copy={t.explore}>
+                  <AddStepButton id={o.id} title={o.title} lang={lang} copy={t.projects} />
+                </ResultCard>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </section>
+  );
 }
 
 /** Next steps appear once Gusty has read the idea. */

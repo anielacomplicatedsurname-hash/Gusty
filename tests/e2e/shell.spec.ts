@@ -49,6 +49,8 @@ test("the three destinations open, with unbuilt ones marked honestly", async ({ 
 test("bottom bar never covers the last content on mobile", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile");
   await page.goto("/en");
+  // Parts of the footer stream in; measure once the page has settled.
+  await page.waitForLoadState("networkidle");
   await page.keyboard.press("End");
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   const footerText = page.getByText("People, ideas, places for a brighter tomorrow.");

@@ -20,7 +20,7 @@
 | 5. Ready for testers | Service worker, admin basics, full e2e journey, security review | Installed on a phone, end-to-end green | **In progress** — install, offline page, export, deletion, security headers and admin overview built; tester email set up (Resend, heygusty.com), security review done |
 
 ## Known limitations (current build)
-- Explore searches online per project (one search per project and three per person per day). Results aren't checked by a person, and "Save to my project" comes next. Connections is still a "Coming next" placeholder, excluded from search engines.
+- Explore deep-searches online per project (one per project and three per person per day, shown on the page). Results aren't checked by a person. Paying for more searches (monthly free allowance, extra for feedback, credit packs) comes once real costs are known; community-shared opportunities later. Connections is still a "Coming next" placeholder, excluded from search engines.
 - The search uses Anthropic's web search and web fetch tools; if the organisation's Claude Console settings turn web tools off, the search fails politely ("didn't finish").
 - Search results aren't re-checked over time: a closing date that passes hides the result, but other changes on the funder's page aren't noticed until the next search.
 - No full version history: instead, Gusty never changes anything the person wrote or confirmed (only unconfirmed AI items are replaced on a new reading). A browsable history can come later.
