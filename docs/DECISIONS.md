@@ -309,3 +309,15 @@ then only refreshed when the person asks ("You've added more since this summary"
 them and doesn't spend money on every visit. The person's original words are folded underneath, still
 editable and never changed. Stored in its own table so a refresh doesn't count as editing the project.
 
+
+## 2026-10-31 — The idea grows with the steps: one card, and suggestions the person chooses
+The founder found "Here's what I understood" and the summary confusing side by side, and couldn't see where
+the writing in steps went. Now the Idea tab is one card, "Your idea, as it stands": Gusty's summary, then any
+updates Gusty suggests, then the key facts ("Here's what I understood"), then the person's original words.
+When a step is marked done, Gusty reads what was written in it (answers, notes, summary) in the background and
+may suggest up to three updates to the key facts, usually none or one, only from the person's own words, each
+saying which step it came from. Nothing changes until the person taps "Use this" (the fact becomes confirmed);
+"Not now" puts it away. A quiet chip on the project home says when there's one waiting. Suggestions are stored
+in `fact_suggestions` (owner-only; the app can only accept or dismiss them). One small AI call per finished
+step that has writing in it, counted in the daily limit. The Notes tab keeps its name and now says what it's
+for and where it feeds in.

@@ -57,6 +57,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"fact_suggestions": {
+                  Row: {
+                    "created_at": string,"id": string,"kind": string,"owner_id": string,"project_id": string,"reason": string,"status": string,"step_id": string | null,"value": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"kind": string,"owner_id"?: string,"project_id": string,"reason"?: string,"status"?: string,"step_id"?: string | null,"value": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"kind"?: string,"owner_id"?: string,"project_id"?: string,"reason"?: string,"status"?: string,"step_id"?: string | null,"value"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "fact_suggestions_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "fact_suggestions_step_id_fkey"
+      columns: ["step_id"]
+isOneToOne: false
+      referencedRelation: "next_steps"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"feedback": {
                   Row: {
                     "confusing": string | null,"created_at": string,"id": string,"other": string | null,"owner_id": string | null,"page": string | null,"worked": string | null

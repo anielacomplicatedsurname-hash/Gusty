@@ -6,11 +6,13 @@ import type { IdeaSummary } from "./data";
 import { RefreshSummary } from "./RefreshSummary";
 
 /**
- * "Your idea, as it stands": Gusty's neat summary of everything said so far, and what makes the idea different,
- * with the person's own words folded underneath (never changed by Gusty).
+ * "Your idea, as it stands": one living picture of the idea. Gusty's neat summary of everything said so far,
+ * any updates Gusty suggests from finished steps, the key facts ("Here's what I understood"), and the
+ * person's own words folded underneath (never changed by Gusty).
  */
-export function IdeaSummarySection({ summary, projectId, lang, copy, original }: {
+export function IdeaSummarySection({ summary, projectId, lang, copy, original, suggestions, reading }: {
   summary: IdeaSummary; projectId: string; lang: string; copy: Messages["ideaSummary"]; original: ReactNode;
+  suggestions?: ReactNode; reading?: ReactNode;
 }) {
   const has = !!summary.summary;
   return (
@@ -47,6 +49,9 @@ export function IdeaSummarySection({ summary, projectId, lang, copy, original }:
       ) : (
         <p className="text-text-muted">{copy.notYet}</p>
       )}
+
+      {suggestions}
+      {reading}
 
       <details open={!has} className="rounded-xl border border-border">
         <summary className="flex min-h-11 cursor-pointer items-center px-4 font-medium">{copy.originalTitle}</summary>

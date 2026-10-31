@@ -305,3 +305,23 @@ describe("idea summaries", () => {
     expect(changed ?? []).toEqual([]);
   });
 });
+
+describe("suggested updates to the idea", () => {
+  it("belong only to the project's owner, who can only accept or dismiss them", async () => {
+    const owner = client();
+    const other = client();
+    expect((await owner.auth.signInAnonymously()).error).toBeNull();
+    expect((await other.auth.signInAnonymously()).error).toBeNull();
+    const { data: project } = await owner.from("projects").insert({ title: "Mine", idea: "Private" }).select("id").single();
+    const { data: s, error } = await owner
+      .from("fact_suggestions").insert({ project_id: project!.id, kind: "audience", value: "Older women" }).select("id").single();
+    expect(error).toBeNull();
+    expect((await owner.from("fact_suggestions").insert({ project_id: project!.id, kind: "budget", value: "x" })).error).not.toBeNull();
+    expect((await other.from("fact_suggestions").select("id").eq("id", s!.id)).data).toEqual([]);
+    expect((await other.from("fact_suggestions").insert({ project_id: project!.id, kind: "place", value: "Leeds" })).error).not.toBeNull();
+    const { data: changed } = await other.from("fact_suggestions").update({ status: "accepted" }).eq("id", s!.id).select("id");
+    expect(changed ?? []).toEqual([]);
+    expect((await owner.from("fact_suggestions").update({ value: "Changed" }).eq("id", s!.id)).error).not.toBeNull();
+    expect((await owner.from("fact_suggestions").update({ status: "dismissed" }).eq("id", s!.id)).error).toBeNull();
+  });
+});
