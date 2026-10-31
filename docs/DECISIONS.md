@@ -424,3 +424,26 @@ Each view is shorter:
   words") and its word count. One question is open at a time, starting with the first unanswered.
 
 Each view is now one to two phone screens.
+
+## 2026-11-01 — Clearer fit and rules: a traffic light and three plain groups
+**Fit:** shown as a traffic light, using the same red, amber and green as the Explore freshness lights. Each
+level is always shown in words as well as colour:
+- "Looks like a good fit";
+- "Partly fits";
+- "Not a clear fit yet".
+
+Each level comes with one short line saying it's Gusty's view, not the funder's decision.
+
+**"Check these rules carefully" is gone from Your fit,** because it repeated the rules. Any rule the project
+may not meet now appears under "What would make it stronger", with a small next step such as asking the
+funder. Matches have a green edge with ✓, and things to add have an amber edge with →.
+
+**Rules in "What they want":** shown first, as three cards with their own icon and colour instead of a small
+label repeated on every line:
+- "Who can apply" (✓, green);
+- "What you'll need" (☐);
+- "What they won't fund" (✕, red).
+
+This is for people who scan rather than read, and who need "Can I apply?" answered first.
+
+Fits saved before this change have no light until "Work it out again".

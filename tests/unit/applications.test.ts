@@ -50,13 +50,15 @@ describe("how the project fits", () => {
 
   it("keeps a few of each, dropping empty ones", () => {
     const out = normaliseFit({
+      level: " Strong ",
       summary: " A good fit. ",
       strengths: Array.from({ length: 7 }, (_, i) => ({ point: `Match ${i}`, from: "" })),
       gaps: [{ point: "", suggestion: "x" }],
       words: [{ theirs: "reducing isolation", yours: "" }, { theirs: "impact", yours: "the difference it makes" }],
-      check: [],
     });
     expect(out.summary).toBe("A good fit.");
+    expect(out.level).toBe("strong");
+    expect(normaliseFit({ level: "brilliant", summary: "", strengths: [], gaps: [], words: [] }).level).toBeNull();
     expect(out.strengths).toHaveLength(5);
     expect(out.gaps).toEqual([]);
     expect(out.words).toEqual([{ theirs: "impact", yours: "the difference it makes" }]);
