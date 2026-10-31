@@ -13,6 +13,8 @@ export type StepView = {
   position: number;
   explanation: string | null;
   starter: string | null;
+  /** The kind of work, if Gusty gave it one; otherwise guessed from its words (see mood.ts). */
+  mood?: string | null;
 };
 
 /** The most "The bigger picture" ever shows: 3 to focus on, then up to 7 further ahead. */

@@ -402,7 +402,46 @@
       }
     ],
     "moreBeyond": "{n} more steps are in this stage. They'll show here as you go.",
-    "comingUp": "Coming up in this stage"
+    "comingUp": "Coming up in this stage",
+    "moods": {
+      "social": "Talking to people",
+      "writing": "Writing",
+      "planning": "Planning",
+      "research": "Looking things up",
+      "making": "Making something"
+    },
+    "moodAny": "Anything",
+    "moodQuestion": "What do you feel like doing today?",
+    "moodNone": "Nothing like that in this stage yet.",
+    "moodSuggest": "Suggest a small step: {mood}",
+    "moodSuggesting": "Gusty is thinking of one…",
+    "moodDemo": {
+      "social": {
+        "title": "Example: Tell one friend about your idea",
+        "detail": "Demo mode: Gusty would suggest a real step for your project here.",
+        "minutes": 10
+      },
+      "writing": {
+        "title": "Example: Write three sentences about why it matters",
+        "detail": "Demo mode: Gusty would suggest a real step for your project here.",
+        "minutes": 10
+      },
+      "planning": {
+        "title": "Example: Choose a date for a first small try",
+        "detail": "Demo mode: Gusty would suggest a real step for your project here.",
+        "minutes": 10
+      },
+      "research": {
+        "title": "Example: Look up one similar project near you",
+        "detail": "Demo mode: Gusty would suggest a real step for your project here.",
+        "minutes": 15
+      },
+      "making": {
+        "title": "Example: Sketch what a first session could look like",
+        "detail": "Demo mode: Gusty would suggest a real step for your project here.",
+        "minutes": 15
+      }
+    }
   },
   "offline": {
     "title": "You're offline right now.",
@@ -1368,7 +1407,7 @@
       "level": "some"
     },
     "answersTitle": "Your answers",
-    "answersIntro": "One question at a time. Gusty can draft an answer in your voice, from your project and your story. Anything it can't find stays [in brackets] for you to fill in: it never makes things up.",
+    "answersIntro": "One question at a time. Gusty drafts in the funder's language, using your project and your story, and can switch to sound more like you. Anything it can't find stays [in brackets] for you to fill in: it never makes things up.",
     "answersNone": "Bring in the application form or the questions to start writing answers.",
     "draft": "Help me draft this",
     "drafting": "Gusty is writing a draft. This takes about half a minute.",
@@ -1441,7 +1480,14 @@
       "eligible": "Who can apply",
       "requirement": "What you'll need",
       "excluded": "What they won't fund"
-    }
+    },
+    "soundLikeMe": "Sound more like me",
+    "soundLikeMeHint": "Off: Gusty mirrors the funder's language, which funders tend to respond to. On: your own voice comes first. Applies the next time Gusty drafts.",
+    "showTheirWords": "Show the funder's words",
+    "theirWordsIntro": "Words and phrases in this answer that come from the funder's own papers:",
+    "theirWordsNone": "None of the funder's words are in this answer yet.",
+    "demoDraftFunder": "(Demo: Gusty's draft in the funder's language will go here.) Our project is about reducing loneliness for [who it's for]. Last summer [what happened], and [how many people] took part.",
+    "demoFunderWord": "reducing loneliness"
   },
   "account": {
     "title": "Your account",

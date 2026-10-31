@@ -156,7 +156,11 @@ test("drafting answers: Gusty drafts in the person's voice, leaves gaps in brack
   await expect(answers.locator("ol > li").nth(1).getByText("Not started · 250 words")).toBeVisible();
   await first.getByRole("button", { name: "Help me draft this" }).click();
   const box = first.getByLabel(/^Your answer to: /);
-  await expect(box).toHaveValue(/\(Demo: Gusty's draft of this answer will go here/, { timeout: 20_000 });
+  // Drafts mirror the funder's language by default; their own words can be highlighted.
+  await expect(box).toHaveValue(/\(Demo: Gusty's draft in the funder's language will go here/, { timeout: 20_000 });
+  await first.getByRole("button", { name: "Show the funder's words" }).click();
+  await expect(first.getByRole("button", { name: "Show the funder's words" })).toHaveAttribute("aria-pressed", "true");
+  await expect(first.locator("mark", { hasText: "reducing loneliness" })).toBeVisible();
   await expect(first.getByText("Demo mode: this is a made-up example, not a real draft.")).toBeVisible();
   await expect(first.getByText("Fill in the parts in [brackets] before you send it.")).toBeVisible();
   await expect(first.getByText("Example: a number that shows the need")).toBeVisible();
@@ -164,6 +168,14 @@ test("drafting answers: Gusty drafts in the person's voice, leaves gaps in brack
   await expect(first.getByText("Gusty's draft, from your story. Change anything: it becomes yours.")).toBeVisible();
   const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+
+  // "Sound more like me" switches the next draft to the person's own voice.
+  const voice = first.getByRole("switch", { name: "Sound more like me" });
+  await expect(voice).toHaveAttribute("aria-checked", "false");
+  await voice.click();
+  await expect(voice).toHaveAttribute("aria-checked", "true");
+  await first.getByRole("button", { name: "Draft it again" }).click();
+  await expect(box).toHaveValue(/\(Demo: Gusty's draft of this answer will go here/, { timeout: 20_000 });
 
   // Editing makes it the person's.
   await box.fill("We started because nobody in our street had been on a bike for years. Twelve women came last summer.");

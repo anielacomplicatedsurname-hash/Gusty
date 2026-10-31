@@ -102,3 +102,37 @@ export function normaliseSteps(raw: PlannedStep[], max: number, maxMinutes: numb
 }
 
 export const clip = (s: string | null, max: number) => (s ? s.trim().slice(0, max) : null);
+
+export const MOOD_STEP_PROMPT_VERSION = "mood-step@1";
+
+const MOOD_KINDS: Record<string, string> = {
+  social: "talking to people: asking, telling, meeting or messaging someone",
+  writing: "writing: putting something into words",
+  planning: "planning: deciding, choosing, listing or scheduling",
+  research: "looking things up: finding out, reading or comparing",
+  making: "making something: sketching, building, trying or testing something with their hands",
+};
+
+/** One small step of the kind of work the person feels like doing today, for the stage they're in. */
+export function moodStepPrompt(mood: string): string {
+  return `You are Gusty, a calm, warm companion that helps people turn ideas into real projects.
+Many people you help are neurodivergent, tired, or new to project work. They've said what they feel like
+doing today: ${MOOD_KINDS[mood] ?? mood}. Suggest exactly one small step of that kind that genuinely moves
+their project forward in the stage they're in. It must be something one person can do on their own today.
+
+- title: starts with a verb, under 12 words.
+- detail: how to do it, under 30 words.
+- minutes: a realistic estimate between 5 and 45.
+Don't repeat any step listed as already planned or done.
+
+${SHARED_RULES}`;
+}
+
+export function moodStepMessage(context: string, stage: string, existing: string[]): string {
+  const n = (t: string) => t.replaceAll("</", "< /");
+  return `${context}
+
+The stage they're in: ${n(stage)}
+Steps already planned or done:
+${existing.map((t) => `- ${n(t)}`).join("\n") || "- none"}`;
+}

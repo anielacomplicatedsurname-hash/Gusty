@@ -26,6 +26,8 @@ import { getSavedOpportunities } from "@/modules/explore/data";
 import { ResultCard } from "@/modules/explore/Results";
 import { getWorkedOut } from "@/modules/step-work/data";
 import { WorkedOut } from "@/modules/step-work/WorkedOut";
+import { isMood, moodOf, MOODS, type Mood } from "@/modules/steps/mood";
+import { SuggestMoodStep } from "@/modules/steps/SuggestMoodStep";
 import { getSuggestions } from "@/modules/idea-loop/data";
 import { Suggestions } from "@/modules/idea-loop/Suggestions";
 import { MIN_VOICE_WORDS } from "@/ai/tasks/voice";
@@ -105,7 +107,10 @@ async function ProjectContent({
       </header>
 
       {overview && <ProgressChips overview={overview} projectPath={projectPath} t={t} />}
-      {overview && <NextCard overview={overview} projectId={project.id} projectPath={projectPath} lang={lang} t={t} />}
+      {overview && (
+        <NextCard overview={overview} projectId={project.id} projectPath={projectPath} lang={lang} t={t}
+          mood={isMood(query.mood) ? query.mood : null} tab={tab} />
+      )}
 
       <nav aria-label={t.projectHome.tabsLabel} className="flex gap-1 rounded-full bg-oat p-1">
         {TABS.map((name) => (
@@ -119,7 +124,7 @@ async function ProjectContent({
 
       {tab === "plan" && (
         <>
-          <NextStepsSection projectId={project.id} lang={lang} t={t} hideCurrent={overview?.next.kind === "step"} />
+          <NextStepsSection projectId={project.id} lang={lang} t={t} hideCurrent={overview?.next.kind === "step" && !query.mood} />
           <WorkedOutSection projectId={project.id} lang={lang} t={t} />
         </>
       )}
@@ -241,18 +246,44 @@ function ProgressChips({ overview, projectPath, t }: { overview: ProjectOverview
   );
 }
 
-/** The single most useful thing to do now, always at the top. */
-function NextCard({ overview, projectId, projectPath, lang, t }: {
-  overview: ProjectOverview; projectId: string; projectPath: string; lang: string; t: Messages;
+/**
+ * The single most useful thing to do now, always at the top. Once there are steps, the person can choose by
+ * how they feel today (talking to people, writing, planning…), and Gusty shows the first step of that kind.
+ */
+function NextCard({ overview, projectId, projectPath, lang, t, mood, tab }: {
+  overview: ProjectOverview; projectId: string; projectPath: string; lang: string; t: Messages; mood: Mood | null; tab: Tab;
 }) {
   const next = overview.next;
   const h = t.projectHome;
+  const chosen = next.kind === "step" && mood ? overview.open.find((s) => moodOf(s) === mood) ?? null : null;
+  const step = next.kind === "step" ? (mood ? chosen : next.step) : null;
   return (
     <section aria-labelledby="next-title" className="flex flex-col gap-3">
       <h2 id="next-title" className="type-label text-text-muted">{h.nextLabel}</h2>
-      {next.kind === "step" ? (
-        <TopStep step={next.step} projectId={projectId} lang={lang} copy={t.steps} />
-      ) : (
+      {next.kind === "step" && (
+        <nav aria-label={t.steps.moodQuestion} className="flex flex-col gap-2">
+          <p className="text-sm font-medium">{t.steps.moodQuestion}</p>
+          <ul className="flex flex-wrap gap-2">
+            {[null, ...MOODS].map((m) => (
+              <li key={m ?? "any"}>
+                <Link href={`${projectPath}?tab=${tab}${m ? `&mood=${m}` : ""}`} aria-current={m === mood ? "page" : undefined} scroll={false}
+                  className={`inline-flex min-h-9 items-center rounded-full border px-3 text-sm ${
+                    m === mood ? "border-ink bg-ink text-paper" : "border-border bg-paper text-ink hover:bg-oat"}`}>
+                  {m ? t.steps.moods[m] : t.steps.moodAny}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+      {step ? (
+        <TopStep step={step} projectId={projectId} lang={lang} copy={t.steps} />
+      ) : next.kind === "step" && mood ? (
+        <div className="flex flex-col items-start gap-2 rounded-xl border border-border bg-paper p-4">
+          <p>{t.steps.moodNone}</p>
+          <SuggestMoodStep projectId={projectId} mood={mood} lang={lang} copy={t.steps} />
+        </div>
+      ) : next.kind !== "step" ? (
         <div className="flex flex-col items-start gap-2 rounded-xl bg-signal p-4 text-ink">
           <p className="text-lg font-semibold">{h.next[next.kind].title}</p>
           <p>{h.next[next.kind].body}</p>
@@ -263,7 +294,7 @@ function NextCard({ overview, projectId, projectPath, lang, t }: {
             {h.next[next.kind].action}
           </Link>
         </div>
-      )}
+      ) : null}
     </section>
   );
 }

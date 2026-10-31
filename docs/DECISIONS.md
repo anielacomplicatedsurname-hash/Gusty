@@ -464,6 +464,29 @@ Fits saved before this change have no light until "Work it out again".
 - **The download** is now a readable plain-text document of everything saved (ideas, plan, notes, story,
   applications). The data file (JSON) is still offered for moving to another tool.
 
+## 2026-11-01 — Drafts in the funder's language, with a "Sound more like me" switch
+The founder's experience is that funders respond to answers that mirror their own language and key words.
+- **Funder language by default:** drafts mirror the funder's words, phrasing and tone, built only from the
+  person's own facts. Nothing is invented, and missing facts stay [in brackets].
+- **"Sound more like me":** a switch on each answer. When it's on, the next draft leads with the person's own
+  voice instead. Each answer remembers its style.
+- **"Show the funder's words":** highlights the words and phrases in the answer that came from the funder's
+  papers. A phrase is only highlighted if it really appears in both the draft and what Gusty read from the
+  papers, never on the AI's say-so. The highlight follows the person's edits.
+## 2026-11-01 — Choosing the next step by how you feel
+Project work is often mood-led, so the founder asked to choose the next step by how she feels.
+
+**How it works:** above "Your next step", people can choose "Talking to people", "Writing", "Planning",
+"Looking things up", "Making something" or "Anything". Gusty then shows the first open step of that kind in
+the current stage, still one step at a time.
+
+**How steps get a kind:** steps are sorted by their words, with the opening verb counting most. That's free
+and instant, with no AI call. A step Gusty creates for a mood keeps that mood.
+
+**When nothing matches:** "Suggest a small step: …" asks Gusty for one small step of that kind for the
+current stage. It's counted in the daily AI limit, and in demo mode it adds a labelled example.
+
+The choice is kept in the address (`?mood=`), not stored.
 ## 2026-11-01 — The slogan in Gusty's own type, moved to "How it works"
 **Font:** the founder didn't like the hand-lettered Caveat Brush, and on reflection didn't want a marker font
 either. "Big possibilities. Small steps." now uses the same type as the headline: Instrument Serif, with
