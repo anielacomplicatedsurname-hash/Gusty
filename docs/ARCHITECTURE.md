@@ -16,6 +16,7 @@ src/
 ├─ modules/projects/    data access, server actions, idea form, autosave editor, email link
 ├─ modules/interpretation/  Gusty's reading: data, actions (read, confirm, edit, add, remove), UI
 ├─ modules/steps/       directions, stages (one planned at a time), next steps, modes, I'm stuck, UI
+├─ modules/documents/   Bring in a project from a PDF: Gusty's notes (the file isn't kept)
 ├─ modules/readiness/   "Ready for funding": what's in place, amount needed, Gusty's funding routes
 ├─ modules/explore/     Explore: per-project online search for opportunities, results by scale
 ├─ modules/step-work/   "Work on this with Gusty": per-step questions, rewording, answers, notes; "What you've worked out"

@@ -438,7 +438,8 @@
       "write_draft": "Help me summarise it",
       "revise_draft": "Shorter, simpler, warmer",
       "opportunity_search": "Searching for opportunities",
-      "funding_routes": "Funding routes"
+      "funding_routes": "Funding routes",
+      "read_document": "Reading a document"
     },
     "reasons": {
       "key": "API key missing, expired or refused",
@@ -512,7 +513,7 @@
     "privacy": {
       "title": "Privacy notice",
       "description": "What Gusty collects, why, who helps us run it, and your rights.",
-      "updated": "Last updated: 29 October 2026",
+      "updated": "Last updated: 31 October 2026",
       "intro": "This notice explains, in plain language, what happens to your information when you use Gusty at heygusty.com.",
       "sections": [
         {
@@ -547,6 +548,7 @@
           "paragraphs": [
             "When Gusty reads your idea or suggests steps, the text of that project is sent to Anthropic, the company that makes the Claude AI, to prepare the answer. Under Anthropic's commercial terms, this text isn't used to train their models.",
             "When you ask Gusty to search for opportunities, Claude searches the web for you. The search words describe your idea's theme and the area you gave (for example “community repair café, Hackney”), and go to the search engine Anthropic uses. They never include your name or email. What Gusty finds is saved with your project, only for you.",
+            "If you bring in a PDF, it's sent to Anthropic for Claude to read, then discarded: Gusty doesn't keep the file. It keeps only its notes (a short summary and what the document says you've done), which you can read and delete on the project page.",
             "Your projects are private to you. We never show them to other people who use Gusty, and we never use one person's ideas to make suggestions for someone else: each request only includes the project you're working on.",
             "AI suggestions can be wrong. Please avoid including sensitive details, such as health information, about yourself or other people in your ideas."
           ]
@@ -981,6 +983,43 @@
       "error": "Something went wrong. Please try again.",
       "limit": "You've reached today's limit for Gusty's suggestions. It resets within a day.",
       "failed": "That didn't save. Please try again."
+    }
+  },
+  "documents": {
+    "newTitle": "Already working on something?",
+    "newBody": "Bring it in from a PDF (a plan, an application or a report). Gusty reads it and builds on what you've already done.",
+    "addTitle": "From your documents",
+    "addBody": "Add a PDF about this project, such as a plan, an application or a report. Gusty reads it and uses what you've already done in its suggestions.",
+    "fileLabel": "Choose a PDF",
+    "fileHint": "PDF only, up to 10 MB and 100 pages. Gusty keeps what it learns, not the file itself.",
+    "readNew": "Bring it in",
+    "readAdd": "Add this document",
+    "reading": "Gusty is reading your document. This can take up to a minute…",
+    "privacy": "The document is sent to Anthropic to be read, then discarded. Only Gusty's notes are kept, and you can delete them.",
+    "added": "Gusty has read your document. Its suggestions are waiting in “Here's what I understood” for you to confirm.",
+    "summaryLabel": "What it covers",
+    "doneLabel": "Already done, from your document",
+    "pages": "{n} pages",
+    "delete": "Forget this document",
+    "deleted": "Forgotten.",
+    "fromDocument": "Gusty's notes from your document, not checked.",
+    "limitNote": "Up to 3 documents a day.",
+    "demo": {
+      "title": "Project from your document",
+      "idea": "Demo mode: Gusty will describe your project from the document once the AI key is set up. Until then, write your idea here in your own words.",
+      "summary": "Demo mode: Gusty reads documents once the AI key is set up. This is where its short summary will go.",
+      "done": "Example: what the document says you've already done will be listed here"
+    },
+    "errors": {
+      "tooBig": "That file is too big. Please choose a PDF under 10 MB.",
+      "notPdf": "That doesn't look like a PDF. Please choose a PDF file.",
+      "tooManyPages": "That document is longer than 100 pages. Try a shorter version, or just the main part.",
+      "limit": "You've added 3 documents today. You can add more tomorrow.",
+      "unreadable": "Gusty couldn't read that document. If it's a scan, try a version with selectable text.",
+      "notProject": "That document doesn't seem to be about a project or idea.",
+      "unavailable": "Gusty can't read documents right now. Please try again later.",
+      "busy": "Gusty is a little busy right now. Please try again in a minute.",
+      "error": "Something went wrong. Please try again."
     }
   }
 }

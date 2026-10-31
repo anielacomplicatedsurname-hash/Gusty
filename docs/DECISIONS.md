@@ -278,3 +278,14 @@ Funding routes (small grant, council, crowdfunding, sponsorship, larger grant, r
 investment, earned income) with a focus (social, environmental, arts and culture...) are Gusty's labelled
 estimate, at most three, without naming funders or amounts; Explore finds real opportunities.
 
+## 2026-10-31 — Bringing in a project from a PDF, without keeping the file
+The founder wants people to bring in projects they're already working on. A PDF (up to 10 MB, 100 pages, three
+a day) can start a new project (on My Projects) or be added to one (on its page). Claude reads it via the
+Messages API's document input; Gusty keeps only its notes: a short summary, up to ten things the document says
+are already done, and suggestions for "Here's what I understood" where nothing is there yet, always as
+proposals to confirm. The file itself is never stored (simpler and more private, and no file storage to run),
+and the notes can be forgotten from the project page. The notes are labelled as the person's own material,
+not verified, and are part of every later AI request for the project. Uploads go to their own route handler
+(`/api/documents`) so the larger body limit applies only there; it checks the request comes from Gusty's own
+pages, the size before reading, and that the file really is a PDF.
+

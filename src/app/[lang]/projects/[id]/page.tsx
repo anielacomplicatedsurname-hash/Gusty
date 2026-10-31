@@ -14,6 +14,8 @@ import { ConfirmButton } from "@/modules/projects/ConfirmButton";
 import { getStepsState } from "@/modules/steps/data";
 import { NextSteps } from "@/modules/steps/NextSteps";
 import { aiProvider } from "@/ai";
+import { getDocuments } from "@/modules/documents/data";
+import { DocumentsSection } from "@/modules/documents/DocumentsSection";
 import { AddStepButton } from "@/modules/explore/AddStepButton";
 import { getReadiness } from "@/modules/readiness/data";
 import { ReadinessSection } from "@/modules/readiness/Readiness";
@@ -104,6 +106,8 @@ async function ProjectContent({
 
       <WorkedOutSection projectId={project.id} lang={lang} t={t} />
 
+      <DocumentsBlock projectId={project.id} lang={lang} t={t} />
+
       <NextStepsSection projectId={project.id} lang={lang} t={t} />
 
       <ReadinessBlock projectId={project.id} lang={lang} t={t} />
@@ -146,6 +150,11 @@ async function ReadingSection({ projectId, lang, t }: { projectId: string; lang:
       copy={t.interpretation}
     />
   );
+}
+
+/** What Gusty learned from the project's own documents, and a way to add one. */
+async function DocumentsBlock({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
+  return <DocumentsSection docs={await getDocuments(projectId)} projectId={projectId} lang={lang} copy={t.documents} />;
 }
 
 /** Answers and notes from the steps, once there are any. */

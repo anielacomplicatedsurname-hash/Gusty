@@ -7,6 +7,7 @@ import { fill, formatDateTime } from "@/i18n/format";
 import { deleteAccount, signOut } from "@/modules/projects/actions";
 import { ConfirmButton } from "@/modules/projects/ConfirmButton";
 import { getCurrentUser, listProjects } from "@/modules/projects/data";
+import { DocumentUpload } from "@/modules/documents/DocumentUpload";
 import { EmailLinkForm } from "@/modules/projects/EmailLinkForm";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -57,6 +58,11 @@ async function ProjectsContent({
           </div>
         </div>
         <EmptyState lang={lang} t={t} />
+      <section aria-labelledby="import-title" className="mt-10 flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-6">
+        <h2 id="import-title" className="text-xl font-semibold">{t.documents.newTitle}</h2>
+        <p className="text-text-muted">{t.documents.newBody}</p>
+        <DocumentUpload lang={lang} copy={t.documents} />
+      </section>
       </>
     );
   }
@@ -88,6 +94,12 @@ async function ProjectsContent({
           ))}
         </ul>
       )}
+
+      <section aria-labelledby="import-title" className="mt-10 flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-6">
+        <h2 id="import-title" className="text-xl font-semibold">{t.documents.newTitle}</h2>
+        <p className="text-text-muted">{t.documents.newBody}</p>
+        <DocumentUpload lang={lang} copy={t.documents} />
+      </section>
 
       <section aria-labelledby="your-data" className="mt-10 flex flex-col items-start gap-3">
         <h2 id="your-data" className="type-label text-text-muted">{t.projects.yourData}</h2>

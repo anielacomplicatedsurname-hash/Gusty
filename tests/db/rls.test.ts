@@ -273,3 +273,21 @@ describe("funding readiness", () => {
     expect((await other.from("funding_routes").insert({ project_id: project!.id, route: "prize" })).error).not.toBeNull();
   });
 });
+
+describe("project documents", () => {
+  it("what Gusty learned from a document belongs only to the project's owner", async () => {
+    const owner = client();
+    const other = client();
+    expect((await owner.auth.signInAnonymously()).error).toBeNull();
+    expect((await other.auth.signInAnonymously()).error).toBeNull();
+    const { data: project } = await owner.from("projects").insert({ title: "Mine", idea: "Private" }).select("id").single();
+    const { data: doc, error } = await owner
+      .from("project_documents").insert({ project_id: project!.id, filename: "plan.pdf", summary: "A plan", done: ["A pilot"] })
+      .select("id").single();
+    expect(error).toBeNull();
+    expect((await other.from("project_documents").select("id").eq("id", doc!.id)).data).toEqual([]);
+    expect((await other.from("project_documents").insert({ project_id: project!.id, filename: "x.pdf" })).error).not.toBeNull();
+    const { data: removed } = await other.from("project_documents").delete().eq("id", doc!.id).select("id");
+    expect(removed ?? []).toEqual([]);
+  });
+});

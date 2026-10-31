@@ -11,6 +11,10 @@
   outside pages. Pages are untrusted text; results are schema-validated, must have a plain https source (no
   credentials, IP addresses or local hosts) and are only shown to the project's owner. Search words describe the
   idea's theme and area, never names or emails. One search per project and three per person per day.
+- PDF uploads (`/api/documents`) accept only requests from Gusty's own pages (Origin check), refuse anything over
+  10 MB before reading it, check the file starts like a PDF, and allow three a day per person. The PDF is sent to
+  Anthropic to be read and never stored; only Gusty's notes are kept, and the person can delete them. Document
+  text is untrusted input: the model is told to ignore instructions in it and its output is schema-validated.
 - AI calls run only on the server; the key never reaches the browser. 30 readings and 60 AI calls in total per person per day, plus up to 150 background tidy-ups of their own answers and notes.
 
 ## Secrets

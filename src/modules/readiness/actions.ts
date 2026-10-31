@@ -9,6 +9,7 @@ import { logRun, withinDailyLimit } from "@/ai/usage";
 import { messagesFor } from "@/i18n/messages-for";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isProjectId } from "@/modules/projects/validation";
+import { loadDocuments } from "@/modules/documents/data";
 import { loadWorkedOut } from "@/modules/step-work/data";
 
 export type RoutesResult = { ok: true } | { ok: false; error: "unavailable" | "busy" | "declined" | "invalid" | "error" | "limit" };
@@ -27,10 +28,11 @@ export async function suggestRoutes(projectId: string, lang: string): Promise<Ro
   if (!isProjectId(projectId)) return { ok: false, error: "error" };
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { ok: false, error: "unavailable" };
-  const [{ data: project }, { data: facts }, work] = await Promise.all([
+  const [{ data: project }, { data: facts }, work, docs] = await Promise.all([
     supabase.from("projects").select("id, title, idea, funding_need").eq("id", projectId).maybeSingle(),
     supabase.from("project_facts").select("kind, value").eq("project_id", projectId).order("position"),
     loadWorkedOut(supabase, projectId),
+    loadDocuments(supabase, projectId),
   ]);
   if (!project) return { ok: false, error: "error" };
 
@@ -43,7 +45,7 @@ export async function suggestRoutes(projectId: string, lang: string): Promise<Ro
     if (!(await withinDailyLimit(supabase))) return { ok: false, error: "limit" };
     const result = await provider.generate({
       system: ROUTES_PROMPT,
-      user: routesMessage(projectContext(project.title, project.idea, facts ?? [], work), project.funding_need as Need | null),
+      user: routesMessage(projectContext(project.title, project.idea, facts ?? [], work, docs), project.funding_need as Need | null),
       schema: RoutesSchema,
       effort: "medium",
     });
