@@ -30,6 +30,8 @@ import { getSuggestions } from "@/modules/idea-loop/data";
 import { Suggestions } from "@/modules/idea-loop/Suggestions";
 import { MIN_VOICE_WORDS } from "@/ai/tasks/voice";
 import { getBank } from "@/modules/bank/data";
+import { listApplications } from "@/modules/applications/data";
+import { PrepareButton, StartApplication } from "@/modules/applications/StartApplication";
 import { ExperienceSection } from "@/modules/bank/ExperienceSection";
 import { ResearchSection } from "@/modules/bank/ResearchSection";
 import { VoiceSection } from "@/modules/bank/VoiceSection";
@@ -145,6 +147,7 @@ async function ProjectContent({
       {tab === "funding" && (
         <>
           <ReadinessBlock projectId={project.id} lang={lang} t={t} />
+          <ApplicationsBlock projectId={project.id} lang={lang} t={t} />
           <ExploreSection projectId={project.id} lang={lang} t={t} />
         </>
       )}
@@ -294,6 +297,40 @@ async function ReadinessBlock({ projectId, lang, t }: { projectId: string; lang:
   return <ReadinessSection readiness={readiness} projectId={projectId} lang={lang} copy={t.readiness} />;
 }
 
+/** The project's application spaces, and a way to start one. */
+async function ApplicationsBlock({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
+  const apps = await listApplications(projectId);
+  const copy = t.applications;
+  return (
+    <section aria-labelledby="applications-title" className="flex flex-col gap-4 rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
+      <div>
+        <div className="flex items-center gap-3">
+          <BrandSymbol name="bridge" size={28} />
+          <h2 id="applications-title" className="text-xl font-semibold">{copy.listTitle}</h2>
+        </div>
+        <p className="mt-1 text-sm text-text-muted">{copy.listIntro}</p>
+      </div>
+      {apps.length > 0 && (
+        <ul className="flex flex-col gap-2">
+          {apps.map((a) => (
+            <li key={a.id}>
+              <Link href={`/${lang}/projects/${projectId}/apply/${a.id}`}
+                className="flex min-h-11 flex-col rounded-xl border border-border px-4 py-3 hover:bg-paper">
+                <span className="font-semibold underline underline-offset-4">{a.title}</span>
+                <span className="text-sm text-text-muted">
+                  {[a.funder, a.materials === 0 ? copy.noMaterials : a.materials === 1 ? copy.oneMaterial : fill(copy.materialsCount, { n: String(a.materials) })]
+                    .filter(Boolean).join(" · ")}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+      <StartApplication projectId={projectId} lang={lang} copy={copy} />
+    </section>
+  );
+}
+
 /** A way into Explore for this project, and the opportunities saved from it. */
 async function ExploreSection({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
   const saved = await getSavedOpportunities(projectId);
@@ -317,7 +354,10 @@ async function ExploreSection({ projectId, lang, t }: { projectId: string; lang:
             {saved.map((o) => (
               <li key={o.id}>
                 <ResultCard item={o} lang={lang} copy={t.explore}>
-                  <AddStepButton id={o.id} title={o.title} lang={lang} copy={t.projects} />
+                  <div className="flex flex-wrap gap-x-4 gap-y-2">
+                    <PrepareButton foundId={o.id} title={o.title} projectId={projectId} lang={lang} label={t.projects.prepareApplication} />
+                    <AddStepButton id={o.id} title={o.title} lang={lang} copy={t.projects} />
+                  </div>
                 </ResultCard>
               </li>
             ))}

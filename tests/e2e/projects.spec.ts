@@ -16,6 +16,9 @@ test("an idea is saved without an account and survives a reload", async ({ page 
   await createProject(page, "A seed library for my street\nNeighbours swap seeds every spring.");
   await expect(page.getByRole("heading", { level: 1, name: "A seed library for my street" })).toBeVisible();
 
+  // Once Gusty's summary is written, the person's own words are folded underneath it.
+  await expect(page.getByText(/Gusty's summary of everything you've said · updated/)).toBeVisible({ timeout: 20_000 });
+  await page.getByText("Your original words").click();
   const editor = page.getByLabel("Your idea", { exact: true });
   await editor.fill("A seed library for my street, with a monthly swap day.");
   await expect(page.locator("#project-idea-status")).toHaveAttribute("data-status", "saved", { timeout: 10_000 });

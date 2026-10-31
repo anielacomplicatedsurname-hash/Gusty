@@ -57,6 +57,58 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"application_materials": {
+                  Row: {
+                    "application_id": string,"created_at": string,"id": string,"kind": string,"label": string,"origin": string,"owner_id": string,"pages": number | null,"project_id": string,"reading": NonNullable<Json>,"url": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "application_id": string,"created_at"?: string,"id"?: string,"kind": string,"label": string,"origin": string,"owner_id"?: string,"pages"?: number | null,"project_id": string,"reading": NonNullable<Json>,"url"?: string
+                  }
+                  Update: {
+                    "application_id"?: string,"created_at"?: string,"id"?: string,"kind"?: string,"label"?: string,"origin"?: string,"owner_id"?: string,"pages"?: number | null,"project_id"?: string,"reading"?: NonNullable<Json>,"url"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "application_materials_application_id_fkey"
+      columns: ["application_id"]
+isOneToOne: false
+      referencedRelation: "applications"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "application_materials_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"applications": {
+                  Row: {
+                    "created_at": string,"fit": Json | null,"fit_at": string | null,"fit_status": string,"found_id": string | null,"funder": string,"id": string,"owner_id": string,"project_id": string,"title": string,"updated_at": string,"url": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"fit"?: Json | null,"fit_at"?: string | null,"fit_status"?: string,"found_id"?: string | null,"funder"?: string,"id"?: string,"owner_id"?: string,"project_id": string,"title": string,"updated_at"?: string,"url"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"fit"?: Json | null,"fit_at"?: string | null,"fit_status"?: string,"found_id"?: string | null,"funder"?: string,"id"?: string,"owner_id"?: string,"project_id"?: string,"title"?: string,"updated_at"?: string,"url"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "applications_found_id_fkey"
+      columns: ["found_id"]
+isOneToOne: false
+      referencedRelation: "found_opportunities"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "applications_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"fact_suggestions": {
                   Row: {
                     "created_at": string,"fact_id": string | null,"id": string,"kind": string,"owner_id": string,"previous": string | null,"previous_source": string | null,"project_id": string,"reason": string,"status": string,"step_id": string | null,"value": string

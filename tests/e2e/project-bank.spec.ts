@@ -60,7 +60,8 @@ test("research comes with its source and date, within a small daily allowance", 
   await expect(first.getByText(/^Found by Gusty on .+\. Check the source before you use it in an application\.$/)).toBeVisible();
   await expect(first.getByText("Gusty's suggestion")).toBeVisible();
   // One research search per project a day.
-  await expect(section.getByText("You've already looked for research for this project today.")).toBeVisible();
+  // (Results can show while the search is still finishing; the page checks back every few seconds.)
+  await expect(section.getByText("You've already looked for research for this project today.")).toBeVisible({ timeout: 15_000 });
   const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 

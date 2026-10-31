@@ -358,3 +358,30 @@ still work). It holds:
 
 Next slices: an application space per opportunity (bring in the form, questions, T&Cs and guidance by upload,
 paste or public link), then drafting answers in the person's voice using the funder's key terms.
+
+## 2026-11-01 — Application spaces: read the funder's papers, then show the fit
+The second slice of "Help me apply". Each project can have application spaces, started from a saved
+opportunity ("Prepare an application", one space per opportunity) or for something the person found
+themselves. People bring in the funder's papers (the form or questions, guidance, terms, past winners) by
+PDF upload, pasted text or a public link. Links are read with web fetch only, never web search. Pages behind
+a login can't be opened, and the screen says to download a PDF or paste the text instead.
+
+Gusty keeps only what it read, never the file or the pasted text. That means:
+- the questions, word for word, with limits;
+- the funder's priorities in their own key phrases;
+- rules ("can apply", "ruled out", "you'll need to");
+- key details as they're written;
+- past winners, and the funder's tone;
+- the page number for PDFs.
+
+All of it is labelled "check the original". Items repeated across papers are shown once, with every source.
+
+After each paper, Gusty works out in the background how the project fits:
+- where it already matches;
+- what's missing, with one small suggestion each;
+- "Their words, your way": the funder's phrases, and how the person might say them in their own voice;
+- rules to check carefully.
+
+The fit uses the project, its story (experience, research and voice) and the papers. It never says whether
+someone is eligible, and it never invents evidence. Up to 8 papers per person a day. A fit stuck "running"
+for 5 minutes is shown as failed, with "Work it out again". Drafting answers is the next slice.
