@@ -35,6 +35,7 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 21. `20261031220000_idea_grows.sql` (Gusty's changes from steps, with Undo; answered questions)
 22. `20261101120000_project_bank.sql` (Project bank: your experience, research, how you write)
 23. `20261101140000_applications.sql` (Application spaces: funder papers Gusty read, and the fit)
+24. `20261101160000_application_answers.sql` (Answers to each question, drafted with Gusty)
 
 ## Making yourself an admin
 Sign in to Gusty with your email first, then in the SQL Editor run (with your own email):

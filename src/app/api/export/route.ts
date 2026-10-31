@@ -9,7 +9,7 @@ export async function GET() {
   const { data: claims } = supabase ? await supabase.auth.getClaims() : { data: null };
   if (!supabase || !claims?.claims) return new Response("Not signed in", { status: 401 });
 
-  const [projects, facts, directions, stages, steps, answers, documents, evidence, voices, applications, materials] = await Promise.all([
+  const [projects, facts, directions, stages, steps, answers, documents, evidence, voices, applications, materials, appAnswers] = await Promise.all([
     supabase.from("projects").select("id, title, idea, created_at, updated_at").order("created_at"),
     supabase.from("project_facts").select("project_id, kind, value, source, status"),
     supabase.from("project_directions").select("project_id, label, reason, recommended, chosen"),
@@ -30,6 +30,7 @@ export async function GET() {
     supabase.from("applications").select("id, project_id, title, funder, url, fit, fit_at, created_at").order("created_at"),
     supabase.from("application_materials").select("application_id, project_id, kind, origin, label, url, pages, reading, created_at")
       .order("created_at"),
+    supabase.from("application_answers").select("application_id, question, answer, source, gaps, updated_at").order("created_at"),
   ]);
   const byProject = <T extends { project_id: string }>(rows: T[] | null, id: string) =>
     (rows ?? []).filter((r) => r.project_id === id);
@@ -48,6 +49,7 @@ export async function GET() {
       applications: byProject(applications.data, p.id).map(({ id, ...a }) => ({
         ...a,
         papers: (materials.data ?? []).filter((m) => m.application_id === id).map((m) => ({ ...m, application_id: undefined })),
+        answers: (appAnswers.data ?? []).filter((x) => x.application_id === id).map((x) => ({ ...x, application_id: undefined })),
       })),
       steps: byProject(steps.data, p.id).map(({ id, ...step }) => ({
         ...step,

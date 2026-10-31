@@ -1,4 +1,5 @@
 import type { Fit } from "@/ai/tasks/application-fit";
+import type { Gap } from "@/ai/tasks/draft-answer";
 import type { MaterialKind, MaterialReading } from "@/ai/tasks/funder-material";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isProjectId } from "@/modules/projects/validation";
@@ -16,7 +17,9 @@ export type Application = {
   fitStatus: "none" | "running" | "ready" | "failed";
   fit: (Fit & { demo?: boolean }) | null;
   fitAt: string | null;
+  answers: Answer[];
 };
+export type Answer = { key: string; answer: string; source: "ai" | "user"; gaps: Gap[]; draftedAt: string | null; updatedAt: string };
 
 /** A project's application spaces. Owner only (RLS). Before the database change, simply none. */
 export async function listApplications(projectId: string): Promise<ApplicationSummary[]> {
@@ -36,11 +39,12 @@ export async function getApplication(projectId: string, appId: string): Promise<
   if (!isProjectId(projectId) || !isProjectId(appId)) return null;
   const supabase = await createSupabaseServerClient();
   if (!supabase) return null;
-  const [{ data: app }, { data: materials }] = await Promise.all([
+  const [{ data: app }, { data: materials }, { data: answers }] = await Promise.all([
     supabase.from("applications").select("id, project_id, title, funder, url, fit_status, fit, fit_at, updated_at, projects(title)")
       .eq("id", appId).eq("project_id", projectId).maybeSingle(),
     supabase.from("application_materials").select("id, kind, origin, label, url, pages, reading, created_at")
       .eq("application_id", appId).order("created_at"),
+    supabase.from("application_answers").select("question_key, answer, source, gaps, drafted_at, updated_at").eq("application_id", appId),
   ]);
   if (!app) return null;
   return {
@@ -55,5 +59,9 @@ export async function getApplication(projectId: string, appId: string): Promise<
       ? "failed" : (app.fit_status as Application["fitStatus"]),
     fit: (app.fit as Application["fit"]) ?? null,
     fitAt: app.fit_at,
+    answers: (answers ?? []).map((a) => ({
+      key: a.question_key, answer: a.answer, source: a.source as Answer["source"], gaps: (a.gaps as Gap[]) ?? [],
+      draftedAt: a.drafted_at, updatedAt: a.updated_at,
+    })),
   };
 }

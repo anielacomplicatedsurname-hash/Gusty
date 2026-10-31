@@ -560,7 +560,7 @@
             "When Gusty reads your idea or suggests steps, the text of that project is sent to Anthropic, the company that makes the Claude AI, to prepare the answer. Under Anthropic's commercial terms, this text isn't used to train their models.",
             "When you ask Gusty to search for opportunities, Claude searches the web for you. The search words describe your idea's theme and the area you gave (for example “community repair café, Hackney”), and go to the search engine Anthropic uses. They never include your name or email. What Gusty finds is saved with your project, only for you.",
             "Looking for research that backs your idea works the same way: the search words describe your idea's theme, never you, and the sources Gusty finds are saved with your project, only for you. When you ask Gusty to describe how you write, only your own writing about that project is sent.",
-            "When you bring a funder's papers into an application space (a PDF, pasted text or a public link), they're sent to Anthropic for Claude to read, then discarded. Gusty keeps only what it read from them, such as the questions and rules, with your project. To see how your project fits, Gusty sends that project, its story and what it read from the funder's papers.",
+            "When you bring a funder's papers into an application space (a PDF, pasted text or a public link), they're sent to Anthropic for Claude to read, then discarded. Gusty keeps only what it read from them, such as the questions and rules, with your project. To see how your project fits, or to draft an answer, Gusty sends that project, its story, what it read from the funder's papers and anything you've written for that answer.",
             "If you bring in a PDF, it's sent to Anthropic for Claude to read, then discarded: Gusty doesn't keep the file. It keeps only its notes (a short summary and what the document says you've done), which you can read and delete on the project page.",
             "Your projects are private to you. We never show them to other people who use Gusty, and we never use one person's ideas to make suggestions for someone else: each request only includes the project you're working on.",
             "AI suggestions can be wrong. Please avoid including sensitive details, such as health information, about yourself or other people in your ideas."
@@ -1298,7 +1298,7 @@
     "fitAgain": "Work it out again",
     "fitAgainHint": "Added to your story since? Gusty can look again.",
     "strengthsTitle": "Where you already match",
-    "gapsTitle": "What they'll look for that you haven't shown yet",
+    "gapsTitle": "To make this stronger",
     "wordsTitle": "Their words, your way",
     "wordsIntro": "The funder's key phrases, and how you might say the same thing in your own voice.",
     "theirs": "They say",
@@ -1375,6 +1375,45 @@
           "why": "Example: why it's worth a closer look."
         }
       ]
-    }
+    },
+    "answersTitle": "Your answers",
+    "answersIntro": "One question at a time. Gusty can draft an answer in your voice, from your project and your story. Anything it can't find stays [in brackets] for you to fill in: it never makes things up.",
+    "answersNone": "Bring in the application form or the questions to start writing answers.",
+    "draft": "Help me draft this",
+    "drafting": "Gusty is writing a draft. This takes about half a minute.",
+    "draftAgain": "Draft it again",
+    "draftAgainHint": "Gusty keeps your words where it can.",
+    "writeOwn": "Write it myself",
+    "answerLabel": "Your answer to: {question}",
+    "save": "Save",
+    "saved": "Saved",
+    "saving": "Saving…",
+    "unsaved": "Not saved yet",
+    "copy": "Copy",
+    "copied": "Copied",
+    "gustysDraft": "Gusty's draft, from your story. Change anything: it becomes yours.",
+    "yourAnswer": "Your words",
+    "words": "{n} words",
+    "wordsOf": "{n} of {max} words",
+    "wordsOver": "{n} of {max} words: {over} over the limit",
+    "chars": "{n} characters",
+    "charsOf": "{n} of {max} characters",
+    "charsOver": "{n} of {max} characters: {over} over the limit",
+    "brackets": "Fill in the parts in [brackets] before you send it.",
+    "download": "Download all my answers",
+    "downloadHint": "A plain text file you can paste into the funder's form. Nothing is sent to the funder.",
+    "fileHeading": "Answers for: {title}",
+    "draftErrors": {
+      "limit": "You've used today's drafts. You can draft more tomorrow, and you can always write your own.",
+      "busy": "Gusty is a little busy right now. Please try again in a minute.",
+      "declined": "Gusty couldn't draft this one.",
+      "unavailable": "Gusty can't draft right now. Please try again later.",
+      "error": "That didn't work. Please try again."
+    },
+    "saveError": "That didn't save. Please try again.",
+    "demoDraftNotice": "Demo mode: this is a made-up example, not a real draft. Gusty's real drafts start once the AI key is set up.",
+    "demoDraft": "(Demo: Gusty's draft of this answer will go here, written in your voice from your story.) We started because [why you started]. Last summer [what happened], and [how many people] took part.",
+    "demoGap": "Example: a number that shows the need",
+    "demoGapSuggestion": "Example: one small way you could find it"
   }
 }

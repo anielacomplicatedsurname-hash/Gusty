@@ -9,6 +9,9 @@ import { AddMaterial, RemoveMaterial } from "@/modules/applications/AddMaterial"
 import { Brief } from "@/modules/applications/Brief";
 import { getApplication } from "@/modules/applications/data";
 import { FitSection } from "@/modules/applications/FitSection";
+import { AnswersSection } from "@/modules/applications/AnswersSection";
+import { questionsOf } from "@/modules/applications/questions";
+import { aiProvider } from "@/ai";
 import { ConfirmButton } from "@/modules/projects/ConfirmButton";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -83,6 +86,8 @@ async function ApplicationContent({ params, t }: { params: PageProps<"/[lang]/pr
 
       <Brief materials={app.materials} copy={copy} />
       <FitSection app={app} lang={lang} copy={copy} />
+      <AnswersSection appId={app.id} title={app.title} questions={questionsOf(app.materials)} answers={app.answers}
+        demo={aiProvider() === null} lang={lang} copy={copy} />
 
       <form action={deleteApplication} className="self-start">
         <input type="hidden" name="applicationId" value={app.id} />
