@@ -59,17 +59,23 @@ isOneToOne: false
                   ]
                 },"fact_suggestions": {
                   Row: {
-                    "created_at": string,"id": string,"kind": string,"owner_id": string,"project_id": string,"reason": string,"status": string,"step_id": string | null,"value": string
+                    "created_at": string,"fact_id": string | null,"id": string,"kind": string,"owner_id": string,"previous": string | null,"previous_source": string | null,"project_id": string,"reason": string,"status": string,"step_id": string | null,"value": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"id"?: string,"kind": string,"owner_id"?: string,"project_id": string,"reason"?: string,"status"?: string,"step_id"?: string | null,"value": string
+                    "created_at"?: string,"fact_id"?: string | null,"id"?: string,"kind": string,"owner_id"?: string,"previous"?: string | null,"previous_source"?: string | null,"project_id": string,"reason"?: string,"status"?: string,"step_id"?: string | null,"value": string
                   }
                   Update: {
-                    "created_at"?: string,"id"?: string,"kind"?: string,"owner_id"?: string,"project_id"?: string,"reason"?: string,"status"?: string,"step_id"?: string | null,"value"?: string
+                    "created_at"?: string,"fact_id"?: string | null,"id"?: string,"kind"?: string,"owner_id"?: string,"previous"?: string | null,"previous_source"?: string | null,"project_id"?: string,"reason"?: string,"status"?: string,"step_id"?: string | null,"value"?: string
                   }
                   Relationships: [
                     {
+      foreignKeyName: "fact_suggestions_fact_id_fkey"
+      columns: ["fact_id"]
+isOneToOne: false
+      referencedRelation: "project_facts"
+      referencedColumns: ["id"]
+    },{
       foreignKeyName: "fact_suggestions_project_id_fkey"
       columns: ["project_id"]
 isOneToOne: false

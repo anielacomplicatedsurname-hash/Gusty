@@ -134,11 +134,12 @@ const SINGLE: FactKind[] = ["summary", "place", "stage"];
 
 /**
  * Decides what a new reading may change. Anything the person wrote or confirmed is kept untouched;
- * only unconfirmed AI items are replaced. Single-value items the person owns are not re-suggested,
+ * only unconfirmed AI items are replaced (except those that came from the person's steps). Single-value items the person owns are not re-suggested,
  * and list items are not duplicated.
  */
-export function planRefresh(existing: ExistingFact[], incoming: NewFact[]) {
-  const kept = existing.filter((f) => f.source === "user" || f.status === "confirmed");
+export function planRefresh(existing: ExistingFact[], incoming: NewFact[], fromSteps: ReadonlySet<string> = new Set()) {
+  // What the steps added or answered is kept too: a new reading of the idea alone mustn't undo the steps.
+  const kept = existing.filter((f) => f.source === "user" || f.status === "confirmed" || fromSteps.has(f.id));
   const remove = existing.filter((f) => !kept.includes(f)).map((f) => f.id);
   const keptKinds = new Set(kept.map((f) => f.kind));
   const keptValues = new Set(kept.map((f) => `${f.kind}:${f.value.toLowerCase()}`));

@@ -32,6 +32,7 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 18. `20261031160000_project_documents.sql` (Bringing in a project from a PDF: Gusty's notes)
 19. `20261031180000_project_summaries.sql` ("Your idea, as it stands": Gusty's summary)
 20. `20261031200000_fact_suggestions.sql` (Gusty's suggested updates to the idea after a finished step)
+21. `20261031220000_idea_grows.sql` (Gusty's changes from steps, with Undo; answered questions)
 
 ## Making yourself an admin
 Sign in to Gusty with your email first, then in the SQL Editor run (with your own email):

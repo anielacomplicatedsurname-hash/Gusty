@@ -321,3 +321,14 @@ saying which step it came from. Nothing changes until the person taps "Use this"
 in `fact_suggestions` (owner-only; the app can only accept or dismiss them). One small AI call per finished
 step that has writing in it, counted in the daily limit. The Notes tab keeps its name and now says what it's
 for and where it feeds in.
+
+## 2026-10-31 — Gusty updates its own guesses from steps; it asks before changing the person's words
+In practice "Here's what I understood" barely moved, because every change waited for a tap. The founder chose
+to let it grow by itself. After a finished step, Gusty now fills empty items, adds to lists (at most five
+each) and replaces its own unconfirmed guesses straight away. Each change shows "Updated from: *step*" with
+Undo, which puts back exactly what was there. It still asks first ("Use this / Not now") before changing
+anything the person wrote or confirmed. Open questions that a step answers are folded under "n answered in
+your steps", with the answer, and "Bring it back" reopens them. A new reading of the idea ("Read my idea
+again") keeps everything the steps added. Confirming an item keeps it and drops the Undo. A chip says "Your
+idea grew from your steps" for three days after a change. Changes are recorded in `fact_suggestions` (status
+`applied`, with the previous value), and a change can only point at an item in the same project.
