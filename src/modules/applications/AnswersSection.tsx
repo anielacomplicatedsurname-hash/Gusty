@@ -72,6 +72,9 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded
   const [text, setText] = useState(saved?.answer ?? "");
   const [source, setSource] = useState<"ai" | "user">(saved?.source ?? "user");
   const [gaps, setGaps] = useState<Gap[]>(saved?.gaps ?? []);
+  const [style, setStyle] = useState<"funder" | "mine">(saved?.style ?? "funder");
+  const [funderWords, setFunderWords] = useState<string[]>(saved?.funderWords ?? []);
+  const [showWords, setShowWords] = useState(false);
   const [open, setOpen] = useState(!!saved?.answer);
   const [dirty, setDirty] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -93,10 +96,11 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded
   const draft = () =>
     startDraft(async () => {
       setError(null);
-      const result = await draftAnswer(appId, question.key, lang);
+      const result = await draftAnswer(appId, question.key, lang, style);
       if (!result.ok) return setError(copy.draftErrors[result.error]);
       setText(result.answer);
       setGaps(result.gaps);
+      setFunderWords(result.funderWords);
       setSource("ai");
       setDirty(false);
       setOpen(true);
@@ -137,10 +141,13 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded
       )}
 
       {!open ? (
+        <>
+        <StyleSwitch id={`${id}-style`} mine={style === "mine"} onChange={(mine) => setStyle(mine ? "mine" : "funder")} copy={copy} />
         <div className="flex flex-wrap items-center gap-3">
           <button type="button" className="btn-primary" disabled={drafting} onClick={draft}>{copy.draft}</button>
           <button type="button" className="text-sm font-medium underline underline-offset-4" disabled={drafting} onClick={() => setOpen(true)}>{copy.writeOwn}</button>
         </div>
+        </>
       ) : (
         <>
           {source === "ai" && demo && <p className="rounded-xl bg-sky p-3 text-sm text-ink">{copy.demoDraftNotice}</p>}
@@ -161,6 +168,15 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded
               </ul>
             </div>
           )}
+          {funderWords.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <button type="button" aria-pressed={showWords} onClick={() => setShowWords(!showWords)}
+                className="min-h-6 self-start text-sm font-medium underline underline-offset-4">
+                {copy.showTheirWords}
+              </button>
+              {showWords && <TheirWords text={text} words={funderWords} copy={copy} />}
+            </div>
+          )}
           <div className="flex flex-wrap items-center gap-3">
             <button type="button" className="btn-primary" disabled={!dirty || saving || drafting} onClick={save}>
               {saving ? copy.saving : dirty ? copy.save : copy.saved}
@@ -175,10 +191,49 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded
             </button>
             <span id={`${id}-again`} className="sr-only">{copy.draftAgainHint}</span>
           </div>
+          <StyleSwitch id={`${id}-style`} mine={style === "mine"} onChange={(mine) => setStyle(mine ? "mine" : "funder")} copy={copy} />
         </>
       )}
       {error && <p role="alert" className="font-medium">{error}</p>}
       </div>
+    </div>
+  );
+}
+
+/** "Sound more like me": off, Gusty mirrors the funder's language; on, the person's own voice leads. */
+function StyleSwitch({ id, mine, onChange, copy }: { id: string; mine: boolean; onChange: (mine: boolean) => void; copy: Copy }) {
+  return (
+    <div className="flex items-start gap-3">
+      <button type="button" role="switch" aria-checked={mine} aria-labelledby={`${id}-label`} aria-describedby={`${id}-hint`}
+        onClick={() => onChange(!mine)}
+        className={`relative mt-0.5 inline-flex h-6 w-11 shrink-0 items-center rounded-full border-2 border-ink transition-colors motion-reduce:transition-none ${mine ? "bg-ink" : "bg-paper"}`}>
+        <span aria-hidden="true" className={`inline-block size-4 rounded-full transition-transform motion-reduce:transition-none ${mine ? "translate-x-5 bg-paper" : "translate-x-0.5 bg-ink"}`} />
+      </button>
+      <span className="flex flex-col">
+        <span id={`${id}-label`} className="text-sm font-medium">{copy.soundLikeMe}</span>
+        <span id={`${id}-hint`} className="text-xs text-text-muted">{copy.soundLikeMeHint}</span>
+      </span>
+    </div>
+  );
+}
+
+const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** The answer with the funder's own words highlighted, so mirroring them is visible, not guessed. */
+function TheirWords({ text, words, copy }: { text: string; words: string[]; copy: Copy }) {
+  const present = words.filter((w) => text.toLowerCase().includes(w.toLowerCase()));
+  if (present.length === 0) return <p className="text-sm text-text-muted">{copy.theirWordsNone}</p>;
+  const pattern = new RegExp(`(${[...present].sort((a, b) => b.length - a.length).map(escape).join("|")})`, "gi");
+  return (
+    <div className="flex flex-col gap-2 rounded-xl bg-paper p-3">
+      <p className="text-sm text-text-muted">{copy.theirWordsIntro}</p>
+      <ul className="flex flex-wrap gap-2">
+        {present.map((w) => <li key={w} className="rounded-full bg-signal px-2 py-0.5 text-xs font-medium text-ink">{w}</li>)}
+      </ul>
+      <p className="whitespace-pre-line leading-relaxed">
+        {text.split(pattern).map((part, i) =>
+          i % 2 === 1 ? <mark key={i} className="rounded bg-signal px-0.5 text-ink">{part}</mark> : <span key={i}>{part}</span>)}
+      </p>
     </div>
   );
 }
