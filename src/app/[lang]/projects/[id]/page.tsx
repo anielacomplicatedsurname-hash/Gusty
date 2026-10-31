@@ -15,6 +15,8 @@ import { getStepsState } from "@/modules/steps/data";
 import { NextSteps } from "@/modules/steps/NextSteps";
 import { aiProvider } from "@/ai";
 import { AddStepButton } from "@/modules/explore/AddStepButton";
+import { getReadiness } from "@/modules/readiness/data";
+import { ReadinessSection } from "@/modules/readiness/Readiness";
 import { getSavedOpportunities } from "@/modules/explore/data";
 import { ResultCard } from "@/modules/explore/Results";
 import { getWorkedOut } from "@/modules/step-work/data";
@@ -104,6 +106,8 @@ async function ProjectContent({
 
       <NextStepsSection projectId={project.id} lang={lang} t={t} />
 
+      <ReadinessBlock projectId={project.id} lang={lang} t={t} />
+
       <ExploreSection projectId={project.id} lang={lang} t={t} />
 
       <section aria-labelledby="feedback-card-title" className="rounded-(--radius-card) bg-sky/60 p-6 text-ink">
@@ -147,6 +151,13 @@ async function ReadingSection({ projectId, lang, t }: { projectId: string; lang:
 /** Answers and notes from the steps, once there are any. */
 async function WorkedOutSection({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
   return <WorkedOut steps={await getWorkedOut(projectId)} projectId={projectId} lang={lang} copy={t.workedOut} />;
+}
+
+/** How ready the project is for funding, and Gusty's view of the routes that suit it. */
+async function ReadinessBlock({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
+  const readiness = await getReadiness(projectId);
+  if (!readiness) return null;
+  return <ReadinessSection readiness={readiness} projectId={projectId} lang={lang} copy={t.readiness} />;
 }
 
 /** A way into Explore for this project, and the opportunities saved from it. */

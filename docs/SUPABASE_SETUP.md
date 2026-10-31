@@ -28,6 +28,7 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 14. `20261029180000_opportunities.sql` (Explore: funding opportunities the founder curates; removed again by 15)
 15. `20261029200000_explore_search.sql` (Explore: per-project online search and what it found)
 16. `20261031120000_explore_save.sql` (Explore: kinds of opportunity, saving results to a project)
+17. `20261031140000_funding_readiness.sql` (Ready for funding: amount needed, funding routes)
 
 ## Making yourself an admin
 Sign in to Gusty with your email first, then in the SQL Editor run (with your own email):

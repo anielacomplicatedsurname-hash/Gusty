@@ -268,3 +268,13 @@ Results can be saved to the project, where they appear with "Add a step to check
 paying for deep searches (free monthly allowance, extra for feedback, then credit packs and supporter
 allowances, priced from real costs), and community-shared opportunities.
 
+## 2026-10-31 — "Ready for funding": readiness from facts, routes from Gusty
+The founder asked for a progress bar of how ready a project is for funding, and which kind of funding fits.
+The bar counts seven things funders usually look for (clear idea, who it's for, where, roughly how much it
+needs, a plan, some progress, an opportunity saved), from what's actually in place, with no AI scoring, so it's
+always clear why. Gusty's reading counts once confirmed. It's framed as "not a score", with at most three
+"what would help next" links. "Roughly how much would it need?" is the person's own answer (five bands).
+Funding routes (small grant, council, crowdfunding, sponsorship, larger grant, residency, prize, social
+investment, earned income) with a focus (social, environmental, arts and culture...) are Gusty's labelled
+estimate, at most three, without naming funders or amounts; Explore finds real opportunities.
+

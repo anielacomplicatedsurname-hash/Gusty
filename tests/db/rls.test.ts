@@ -258,3 +258,18 @@ describe("opportunity searches", () => {
     expect((await owner.from("found_opportunities").insert({ ...found, url: "javascript:alert(1)" })).error).not.toBeNull();
   });
 });
+
+describe("funding readiness", () => {
+  it("funding routes and the amount needed belong only to the project's owner", async () => {
+    const owner = client();
+    const other = client();
+    expect((await owner.auth.signInAnonymously()).error).toBeNull();
+    expect((await other.auth.signInAnonymously()).error).toBeNull();
+    const { data: project } = await owner.from("projects").insert({ title: "Mine", idea: "Private" }).select("id").single();
+    expect((await owner.from("projects").update({ funding_need: "under_1k" }).eq("id", project!.id)).error).toBeNull();
+    expect((await owner.from("projects").update({ funding_need: "a lot" }).eq("id", project!.id)).error).not.toBeNull();
+    expect((await owner.from("funding_routes").insert({ project_id: project!.id, route: "crowdfunding" })).error).toBeNull();
+    expect((await other.from("funding_routes").select("id").eq("project_id", project!.id)).data).toEqual([]);
+    expect((await other.from("funding_routes").insert({ project_id: project!.id, route: "prize" })).error).not.toBeNull();
+  });
+});

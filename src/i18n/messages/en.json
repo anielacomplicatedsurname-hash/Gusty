@@ -437,7 +437,8 @@
       "say_more": "Help me say more",
       "write_draft": "Help me summarise it",
       "revise_draft": "Shorter, simpler, warmer",
-      "opportunity_search": "Searching for opportunities"
+      "opportunity_search": "Searching for opportunities",
+      "funding_routes": "Funding routes"
     },
     "reasons": {
       "key": "API key missing, expired or refused",
@@ -886,5 +887,100 @@
     "save": "Save to my project",
     "saved": "Saved to your project",
     "unsave": "Remove from saved"
+  },
+  "readiness": {
+    "title": "Ready for funding",
+    "intro": "What funders usually want to see, and what's already in place for this project. Not a score: just a calm way to see what's next.",
+    "progressLabel": "Ready for funding",
+    "count": "{n} of {total} in place",
+    "areas": {
+      "clear": "The idea is clear",
+      "who": "Who it's for",
+      "where": "Where it happens",
+      "amount": "Roughly how much it needs",
+      "plan": "A plan to get started",
+      "progress": "Some progress made",
+      "opportunities": "An opportunity saved"
+    },
+    "inPlace": "In place",
+    "notYet": "Not yet",
+    "nextTitle": "What would help next",
+    "next": {
+      "clear": "Confirm “In one sentence” in Here's what I understood",
+      "who": "Confirm who it's for in Here's what I understood",
+      "where": "Confirm where it happens in Here's what I understood",
+      "amount": "Choose roughly how much it would need, below",
+      "plan": "Choose a direction in Your next steps",
+      "progress": "Tick off a first small step",
+      "opportunities": "Save an opportunity from a deep search"
+    },
+    "allInPlace": "Everything funders usually look for is in place. Lovely work.",
+    "needLabel": "Roughly how much money would this project need?",
+    "needs": {
+      "under_1k": "Under £1,000",
+      "1k_10k": "£1,000 to £10,000",
+      "10k_50k": "£10,000 to £50,000",
+      "over_50k": "More than £50,000",
+      "unsure": "Not sure yet"
+    },
+    "needSaved": "Saved",
+    "routesTitle": "Funding routes that could suit it",
+    "routesIntro": "Gusty's view of the kinds of funding that fit this project as it is now. Gusty's estimate, not research: Explore finds real opportunities.",
+    "suggest": "Suggest funding routes",
+    "suggestAgain": "Suggest again",
+    "suggesting": "Gusty is thinking about funding routes…",
+    "routes": {
+      "small_grant": "Small grant or community pot",
+      "council": "Council, ward or parish funding",
+      "crowdfunding": "Crowdfunding",
+      "sponsorship": "Local sponsorship or in-kind support",
+      "larger_grant": "Larger grant from a trust or foundation",
+      "residency": "Residency, fellowship or bursary",
+      "prize": "Prize or award",
+      "social_investment": "Social investment",
+      "earned_income": "Earning income from it"
+    },
+    "focus": {
+      "social": "Social",
+      "environmental": "Environmental",
+      "arts_culture": "Arts and culture",
+      "community": "Community",
+      "education": "Education",
+      "health": "Health and wellbeing",
+      "other": "Other"
+    },
+    "fit": {
+      "strong": "Strong fit",
+      "possible": "Possible fit"
+    },
+    "estimate": "Gusty's estimate",
+    "firstStep": "A first step",
+    "findThese": "Find opportunities like these",
+    "demoNotice": "Demo mode: these are example routes to show the layout, not written for your project yet.",
+    "demoRoutes": [
+      {
+        "route": "small_grant",
+        "focus": "community",
+        "fit": "strong",
+        "why": "Example: a small, local start often suits community pots.",
+        "firstStep": "Example: look up one community fund in your area."
+      },
+      {
+        "route": "crowdfunding",
+        "focus": "community",
+        "fit": "possible",
+        "why": "Example: people near you might chip in for something they'd use.",
+        "firstStep": "Example: list ten people who might back it."
+      }
+    ],
+    "errors": {
+      "unavailable": "Gusty can't suggest routes right now. Please try again later.",
+      "busy": "Gusty is a little busy right now. Please try again in a minute.",
+      "declined": "Gusty couldn't help with this one.",
+      "invalid": "Gusty's suggestion came back incomplete. Please try again.",
+      "error": "Something went wrong. Please try again.",
+      "limit": "You've reached today's limit for Gusty's suggestions. It resets within a day.",
+      "failed": "That didn't save. Please try again."
+    }
   }
 }
