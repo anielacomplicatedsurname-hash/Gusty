@@ -75,3 +75,16 @@ for (const path of ["/en", "/en/explore"]) {
     expect(results.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
   });
 }
+
+test("Speak to an expert: a 1:1 with the founder, with the fee and a Calendly link", async ({ page }) => {
+  await page.goto("/en");
+  await page.getByRole("contentinfo").getByRole("link", { name: "Speak to an expert" }).click();
+  await expect(page).toHaveURL(/\/en\/expert$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Talk it through with a person" })).toBeVisible();
+  await expect(page.getByText("£37 an hour")).toBeVisible();
+  const book = page.getByRole("link", { name: /^Book a call/ });
+  await expect(book).toHaveAttribute("href", "https://calendly.com/anielacomplicatedsurname/30min");
+  await expect(book).toHaveAttribute("target", "_blank");
+  const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
+  expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+});

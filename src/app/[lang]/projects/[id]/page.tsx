@@ -154,6 +154,7 @@ async function ProjectContent({
           <ReadinessBlock projectId={project.id} lang={lang} t={t} />
           <ApplicationsBlock projectId={project.id} lang={lang} t={t} />
           <ExploreSection projectId={project.id} lang={lang} t={t} />
+          <ExpertCard lang={lang} t={t} />
         </>
       )}
 
@@ -402,6 +403,17 @@ async function NextStepsSection({ projectId, lang, t, hideCurrent = false }: {
           copy={t.steps}
         />
       </div>
+    </section>
+  );
+}
+
+/** A quiet way to talk it through with a person: Gusty's founder, on a 1:1 call. */
+function ExpertCard({ lang, t }: { lang: string; t: Messages }) {
+  return (
+    <section aria-labelledby="expert-card-title" className="flex flex-col items-start gap-2 rounded-(--radius-card) border border-border p-5 sm:p-6">
+      <h2 id="expert-card-title" className="text-lg font-semibold">{t.expert.cardTitle}</h2>
+      <p className="text-text-muted">{t.expert.cardBody}</p>
+      <Link href={`/${lang}/expert`} className="btn-secondary mt-2">{t.expert.cardLink}</Link>
     </section>
   );
 }

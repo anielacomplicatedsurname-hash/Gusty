@@ -84,6 +84,11 @@ export async function AppShell({ locale, children }: { locale: Locale; children:
               </li>
             )}
             <li>
+              <Link href={`/${locale}/expert`} className={footerLink}>
+                {t.expert.footerLink}
+              </Link>
+            </li>
+            <li>
               <Link href={`/${locale}/privacy`} className={footerLink}>
                 {t.footer.privacy}
               </Link>
