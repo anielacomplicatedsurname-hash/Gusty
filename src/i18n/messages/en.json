@@ -19,12 +19,11 @@
   "home": {
     "headline": "Good ideas",
     "headlineItalic": "deserve to move.",
-    "lead": "Tell Gusty about your idea. Gusty helps you understand it, shape it and take the next small step towards the funding, people and tools that make it happen.",
+    "lead": "Tell Gusty about your idea, in your own words. It'll help you shape it, find the right people and funding, make sense of what funders need and move forward, one step at a time.",
     "ideaLabel": "What's your idea?",
     "ideaHint": "Write it however it comes to you. A few words is enough.",
     "ideaSubmit": "Start with my idea",
     "ideaPdf": "Bring in a PDF",
-    "howTitle": "How it works",
     "howMore": "Everything you start lives in",
     "howLink": "My Projects",
     "steps": [
@@ -54,7 +53,6 @@
     },
     "sloganBig": "Big possibilities.",
     "sloganSmall": "Small steps.",
-    "featuresLabel": "From idea to application",
     "featuresTitle": "Designed for minds that wander",
     "featuresTitleItalic": "and ideas that want to fly",
     "featuresBody": "There's no one right way to think, dream or get things done. Gusty helps you find your own way forward.",
@@ -101,7 +99,7 @@
     }
   },
   "footer": {
-    "tagline": "People, ideas, places for a brighter tomorrow.",
+    "tagline": "People. Ideas. Opportunities. A little wind beneath your wings.",
     "privacy": "Privacy",
     "terms": "Terms",
     "label": "More from Gusty",

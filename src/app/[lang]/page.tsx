@@ -49,7 +49,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   return (
     <>
       <section className="bg-linear-to-b from-surface-raised/60 to-surface">
-        <div className="mx-auto max-w-(--content-max) px-4 pb-24 pt-12 sm:px-6 md:pb-32 md:pt-20 lg:pt-24">
+        <div className="mx-auto max-w-(--content-max) px-4 pb-16 pt-12 sm:px-6 md:pb-20 md:pt-20 lg:pt-24">
           <div className="grid gap-10 lg:grid-cols-[1.35fr_0.65fr] lg:items-center">
             <div>
               <h1 className="type-display text-[3rem] min-[400px]:text-[3.5rem] sm:text-8xl lg:text-[6.5rem]">
@@ -75,17 +75,16 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         </div>
       </section>
 
-      <section aria-labelledby="how" className="mx-auto max-w-(--content-max) px-4 py-24 sm:px-6 md:py-36">
-        <p className="type-label text-text-muted">{t.home.howTitle}</p>
+      <section aria-labelledby="how" className="mx-auto max-w-(--content-max) px-4 py-16 sm:px-6 md:py-24">
         {/* The brand line, where it means most: right above the three small steps. */}
-        <h2 id="how" className="type-display mt-3 text-5xl sm:text-6xl lg:text-7xl">
+        <h2 id="how" className="type-display text-5xl sm:text-6xl lg:text-7xl">
           {t.home.sloganBig}{" "}
           <span className="relative inline-block whitespace-nowrap">
             <MarkerSwipe />
             <em className="relative italic">{t.home.sloganSmall}</em>
           </span>
         </h2>
-        <div className="mt-14 grid items-center gap-10 md:mt-24 md:grid-cols-2 md:gap-16">
+        <div className="mt-10 grid items-center gap-10 md:mt-14 md:grid-cols-2 md:gap-16">
           <div className="hidden justify-center md:flex">
             <BrandSymbol name="path" size={260} />
           </div>
@@ -114,15 +113,14 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         aria-labelledby="features"
         className="bg-[radial-gradient(120%_90%_at_50%_120%,var(--signal)_0%,#f0f1d2_45%,var(--surface)_80%)]"
       >
-        <div className="mx-auto max-w-(--content-max) px-4 py-24 sm:px-6 md:py-36">
-          <p className="type-label text-text-muted">{t.home.featuresLabel}</p>
+        <div className="mx-auto max-w-(--content-max) px-4 py-20 sm:px-6 md:py-28">
           {/* Two balanced halves, so no word is left alone on a line. */}
-          <h2 id="features" className="type-display mt-3 text-5xl sm:text-6xl lg:text-7xl">
+          <h2 id="features" className="type-display text-5xl sm:text-6xl lg:text-7xl">
             <span className="block text-balance">{t.home.featuresTitle}</span>{" "}
             <em className="block text-balance italic">{t.home.featuresTitleItalic}</em>
           </h2>
           <p className="mt-6 max-w-2xl text-balance text-lg text-text-muted sm:text-xl">{t.home.featuresBody}</p>
-          <ul className="mt-12 grid gap-5 md:mt-20 md:grid-cols-3 md:gap-7">
+          <ul className="mt-10 grid gap-5 md:mt-14 md:grid-cols-3 md:gap-7">
             {t.home.features.map((f, i) => (
               <li key={f.title} className="flex flex-col rounded-(--radius-card) border border-border bg-surface-raised/85 p-7 md:min-h-72 md:p-9">
                 <BrandSymbol name={featureSymbols[i]} size={44} />
@@ -135,12 +133,12 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       </section>
 
       {support && (
-        <div className="mx-auto max-w-3xl px-4 pt-24 sm:px-6">
+        <div className="mx-auto max-w-3xl px-4 pt-20 sm:px-6">
           <SupportCard choices={support} copy={t.support} lang={lang} />
         </div>
       )}
 
-      <section className="mx-auto max-w-(--content-max) px-4 py-24 sm:px-6 md:py-36">
+      <section className="mx-auto max-w-(--content-max) px-4 py-20 sm:px-6 md:py-28">
         <p className="type-display text-5xl sm:text-6xl lg:text-7xl">
           {t.home.closingStart}{" "}
           <span className="relative inline-block whitespace-nowrap">
