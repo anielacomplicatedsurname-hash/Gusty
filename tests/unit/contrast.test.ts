@@ -23,7 +23,7 @@ function token(name: string) {
 }
 
 describe("palette contrast (WCAG 2.2 AA)", () => {
-  const backgrounds = ["paper", "oat", "white", "signal", "sky", "lilac", "sage"];
+  const backgrounds = ["paper", "oat", "white", "signal", "sky", "lilac", "sage", "fill-in"];
 
   it.each(backgrounds)("ink text on %s is at least 4.5:1", (bg) => {
     expect(contrast(token("ink"), token(bg))).toBeGreaterThanOrEqual(4.5);

@@ -162,7 +162,7 @@ test("drafting answers: Gusty drafts in the person's voice, leaves gaps in brack
   await expect(first.getByRole("button", { name: "Show the funder's words" })).toHaveAttribute("aria-pressed", "true");
   await expect(first.locator("mark", { hasText: "reducing loneliness" })).toBeVisible();
   await expect(first.getByText("Demo mode: this is a made-up example, not a real draft.")).toBeVisible();
-  await expect(first.getByText("Fill in the parts in [brackets] before you send it.")).toBeVisible();
+  await expect(first.getByText("Parts in [brackets] are highlighted: fill them in before you send it.")).toBeVisible();
   await expect(first.getByText("Example: a number that shows the need")).toBeVisible();
   await expect(first.getByText(/^\d+ of 300 words$/)).toBeVisible();
   await expect(first.getByText("Gusty's draft, from your story. Change anything: it becomes yours.")).toBeVisible();
@@ -177,6 +177,19 @@ test("drafting answers: Gusty drafts in the person's voice, leaves gaps in brack
   await first.getByRole("button", { name: "Draft it again" }).click();
   await expect(box).toHaveValue(/\(Demo: Gusty's draft of this answer will go here/, { timeout: 20_000 });
 
+  // Parts still [to fill in] are highlighted, and gathered in one list to fill in one go.
+  await expect(first.locator("mark", { hasText: "[how many people]" })).toHaveCount(1);
+  const fillIn = answers.locator("section[aria-labelledby=fill-in-title]");
+  await expect(fillIn.getByRole("heading", { name: "To fill in (3)" })).toBeVisible();
+  // Two quick fills in a row both land.
+  await fillIn.getByLabel("What goes in [how many people]").fill("twelve women");
+  await fillIn.getByRole("button", { name: "Fill in" }).nth(2).click();
+  await fillIn.getByLabel("What goes in [what happened]").fill("we ran four taster rides");
+  await fillIn.getByRole("button", { name: "Fill in" }).nth(1).click();
+  await expect(fillIn.getByRole("heading", { name: "To fill in (1)" })).toBeVisible();
+  await expect(answers.locator("ol > li").first().getByLabel(/^Your answer to: /))
+    .toHaveValue(/we ran four taster rides, and twelve women took part/);
+
   // Editing makes it the person's.
   await box.fill("We started because nobody in our street had been on a bike for years. Twelve women came last summer.");
   await expect(first.getByText("Not saved yet")).toBeVisible();
@@ -190,6 +203,15 @@ test("drafting answers: Gusty drafts in the person's voice, leaves gaps in brack
   await expect(first.getByLabel(/^Your answer to: /)).toBeHidden();
   await second.getByRole("button", { name: "Write it myself" }).click();
   await second.getByLabel(/^Your answer to: /).fill("Women who'd stopped going out will ride together every Saturday.");
+  await second.getByRole("button", { name: "Save" }).click();
+  await expect(second.getByRole("button", { name: "Saved" })).toBeDisabled();
+
+  // Their own answer can be improved by Gusty, and the improvement undone.
+  await second.getByRole("button", { name: "Improve it with Gusty" }).click();
+  await expect(second.getByLabel(/^Your answer to: /)).toHaveValue(/^\(Demo: Gusty would improve your answer here/, { timeout: 20_000 });
+  await expect(second.getByText("Gusty's improved version of your answer.", { exact: false })).toBeVisible();
+  await second.getByRole("button", { name: "Undo" }).click();
+  await expect(second.getByLabel(/^Your answer to: /)).toHaveValue("Women who'd stopped going out will ride together every Saturday.");
   await second.getByRole("button", { name: "Save" }).click();
   await expect(second.getByRole("button", { name: "Saved" })).toBeDisabled();
 

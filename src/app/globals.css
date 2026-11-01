@@ -19,6 +19,7 @@
   --stone: #777671; /* decorative and large text only (4.2:1 on paper) */
   --stone-strong: #5f5e59; /* secondary body text (6.0:1 on paper) */
   --white: #ffffff;
+  --fill-in: #fbf3c2; /* very pale yellow: parts of an answer still [to fill in] */
 
   /* Semantic roles. Components use these, never raw palette names. */
   --surface: var(--paper);
@@ -59,6 +60,7 @@
   --color-oat: var(--oat);
   --color-sage: var(--sage);
   --color-signal: var(--signal);
+  --color-fill-in: var(--fill-in);
   --color-sky: var(--sky);
   --color-water: var(--water);
   --color-lilac: var(--lilac);
