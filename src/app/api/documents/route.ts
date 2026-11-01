@@ -1,4 +1,5 @@
 import { aiProvider } from "@/ai";
+import { captchaTokenFrom, isCaptchaError } from "@/lib/captcha";
 import {
   DocumentSchema, DOCUMENTS_PER_PERSON_PER_DAY, estimatePages, looksLikePdf, MAX_PDF_BYTES, MAX_PDF_PAGES, normaliseReading,
   READ_DOCUMENT_PROMPT, READ_DOCUMENT_PROMPT_VERSION, readDocumentMessage, type DocumentReading,
@@ -10,7 +11,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isProjectId, MAX_PROJECTS } from "@/modules/projects/validation";
 
 export type DocumentError =
-  | "tooBig" | "notPdf" | "tooManyPages" | "limit" | "unreadable" | "notProject" | "unavailable" | "busy" | "error" | "projectLimit";
+  | "tooBig" | "notPdf" | "tooManyPages" | "limit" | "unreadable" | "notProject" | "unavailable" | "busy" | "error" | "projectLimit" | "captcha";
 
 const fail = (error: DocumentError, status = 400) => Response.json({ ok: false, error }, { status });
 
@@ -46,8 +47,8 @@ export async function POST(request: Request) {
   const { data: userData } = await supabase.auth.getUser();
   if (!userData.user) {
     if (projectId) return fail("error", 401);
-    const { error } = await supabase.auth.signInAnonymously();
-    if (error) return fail("error", 500);
+    const { error } = await supabase.auth.signInAnonymously({ options: { captchaToken: captchaTokenFrom(form) } });
+    if (error) return isCaptchaError(error) ? fail("captcha", 400) : fail("error", 500);
   }
   if (projectId) {
     const { data: owned } = await supabase.from("projects").select("id").eq("id", projectId).maybeSingle();

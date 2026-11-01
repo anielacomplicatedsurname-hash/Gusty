@@ -30,3 +30,6 @@ services:
       # Server-only. Entered in the Render dashboard, never committed.
       - key: ANTHROPIC_API_KEY
         sync: false
+      # Cloudflare Turnstile site key (public). Set in the Render dashboard; see docs/SUPABASE_SETUP.md.
+      - key: TURNSTILE_SITE_KEY
+        sync: false

@@ -49,7 +49,8 @@
       "tooLong": "That's a lot of words! Please keep it under 5,000 characters for now.",
       "unavailable": "Saving isn't available right now. Your text is still here; please try again later.",
       "failed": "Something went wrong while saving. Your text is still here; please try again.",
-      "projectLimit": "You have 3 projects, the most the free plan holds at once. Delete one in My Projects to start another. Your text is still here."
+      "projectLimit": "You have 3 projects, the most the free plan holds at once. Delete one in My Projects to start another. Your text is still here.",
+      "captcha": "Gusty couldn't finish its quick check that you're not a bot. Wait a moment and try again. Your words are still here."
     },
     "sloganBig": "Big possibilities.",
     "sloganSmall": "Small steps.",
@@ -73,6 +74,9 @@
     ],
     "closingStart": "Less searching.",
     "closingEnd": "More happening."
+  },
+  "captcha": {
+    "note": "Cloudflare checks this browser isn't a bot, usually without you doing anything."
   },
   "dictation": {
     "start": "Dictate",
@@ -181,7 +185,8 @@
     "errors": {
       "invalid": "That doesn't look like an email address. Please check it.",
       "unavailable": "Email sign-in isn't available right now. Please try again later.",
-      "failed": "We couldn't send the link. Please try again in a minute."
+      "failed": "We couldn't send the link. Please try again in a minute.",
+      "captcha": "Gusty couldn't finish its quick check that you're not a bot. Wait a moment and try again."
     },
     "code": {
       "label": "Or type the code from the email",
@@ -590,7 +595,8 @@
     "sent": "Thank you. Your thoughts reached us, and we read every message.",
     "errors": {
       "empty": "Write a few words in any of the boxes, then send.",
-      "failed": "That didn't send. Please try again in a moment."
+      "failed": "That didn't send. Please try again in a moment.",
+      "captcha": "Gusty couldn't finish its quick check that you're not a bot. Wait a moment and try again. Your words are still here."
     },
     "privacy": "Your feedback is read only by the person who runs Gusty and is never shown publicly. Sharing feedback also gives you one more deep search that month.",
     "privacyLink": "Read our privacy notice",
@@ -662,7 +668,8 @@
             "Anthropic: AI readings, suggestions and web searches for opportunities (United States).",
             "Resend: sending sign-in emails.",
             "Stripe: support payments and receipts.",
-            "ImprovMX: forwarding emails sent to hello@heygusty.com."
+            "ImprovMX: forwarding emails sent to hello@heygusty.com.",
+            "Cloudflare (Turnstile): checking that a first-time visitor isn't a bot, when they save an idea, send feedback or ask for a sign-in link. It looks at technical signals from the browser, such as the IP address, not at what you write."
           ],
           "after": [
             "Some of these providers are based in, or may process data in, the United States. Where they do, they rely on safeguards recognised under UK data protection law, such as the UK's data bridge or standard contractual clauses. We don't sell your data or share it for advertising."
@@ -1103,6 +1110,7 @@
       "done": "Example: what the document says you've already done will be listed here"
     },
     "errors": {
+      "captcha": "Gusty couldn't finish its quick check that you're not a bot. Wait a moment and try again.",
       "tooBig": "That file is too big. Please choose a PDF under 10 MB.",
       "notPdf": "That doesn't look like a PDF. Please choose a PDF file.",
       "tooManyPages": "That document is longer than 100 pages. Try a shorter version, or just the main part.",

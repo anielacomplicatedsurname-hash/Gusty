@@ -1,20 +1,25 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useId, useState } from "react";
+import { useId, useRef, useState, type ReactNode } from "react";
+import { CAPTCHA_FIELD } from "@/lib/captcha";
+import { captchaTokenIn } from "@/components/Captcha";
 import type en from "@/i18n/messages/en.json";
 import type { DocumentError } from "@/app/api/documents/route";
 
 type Copy = typeof en.documents;
 
 /** Choose a PDF and let Gusty read it: into a new project, or into this one. */
-export function DocumentUpload({ projectId, lang, copy }: { projectId?: string; lang: string; copy: Copy }) {
+export function DocumentUpload({ projectId, lang, copy, captcha }: { projectId?: string; lang: string; copy: Copy; captcha?: ReactNode }) {
   const router = useRouter();
   const id = useId();
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  // The bot check sits in here; a fresh one after each try, since its token works once.
+  const check = useRef<HTMLDivElement>(null);
+  const [attempt, setAttempt] = useState(0);
 
   const send = async () => {
     if (!file) return;
@@ -24,6 +29,8 @@ export function DocumentUpload({ projectId, lang, copy }: { projectId?: string; 
     form.set("file", file);
     form.set("lang", lang);
     if (projectId) form.set("projectId", projectId);
+    const token = captchaTokenIn(check.current);
+    if (token) form.set(CAPTCHA_FIELD, token);
     try {
       const response = await fetch("/api/documents", { method: "POST", body: form });
       const result = (await response.json()) as { ok: true; projectId: string } | { ok: false; error: DocumentError };
@@ -37,6 +44,7 @@ export function DocumentUpload({ projectId, lang, copy }: { projectId?: string; 
       setError(copy.errors.error);
     } finally {
       setBusy(false);
+      setAttempt((n) => n + 1);
     }
   };
 
@@ -49,6 +57,7 @@ export function DocumentUpload({ projectId, lang, copy }: { projectId?: string; 
           onChange={(e) => { setFile(e.target.files?.[0] ?? null); setDone(false); setError(null); }}
           className="mt-2 block w-full text-sm file:mr-3 file:rounded-full file:border file:border-ink file:bg-paper file:px-4 file:py-2 file:font-medium" />
       </div>
+      {captcha && <div ref={check} key={attempt}>{captcha}</div>}
       <button type="button" className="btn-primary self-start" disabled={!file || busy} onClick={send}>
         {projectId ? copy.readAdd : copy.readNew}
       </button>

@@ -1,5 +1,6 @@
 "use server";
 
+import { captchaTokenFrom, isCaptchaError } from "@/lib/captcha";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { brand } from "@/config/brand";
@@ -11,7 +12,7 @@ import {
 import { checkEmail, checkIdea, isProjectId, titleFromIdea } from "./validation";
 
 /** On an error the idea comes back too, so the box can show it again (forms clear themselves after an action). */
-export type CreateProjectState = { error?: "empty" | "tooLong" | "unavailable" | "failed" | "projectLimit"; idea?: string; attempt?: number };
+export type CreateProjectState = { error?: "empty" | "tooLong" | "unavailable" | "failed" | "projectLimit" | "captcha"; idea?: string; attempt?: number };
 
 /**
  * Saves a new idea. Visitors without an account get a private guest session first,
@@ -33,8 +34,9 @@ export async function createProject(
 
   const { data: userData } = await supabase.auth.getUser();
   if (!userData.user) {
-    const { error } = await supabase.auth.signInAnonymously();
+    const { error } = await supabase.auth.signInAnonymously({ options: { captchaToken: captchaTokenFrom(formData) } });
     if (error) {
+      if (isCaptchaError(error)) return back("captcha");
       console.error("Guest sign-in failed:", error.message);
       return back("failed");
     }
@@ -81,7 +83,7 @@ export async function saveIdea(projectId: string, rawIdea: string): Promise<Save
 
 export type EmailLinkState = {
   status?: "sent" | "sentBring";
-  error?: "invalid" | "unavailable" | "failed" | "exists";
+  error?: "invalid" | "unavailable" | "failed" | "exists" | "captcha";
   email?: string;
   /** Which kind of code the email holds, for typing it in instead of opening the link. */
   codeType?: "email" | "email_change";
@@ -128,8 +130,9 @@ export async function requestEmailLink(
   }
   const { error } = isGuest && !bring
     ? await supabase.auth.updateUser({ email }, { emailRedirectTo })
-    : await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo } });
+    : await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo, captchaToken: captchaTokenFrom(formData) } });
   if (error?.code === "email_exists") return { error: "exists", email };
+  if (isCaptchaError(error)) return { error: "captcha", email };
   if (error) {
     console.error("Sending the email link failed:", error.message);
     return { error: "failed" };

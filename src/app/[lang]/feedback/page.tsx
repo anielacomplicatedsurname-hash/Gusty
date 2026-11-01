@@ -1,3 +1,4 @@
+import { GuestCaptcha } from "@/components/GuestCaptcha";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -18,7 +19,7 @@ export default async function FeedbackPage({ params, searchParams }: PageProps<"
       <p className="mt-4 text-lg">{t.feedback.intro}</p>
       <div className="mt-8 rounded-(--radius-card) bg-surface-raised p-6 sm:p-8">
         <Suspense fallback={null}>
-          <Form t={t} searchParams={searchParams} />
+          <Form t={t} lang={lang} searchParams={searchParams} />
         </Suspense>
       </div>
       <p className="mt-6 text-sm text-text-muted">
@@ -31,7 +32,7 @@ export default async function FeedbackPage({ params, searchParams }: PageProps<"
   );
 }
 
-async function Form({ t, searchParams }: { t: Messages; searchParams: PageProps<"/[lang]/feedback">["searchParams"] }) {
+async function Form({ t, lang, searchParams }: { t: Messages; lang: string; searchParams: PageProps<"/[lang]/feedback">["searchParams"] }) {
   const { from } = await searchParams;
-  return <FeedbackForm page={typeof from === "string" ? from : ""} copy={t.feedback} />;
+  return <FeedbackForm page={typeof from === "string" ? from : ""} copy={t.feedback} captcha={<GuestCaptcha lang={lang} />} />;
 }

@@ -98,11 +98,12 @@ Fixed:
 Known, accepted for testers (to address before public launch):
 - **AI spending across many guest accounts.** Limits are per person; someone could make many guest
   accounts. The firm cap is the monthly spend limit in the Anthropic Console (founder setting). Supabase
-  also limits new guest accounts per IP address (Authentication → Rate Limits). CAPTCHA closes this.
+  also limits new guest accounts per IP address (Authentication → Rate Limits). Cloudflare Turnstile closes this
+  once it's switched on (see `docs/SUPABASE_SETUP.md`).
 - **Usage log is written by the person's own session**, so a determined person could add fake rows for
   themselves, which would show in the admin totals (within the bounds above). It can't touch anyone else's data.
-- **Email requests** can be sent to any address, within Supabase's hourly email limit. CAPTCHA closes this too.
+- **Email requests** can be sent to any address, within Supabase's hourly email limit. Turnstile closes this too.
 
 ## To do before public launch
-CAPTCHA on guest sign-in, clean-up of abandoned guest accounts, stricter CSP (nonces instead of inline scripts), privacy policy and data processing records,
+Switch on Turnstile in Supabase (code is ready), clean-up of abandoned guest accounts, stricter CSP (nonces instead of inline scripts), privacy policy and data processing records,
 dependency audit in CI, Supabase backups (Pro plan).

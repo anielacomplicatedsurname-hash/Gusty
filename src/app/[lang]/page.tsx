@@ -1,3 +1,4 @@
+import { GuestCaptcha } from "@/components/GuestCaptcha";
 import Link from "next/link";
 import { Suspense } from "react";
 import { BrandSymbol, type SymbolName } from "@/components/BrandSymbol";
@@ -55,6 +56,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
                 previewBadge: t.common.previewBadge,
                 errors: t.home.ideaErrors,
               }}
+              captcha={<Suspense fallback={null}><GuestCaptcha lang={lang} /></Suspense>}
             />
           </div>
 

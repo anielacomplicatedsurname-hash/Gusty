@@ -1,3 +1,4 @@
+import { GuestCaptcha } from "@/components/GuestCaptcha";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -57,14 +58,14 @@ async function ProjectsContent({
           <h2 className="type-heading">{t.projects.signedOutTitle}</h2>
           <p className="mt-2 text-text-muted">{t.projects.signedOutBody}</p>
           <div className="mt-4">
-            <EmailLinkForm lang={lang} copy={emailCopy} />
+            <EmailLinkForm lang={lang} copy={emailCopy} captcha={<Suspense fallback={null}><GuestCaptcha lang={lang} guests /></Suspense>} />
           </div>
         </div>
         <EmptyState lang={lang} t={t} />
       <section id="bring-in" aria-labelledby="import-title" className="mt-10 scroll-mt-24 flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-6">
         <h2 id="import-title" className="type-heading">{t.documents.newTitle}</h2>
         <p className="text-text-muted">{t.documents.newBody}</p>
-        <DocumentUpload lang={lang} copy={t.documents} />
+        <DocumentUpload lang={lang} copy={t.documents} captcha={<Suspense fallback={null}><GuestCaptcha lang={lang} /></Suspense>} />
       </section>
       </>
     );
@@ -95,7 +96,7 @@ async function ProjectsContent({
           <h2 className="type-heading">{t.projects.keepTitle}</h2>
           <p className="mt-2 text-text-muted">{t.projects.keepBody}</p>
           <div className="mt-4">
-            <EmailLinkForm lang={lang} copy={emailCopy} />
+            <EmailLinkForm lang={lang} copy={emailCopy} captcha={<Suspense fallback={null}><GuestCaptcha lang={lang} guests /></Suspense>} />
           </div>
         </div>
       )}
