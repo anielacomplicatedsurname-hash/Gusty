@@ -1,5 +1,6 @@
 "use client";
 
+import { Dictate } from "@/components/Dictate";
 import { useRouter } from "next/navigation";
 import { useId, useState, useTransition } from "react";
 import { BrandSymbol } from "@/components/BrandSymbol";
@@ -106,6 +107,7 @@ function EvidenceForm({ copy, initial, pending, submitLabel, onSubmit, onCancel 
         <p id={`${id}-hint`} className="text-sm text-text-muted">{copy.textHint}</p>
         <textarea id={`${id}-text`} value={text} onChange={(e) => setText(e.target.value)} maxLength={1000} rows={4}
           aria-describedby={`${id}-hint`} className="mt-1 w-full rounded-xl border border-stone bg-paper p-3" />
+        <Dictate target={`${id}-text`} disabled={pending} />
       </div>
       <div>
         <label htmlFor={`${id}-url`} className="block font-medium">{copy.urlLabel}</label>

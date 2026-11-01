@@ -575,3 +575,18 @@ took those qualities, not their brand.
 **What we kept, from the founder's feedback on the mockup:** rounded corners on cards, the existing plain
 buttons (the pill with a circle arrow felt too heavy), the nav without a call-to-action button, and
 "Pick up where you left off" at the top of the home page for returning visitors.
+
+## 2026-11-01 — Dictation in every question box
+**What:** a small "Dictate" button under each box where people write in their own words: the idea box,
+the project's idea, step answers and notes, their experience, application answers and feedback.
+
+**How:** the browser's own speech recognition (the Web Speech API), so there's no new library, no cost and no
+recording ever reaches Gusty: the browser's speech service (for example Google's in Chrome, Apple's in Safari)
+turns the voice into words, which land in the box like typing and save the same way. Browsers without it
+(Firefox for now) don't show the button. Phone keyboards' own mic key keeps working everywhere too.
+
+**Consent:** the first time, Gusty says who hears the voice before the microphone starts ("Before you
+dictate"). Agreeing is remembered in that browser only. The privacy notice has a matching "Dictation" section.
+
+**Not now:** recording audio and transcribing it on our side. That needs a paid speech-to-text service
+(Claude doesn't transcribe audio) and new privacy terms.

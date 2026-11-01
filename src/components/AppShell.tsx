@@ -5,6 +5,7 @@ import { getMessages } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import { AccountBadge } from "./AccountBadge";
 import { AdminLink } from "./AdminLink";
+import { DictationProvider } from "./Dictate";
 import { FeedbackLink } from "@/modules/feedback/FeedbackLink";
 import { Logo } from "./Logo";
 import { NavLinks, NavList, type NavItem } from "./NavLinks";
@@ -63,7 +64,7 @@ export async function AppShell({ locale, children }: { locale: Locale; children:
         id="main"
         className="flex-1 pb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] md:pb-0"
       >
-        {children}
+        <DictationProvider copy={t.dictation}>{children}</DictationProvider>
       </main>
 
       <footer className="mb-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom))] border-t border-border/70 md:mb-0">

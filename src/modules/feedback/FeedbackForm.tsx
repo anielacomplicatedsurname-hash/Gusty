@@ -1,5 +1,6 @@
 "use client";
 
+import { Dictate } from "@/components/Dictate";
 import { useActionState } from "react";
 import { sendFeedback, type FeedbackState } from "./actions";
 
@@ -50,6 +51,7 @@ export function FeedbackForm({ page, copy }: { page: string; copy: Copy }) {
             aria-describedby={error ? "feedback-error" : undefined}
             className="mt-1 w-full rounded-xl border border-stone bg-paper p-3 text-base"
           />
+          <Dictate target={`feedback-${name}`} />
         </div>
       ))}
       {error && (

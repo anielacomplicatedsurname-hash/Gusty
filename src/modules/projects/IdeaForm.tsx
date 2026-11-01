@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import { Dictate } from "@/components/Dictate";
 import { createProject, type CreateProjectState } from "./actions";
 import { IDEA_MAX_LENGTH } from "./validation";
 
@@ -46,6 +47,7 @@ export function IdeaForm({ lang, enabled, copy }: { lang: string; enabled: boole
         aria-invalid={error ? true : undefined}
         className="mt-3 w-full resize-y rounded-xl border border-stone bg-paper p-3 text-base leading-relaxed"
       />
+      {enabled && <Dictate target="idea" />}
       {error && (
         <p id="idea-error" role="alert" className="mt-2 text-sm font-medium text-ink">
           {error}

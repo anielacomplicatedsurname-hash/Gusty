@@ -1,5 +1,6 @@
 "use client";
 
+import { Dictate } from "@/components/Dictate";
 import { useRouter } from "next/navigation";
 import { useId, useRef, useState, useTransition } from "react";
 import { bracketsIn, countWords, parseLimit, type Gap } from "@/ai/tasks/draft-answer";
@@ -186,6 +187,7 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded
           <label htmlFor={`${id}-a`} className="sr-only">{fill(copy.answerLabel, { question: question.question })}</label>
           <HighlightedTextarea id={`${id}-a`} value={text} disabled={drafting || improving} describedBy={`${id}-count`}
             onChange={(v) => { setText(v); setDirty(true); setCopied(false); }} />
+          <Dictate target={`${id}-a`} disabled={drafting || improving} />
           <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
             <p id={`${id}-count`} className={over ? "font-semibold" : "text-text-muted"}>{counter}</p>
             <p className="text-text-muted">{dirty ? copy.unsaved : before !== null ? copy.improved : source === "ai" ? copy.gustysDraft : text ? copy.yourAnswer : ""}</p>
