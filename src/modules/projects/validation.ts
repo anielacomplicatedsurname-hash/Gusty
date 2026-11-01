@@ -46,3 +46,6 @@ export function signInDestination(rawNext: string | null, ok: boolean, siteUrl: 
   if (!ok) url.searchParams.set("signin", "failed");
   return url.toString();
 }
+
+/** The free plan holds this many projects at a time (enforced in the database too). */
+export const MAX_PROJECTS = 3;

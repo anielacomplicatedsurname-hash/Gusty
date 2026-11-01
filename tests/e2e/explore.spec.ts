@@ -30,7 +30,7 @@ test("searching for a project's opportunities: best places first, the rest by sc
   await expect(page.getByText("never your name or email")).toBeVisible();
   // The deep-search allowance and what it costs are visible before starting.
   await expect(page.getByRole("heading", { name: "Deep search" })).toBeVisible();
-  await expect(page.getByText("Deep searches left today: 3 of 3")).toBeVisible();
+  await expect(page.getByText("Deep searches left this month: 1 of 1")).toBeVisible();
   await expect(page.getByText("costs Gusty about £0.50 to £1")).toBeVisible();
   await page.getByLabel("Where is the project?").fill("Hackney, London, UK");
   await page.getByRole("button", { name: "Start a deep search for this project" }).click();
@@ -56,10 +56,10 @@ test("searching for a project's opportunities: best places first, the rest by sc
   const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 
-  // One search per project per day; the results stay, and the allowance shows what's left.
+  // The free plan: one search a month, and the results stay.
   await page.reload();
-  await expect(page.getByText("You've already run today's deep search for this project.")).toBeVisible();
-  await expect(page.getByText("Deep searches left today: 2 of 3")).toBeVisible();
+  await expect(page.getByText("You've used this month's deep searches.", { exact: false })).toBeVisible();
+  await expect(page.getByText("Deep searches left this month: 0 of 1")).toBeVisible();
   await expect(best.getByRole("article")).toHaveCount(3);
 
   // The project list shows this project as up to date.
@@ -76,4 +76,43 @@ test("searching for a project's opportunities: best places first, the rest by sc
   await expect(saved.getByText("Added to your steps")).toBeVisible();
   const projectScan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(projectScan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+});
+
+test("sharing feedback gives one more deep search that month", async ({ page }) => {
+  await page.goto("/en");
+  await page.getByLabel("What's your idea?").fill("A seed swap at the community garden.");
+  await page.getByRole("button", { name: "Start with my idea" }).click();
+  await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/);
+  const id = page.url().split("/").pop()!;
+  await page.goto(`/en/explore?project=${id}`);
+  await page.getByLabel("Where is the project?").fill("Leeds, UK");
+  await page.getByRole("button", { name: "Start a deep search for this project" }).click();
+  await expect(page.locator("section[aria-labelledby=best-title]").getByRole("article")).toHaveCount(3, { timeout: 20_000 });
+  await page.reload();
+  await expect(page.getByText("Want one more this month?")).toBeVisible();
+
+  await page.getByRole("link", { name: "Tell us what you think of Gusty" }).click();
+  await page.getByLabel("What worked well?").fill("The deep search found a local fund I didn't know about.");
+  await page.getByRole("button", { name: "Send my thoughts" }).click();
+  await expect(page.getByText("Thank you", { exact: false }).first()).toBeVisible();
+
+  await page.goto(`/en/explore?project=${id}`);
+  await expect(page.getByText("Deep searches left this month: 1 of 2")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start a new deep search" })).toBeEnabled();
+});
+
+test("the free plan holds 3 projects at a time", async ({ page }) => {
+  for (const idea of ["First idea for the street", "Second idea for the street", "Third idea for the street"]) {
+    await page.goto("/en");
+    await page.getByLabel("What's your idea?").fill(idea);
+    await page.getByRole("button", { name: "Start with my idea" }).click();
+    await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/);
+  }
+  await page.goto("/en");
+  await page.getByLabel("What's your idea?").fill("A fourth idea");
+  await page.getByRole("button", { name: "Start with my idea" }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "You have 3 projects" })).toBeVisible();
+  await expect(page.getByLabel("What's your idea?")).toHaveValue("A fourth idea");
+  await page.goto("/en/projects");
+  await expect(page.getByText("The free plan holds 3 projects at a time.")).toBeVisible();
 });

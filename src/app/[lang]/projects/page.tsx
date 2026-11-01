@@ -5,6 +5,7 @@ import { BrandSymbol } from "@/components/BrandSymbol";
 import { getMessages, type Messages } from "@/i18n/dictionaries";
 import { fill, formatDateTime } from "@/i18n/format";
 import { DeleteProjectCard } from "@/modules/projects/DeleteProjectCard";
+import { MAX_PROJECTS } from "@/modules/projects/validation";
 import { getCurrentUser, listProjects, type ProjectSummary } from "@/modules/projects/data";
 import { DocumentUpload } from "@/modules/documents/DocumentUpload";
 import { freshness } from "@/modules/explore/data";
@@ -73,6 +74,9 @@ async function ProjectsContent({
   return (
     <>
       {signInFailed}
+      {projects.length >= MAX_PROJECTS && (
+        <p className="mt-8 rounded-xl bg-sky p-3 text-sm text-ink">{t.projects.atLimit}</p>
+      )}
       {projects.length === 0 ? (
         <EmptyState lang={lang} t={t} />
       ) : (

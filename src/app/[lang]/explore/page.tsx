@@ -5,7 +5,6 @@ import { BrandSymbol } from "@/components/BrandSymbol";
 import { getMessages, type Messages } from "@/i18n/dictionaries";
 import { fill } from "@/i18n/format";
 import { getExploreState, getLastSearches } from "@/modules/explore/data";
-import { SEARCHES_PER_PERSON_PER_DAY } from "@/modules/explore/limits";
 import { ProjectList } from "@/modules/explore/ProjectList";
 import { Results } from "@/modules/explore/Results";
 import { SearchPanel } from "@/modules/explore/SearchPanel";
@@ -79,9 +78,7 @@ async function ExploreContent({ params, searchParams, t }: {
           place={state.place}
           running={latest?.status === "running"}
           failed={latest?.status === "failed"}
-          limit={state.limit}
-          left={state.left}
-          max={SEARCHES_PER_PERSON_PER_DAY}
+          allowance={state.allowance}
           hasResults={hasDone}
           copy={e}
         />

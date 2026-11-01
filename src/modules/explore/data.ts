@@ -1,7 +1,7 @@
 import type { Complexity, Kind, Scale } from "@/ai/tasks/opportunity-search";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isProjectId } from "@/modules/projects/validation";
-import { SEARCH_STALE_MS, SEARCHES_PER_PERSON_PER_DAY, SEARCHES_PER_PROJECT_PER_DAY } from "./limits";
+import { SEARCH_STALE_MS, searchAllowance, type SearchAllowance } from "./limits";
 
 export type FoundOpportunity = {
   id: string;
@@ -26,9 +26,8 @@ export type ExploreState = {
   place: string;
   latest: { status: "running" | "done" | "failed"; place: string; createdAt: string; results: FoundOpportunity[] } | null;
   /** Why a new search can't start yet, if it can't. */
-  limit: "project" | "person" | null;
-  /** Deep searches this person has left today, across all projects. */
-  left: number;
+  /** Deep searches this person has left this month, across all projects. */
+  allowance: SearchAllowance;
   demo: boolean;
 };
 
@@ -47,20 +46,16 @@ const toFound = (r: Row): FoundOpportunity => ({
   complexity: r.complexity as Complexity, complexityReason: r.complexity_reason, fit: r.fit, saved: r.saved_at !== null,
 });
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-
 /** The project's latest search and what it found. RLS limits all of it to the owner. */
 export async function getExploreState(projectId: string): Promise<ExploreState | null> {
   if (!isProjectId(projectId)) return null;
   const supabase = await createSupabaseServerClient();
   if (!supabase) return null;
-  const since = new Date(Date.now() - DAY_MS).toISOString();
-
-  const [searches, placeFact, mine, lastRun] = await Promise.all([
+  const [searches, placeFact, allowance, lastRun] = await Promise.all([
     supabase.from("opportunity_searches").select("id, status, place, created_at").eq("project_id", projectId)
       .order("created_at", { ascending: false }).limit(5),
     supabase.from("project_facts").select("value").eq("project_id", projectId).eq("kind", "place").limit(1).maybeSingle(),
-    supabase.from("opportunity_searches").select("id", { count: "exact", head: true }).neq("status", "failed").gte("created_at", since),
+    searchAllowance(supabase),
     supabase.from("ai_runs").select("status").eq("project_id", projectId).eq("task", "opportunity_search")
       .order("created_at", { ascending: false }).limit(1),
   ]);
@@ -80,9 +75,6 @@ export async function getExploreState(projectId: string): Promise<ExploreState |
     results = ((data ?? []) as Row[]).filter((r) => !r.deadline || r.deadline >= today).map(toFound);
   }
 
-  const recentForProject = rows.filter((s) => s.status !== "failed" && s.created_at >= since).length;
-  const limit = recentForProject >= SEARCHES_PER_PROJECT_PER_DAY ? "project"
-    : (mine.count ?? 0) >= SEARCHES_PER_PERSON_PER_DAY ? "person" : null;
 
   return {
     place: latestRow?.place || placeFact.data?.value || "",
@@ -94,8 +86,7 @@ export async function getExploreState(projectId: string): Promise<ExploreState |
           results,
         }
       : null,
-    limit,
-    left: Math.max(0, SEARCHES_PER_PERSON_PER_DAY - (mine.count ?? 0)),
+    allowance,
     demo: lastRun.data?.[0]?.status === "demo",
   };
 }
@@ -110,6 +101,8 @@ export async function getSavedOpportunities(projectId: string): Promise<FoundOpp
     .order("saved_at", { ascending: false });
   return ((data ?? []) as Row[]).map(toFound);
 }
+
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 export type Freshness = "fresh" | "aging" | "old" | "never";
 

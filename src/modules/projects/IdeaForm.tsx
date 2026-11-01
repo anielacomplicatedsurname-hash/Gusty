@@ -33,6 +33,8 @@ export function IdeaForm({ lang, enabled, copy }: { lang: string; enabled: boole
         {copy.hint}
       </p>
       <textarea
+        key={state.attempt ?? 0}
+        defaultValue={state.idea ?? ""}
         id="idea"
         name="idea"
         rows={4}

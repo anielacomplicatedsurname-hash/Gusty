@@ -557,6 +557,9 @@ isOneToOne: false
 "is_admin":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            },
+"my_feedback_since":
+{ Args: { "since": string }; Returns: number
+                           },
 "start_project_transfer":
 { Args: { "p_token_hash": string }; Returns: undefined
                            }
