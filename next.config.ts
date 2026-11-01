@@ -1,10 +1,12 @@
 import type { NextConfig } from "next";
 
-// The browser only ever talks to this site: Supabase and Claude are called from the server.
+// The browser only ever talks to this site (Supabase and Claude are called from the server), apart from
+// Cloudflare Turnstile, the bot check first-time visitors get on forms that start a session.
 // Next.js needs inline scripts and styles; development also needs eval for fast refresh.
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
+  "frame-src https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",

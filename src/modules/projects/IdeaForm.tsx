@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, type ReactNode } from "react";
 import { Dictate } from "@/components/Dictate";
 import { createProject, type CreateProjectState } from "./actions";
 import { IDEA_MAX_LENGTH } from "./validation";
@@ -19,7 +19,8 @@ type Copy = {
 };
 
 /** The home page's "What's your idea?" box. Saving creates a private project. */
-export function IdeaForm({ lang, enabled, copy }: { lang: string; enabled: boolean; copy: Copy }) {
+/** `captcha`: the bot check for first-time visitors, decided on the server (see GuestCaptcha). */
+export function IdeaForm({ lang, enabled, copy, captcha }: { lang: string; enabled: boolean; copy: Copy; captcha?: ReactNode }) {
   const [state, action, pending] = useActionState(createProject, {});
   const error = state.error ? copy.errors[state.error] : null;
 
@@ -53,6 +54,7 @@ export function IdeaForm({ lang, enabled, copy }: { lang: string; enabled: boole
           {error}
         </p>
       )}
+      {enabled && captcha && <div className="mt-3">{captcha}</div>}
       <div className="mt-3 flex flex-col gap-3">
         <p id="idea-note" className="flex items-start gap-2 text-sm text-text-muted">
           {!enabled && (

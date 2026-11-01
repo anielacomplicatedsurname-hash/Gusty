@@ -1,7 +1,7 @@
 "use client";
 
 import { Dictate } from "@/components/Dictate";
-import { useActionState } from "react";
+import { useActionState, type ReactNode } from "react";
 import { sendFeedback, type FeedbackState } from "./actions";
 
 type Copy = {
@@ -16,7 +16,7 @@ type Copy = {
 };
 
 /** Three optional questions; any one answer is enough. */
-export function FeedbackForm({ page, copy }: { page: string; copy: Copy }) {
+export function FeedbackForm({ page, copy, captcha }: { page: string; copy: Copy; captcha?: ReactNode }) {
   const [state, action, pending] = useActionState(sendFeedback, {});
 
   if (state.status === "sent") {
@@ -54,6 +54,7 @@ export function FeedbackForm({ page, copy }: { page: string; copy: Copy }) {
           <Dictate target={`feedback-${name}`} />
         </div>
       ))}
+      {captcha}
       {error && (
         <p id="feedback-error" role="alert" className="font-medium text-ink">
           {error}

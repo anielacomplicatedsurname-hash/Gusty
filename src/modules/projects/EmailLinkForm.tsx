@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import { useActionState, useRef, useState, type ReactNode } from "react";
 import { requestEmailLink, type EmailLinkState } from "./actions";
 import { EmailCodeForm } from "./EmailCodeForm";
 
@@ -16,7 +16,7 @@ type Copy = {
 };
 
 /** Email a sign-in link: keeps a guest's projects, or signs someone back in. */
-export function EmailLinkForm({ lang, copy }: { lang: string; copy: Copy }) {
+export function EmailLinkForm({ lang, copy, captcha }: { lang: string; copy: Copy; captcha?: ReactNode }) {
   const [state, action, pending] = useActionState(requestEmailLink, {});
   // "Use a different email" hides the welcome-back choice for the answer it belongs to.
   const [dismissed, setDismissed] = useState<EmailLinkState | null>(null);
@@ -71,6 +71,7 @@ export function EmailLinkForm({ lang, copy }: { lang: string; copy: Copy }) {
           {pending ? copy.sending : copy.submit}
         </button>
       )}
+      {captcha && <div className="sm:basis-full">{captcha}</div>}
       {error && (
         <p id="email-error" role="alert" className="text-sm font-medium text-ink sm:basis-full">
           {error}

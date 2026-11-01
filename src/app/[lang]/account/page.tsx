@@ -1,3 +1,4 @@
+import { GuestCaptcha } from "@/components/GuestCaptcha";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -34,7 +35,7 @@ async function AccountContent({ lang, t }: { lang: string; t: Messages }) {
     return (
       <div className="mt-10 flex flex-col gap-4 rounded-(--radius-card) bg-surface-raised p-6">
         <p>{a.signedOut}</p>
-        <EmailLinkForm lang={lang} copy={{ ...t.emailLink }} />
+        <EmailLinkForm lang={lang} copy={{ ...t.emailLink }} captcha={<Suspense fallback={null}><GuestCaptcha lang={lang} guests /></Suspense>} />
       </div>
     );
   }
@@ -45,7 +46,7 @@ async function AccountContent({ lang, t }: { lang: string; t: Messages }) {
         {user.isAnonymous ? (
           <>
             <p className="text-text-muted">{a.guest}</p>
-            <EmailLinkForm lang={lang} copy={{ ...t.emailLink }} />
+            <EmailLinkForm lang={lang} copy={{ ...t.emailLink }} captcha={<Suspense fallback={null}><GuestCaptcha lang={lang} guests /></Suspense>} />
           </>
         ) : (
           <form action={signOut} className="flex flex-wrap items-center gap-3">

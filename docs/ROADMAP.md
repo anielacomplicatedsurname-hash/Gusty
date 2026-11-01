@@ -29,7 +29,7 @@
 - The real Claude call is not exercised by automated tests (no API key in CI); prompt, schema handling and limits are unit-tested, and readings were verified live by the founder.
 - The Claude API key in Render may expire (the founder's current key lasts one month); when it does, readings fail politely until it is replaced.
 - Readings are limited to 30 per person per day to protect the AI budget. There is no site-wide cap inside Gusty: the Anthropic Console spend limit is the firm ceiling (see `docs/SECURITY.md`).
-- No CAPTCHA yet: needed before public launch to stop mass guest accounts and email requests.
+- Bot protection (Cloudflare Turnstile) is built but only works once the founder adds the keys (`docs/SUPABASE_SETUP.md`). The real widget isn't exercised by automated tests: they use a stand-in, and local Supabase doesn't enforce it.
 - The admin overview shows totals only: no charts, no per-person view (on purpose), days in UTC, costs estimated from token counts.
 - There is one kind of admin (the founder). Roles for institutions come with white-label deployments.
 - Offline, Gusty shows a calm offline page; projects themselves are not available offline (they are never cached on the device, by design).

@@ -71,7 +71,17 @@ pull request that adds them. (When this gets frequent, automate it with the Supa
   plenty for testers; Resend's free plan allows 100 a day.
 
 ## Before inviting real users
-- **Bot protection:** turn on CAPTCHA (Authentication → Attack Protection) to limit fake guest accounts.
+- **Bot protection (Cloudflare Turnstile).** Do these in order, so nothing breaks in between:
+  1. **Cloudflare:** sign up free at dash.cloudflare.com → **Turnstile** → **Add widget**. Name it "Gusty",
+     add the hostnames `heygusty.com` and `www.heygusty.com`, choose **Managed** mode. Cloudflare shows a
+     **Site key** (public) and a **Secret key** (private). Don't paste either into a chat.
+  2. **Render:** Gusty's web service → Environment → add `TURNSTILE_SITE_KEY` = the site key → Save and deploy.
+     After the deploy, first-time visitors get the (usually invisible) check. Nothing is enforced yet.
+  3. **Supabase:** Authentication → Attack Protection → turn on **CAPTCHA protection**, provider
+     **Turnstile by Cloudflare**, paste the **secret key** there → Save. From now on new guest sessions and
+     sign-in emails need the check.
+  4. **Check:** in a private browser window, save an idea on heygusty.com. It should work as before.
+  If something goes wrong, turn CAPTCHA protection off in Supabase (step 3): everything works again at once.
 - **Backups:** the Pro plan adds daily backups.
 
 ## Local development

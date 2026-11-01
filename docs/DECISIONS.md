@@ -597,7 +597,22 @@ Newsreader at a reading size (`.type-heading`), project, step and application ti
 size, and inner pages get more space around and between sections. Sub-headings, forms and buttons stay in
 Google Sans Flex, so the serif marks where a section starts and the sans does the work.
 
-**Fix (same day):** the site's Permissions-Policy header blocked the microphone (`microphone=()`), so real
+## 2026-11-01 — Dictation fix: allow the microphone
+The site's Permissions-Policy header blocked the microphone (`microphone=()`), so real
 dictation could never start. It now allows it for Gusty's own pages only (`microphone=(self)`); the browser
 still asks the person before the first use, and camera and location stay blocked. An e2e test now checks
 the header, since the stand-in recogniser in the other tests doesn't touch the real microphone.
+## 2026-11-01 — Bot protection with Cloudflare Turnstile
+**Why:** each guest account gets its own free AI allowance, so a bot making many guest accounts (or sending
+many sign-in emails) costs money. Supabase Auth checks a CAPTCHA token on exactly those requests.
+
+**Choice:** Cloudflare Turnstile, the founder's choice. It's free and usually invisible: no picture puzzles,
+which matter for a neuroinclusive audience. When Cloudflare isn't sure, it shows a single box to tick.
+
+**Who sees it:** only people who'd start a new session: first-time visitors on the idea box, feedback and
+PDF import, and anyone asking for a sign-in email (guests included). People with a session never load it.
+A short line under the form says Cloudflare checks the browser; the privacy notice lists Cloudflare.
+
+**Switching it on:** the code reads `TURNSTILE_SITE_KEY` (Render) at request time; enforcement is a switch in
+Supabase with the secret key, so it can be turned off at once if anything goes wrong. With no key, nothing
+loads. The CSP allows `challenges.cloudflare.com` for the script and its frame.

@@ -1,9 +1,10 @@
 "use server";
 
+import { captchaTokenFrom, isCaptchaError } from "@/lib/captcha";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { cleanAnswer, cleanPage } from "./validation";
 
-export type FeedbackState = { status?: "sent"; error?: "empty" | "failed" };
+export type FeedbackState = { status?: "sent"; error?: "empty" | "failed" | "captcha" };
 
 /**
  * Saves feedback. Visitors without a session get a private guest session first (as when saving an
@@ -18,7 +19,10 @@ export async function sendFeedback(_prev: FeedbackState, formData: FormData): Pr
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { error: "failed" };
   const { data } = await supabase.auth.getUser();
-  if (!data.user && (await supabase.auth.signInAnonymously()).error) return { error: "failed" };
+  if (!data.user) {
+    const { error } = await supabase.auth.signInAnonymously({ options: { captchaToken: captchaTokenFrom(formData) } });
+    if (error) return { error: isCaptchaError(error) ? "captcha" : "failed" };
+  }
 
   const { error } = await supabase
     .from("feedback")
