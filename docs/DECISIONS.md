@@ -596,3 +596,8 @@ The home page's type and spacing now carry through the app. Every section and ca
 Newsreader at a reading size (`.type-heading`), project, step and application titles use the large display
 size, and inner pages get more space around and between sections. Sub-headings, forms and buttons stay in
 Google Sans Flex, so the serif marks where a section starts and the sans does the work.
+
+**Fix (same day):** the site's Permissions-Policy header blocked the microphone (`microphone=()`), so real
+dictation could never start. It now allows it for Gusty's own pages only (`microphone=(self)`); the browser
+still asks the person before the first use, and camera and location stay blocked. An e2e test now checks
+the header, since the stand-in recogniser in the other tests doesn't touch the real microphone.
