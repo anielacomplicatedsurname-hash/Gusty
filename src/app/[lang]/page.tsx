@@ -35,8 +35,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             <Suspense fallback={null}>
               <WelcomeBack lang={lang} t={t} />
             </Suspense>
-            {/* Two balanced lines of thought, so no word is left alone on a line. */}
-            <h1 className="type-display text-[3.25rem] sm:text-7xl lg:text-[5.5rem]">
+            <h1 className="type-display text-[3.75rem] sm:text-8xl lg:text-[6.5rem]">
               <span className="block text-balance">{t.home.headline}</span>{" "}
               <em className="block text-balance italic">{t.home.headlineItalic}</em>
             </h1>
@@ -80,19 +79,15 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             <BrandSymbol name="path" size={260} />
           </div>
           <div>
-            <p className="type-label mb-4 text-text-muted">{t.home.stepsLabel}</p>
-            {/* What happens, in order: numbered, not arrows, so nothing here looks clickable. */}
-            <ol className="border-b border-border">
-              {t.home.steps.map((step, i) => (
-                <li key={step.title} className="grid grid-cols-[2.5rem_1fr] border-t border-border py-6">
-                  <span className="type-display text-2xl text-text-muted" aria-hidden="true">{i + 1}</span>
-                  <div>
-                    <h3 className="text-xl font-semibold">{step.title}</h3>
-                    <p className="mt-1 text-text-muted">{step.body}</p>
-                  </div>
+            {/* What happens, in plain rows: no numbers or arrows, so nothing here looks clickable. */}
+            <ul className="border-b border-border">
+              {t.home.steps.map((step) => (
+                <li key={step.title} className="border-t border-border py-6">
+                  <h3 className="text-xl font-semibold">{step.title}</h3>
+                  <p className="mt-1 text-text-muted">{step.body}</p>
                 </li>
               ))}
-            </ol>
+            </ul>
             <p className="mt-6 text-text-muted">
               {t.home.howMore}{" "}
               <Link href={`/${lang}/projects`} className="font-medium text-ink underline underline-offset-4">
@@ -110,10 +105,12 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       >
         <div className="mx-auto max-w-(--content-max) px-4 py-24 sm:px-6 md:py-36">
           <p className="type-label text-text-muted">{t.home.featuresLabel}</p>
-          <h2 id="features" className="type-display mt-3 max-w-4xl text-5xl sm:text-6xl lg:text-7xl">
-            {t.home.featuresTitle}
+          {/* Two balanced halves, so no word is left alone on a line. */}
+          <h2 id="features" className="type-display mt-3 text-5xl sm:text-6xl lg:text-7xl">
+            <span className="block text-balance">{t.home.featuresTitle}</span>{" "}
+            <em className="block text-balance italic">{t.home.featuresTitleItalic}</em>
           </h2>
-          <p className="mt-6 max-w-2xl text-lg text-text-muted sm:text-xl">{t.home.featuresBody}</p>
+          <p className="mt-6 max-w-2xl text-balance text-lg text-text-muted sm:text-xl">{t.home.featuresBody}</p>
           <ul className="mt-12 grid gap-5 md:mt-20 md:grid-cols-3 md:gap-7">
             {t.home.features.map((f, i) => (
               <li key={f.title} className="flex flex-col rounded-(--radius-card) border border-border bg-surface-raised/85 p-7 md:min-h-72 md:p-9">

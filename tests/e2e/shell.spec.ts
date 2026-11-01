@@ -8,7 +8,7 @@ test("the root redirects to the default locale", async ({ page }) => {
 
 test("home shows the brand headline and the idea box", async ({ page }) => {
   await page.goto("/en");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(/designed for minds that wander and ideas that want to fly/i);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText(/good ideas deserve to move/i);
   await expect(page.getByLabel("What's your idea?")).toBeVisible();
   // Without a database the button must not pretend to work.
   const button = page.getByRole("button", { name: /start with my idea/i });

@@ -32,7 +32,7 @@ original reference sheet:
 
 | Role | Font | Usage |
 |---|---|---|
-| Display serif | **Newsreader** (variable, optical sizes), regular, tight tracking (`.type-display`). Brand lines set their second half in italic ("Designed for minds that wander / *and ideas that want to fly*", "Big possibilities. *Small steps.*") | Page titles and key brand moments only |
+| Display serif | **Newsreader** (variable, optical sizes), regular, tight tracking (`.type-display`). Brand lines set their second half in italic ("Good ideas / *deserve to move.*", "Big possibilities. *Small steps.*") | Page titles and key brand moments only |
 | UI sans | **Google Sans Flex** | Everything functional: body, forms, navigation |
 | Label | Google Sans Flex, medium, plain sentence case (`.type-label`) | Section labels, metadata |
 
@@ -43,8 +43,8 @@ Arabic or Hebrew: when such a language is added, choose fallbacks then.
 Generous space: big sections get 6–9rem of padding top and bottom, each section does one job. Section
 headings follow one pattern: a small label, a large serif title, then a short muted line. Cards keep their
 rounded corners. Buttons stay the plain pills (`.btn-primary`, `.btn-secondary`). A soft Signal glow
-(radial gradient from the bottom) can mark one feature section per page. Lists of instructions are
-numbered, never arrowed, so they don't look clickable.
+(radial gradient from the bottom) can mark one feature section per page. Lists that explain (not
+navigate) are plain ruled rows, with no numbers or arrows, so they don't look clickable.
 
 ## Colour
 Functional status colours (not brand colours): small dots for Explore's freshness lights, always shown with a

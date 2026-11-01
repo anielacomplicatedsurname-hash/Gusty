@@ -17,15 +17,14 @@
     "connections": "Connections"
   },
   "home": {
-    "headline": "Designed for minds that wander",
-    "headlineItalic": "and ideas that want to fly",
+    "headline": "Good ideas",
+    "headlineItalic": "deserve to move.",
     "lead": "Tell Gusty about your idea. Gusty helps you understand it, shape it and take the next small step towards the funding, people and tools that make it happen.",
     "ideaLabel": "What's your idea?",
     "ideaHint": "Write it however it comes to you. A few words is enough.",
     "ideaSubmit": "Start with my idea",
     "ideaPdf": "Bring in a PDF",
     "howTitle": "How it works",
-    "stepsLabel": "Three small steps",
     "howMore": "Everything you start lives in",
     "howLink": "My Projects",
     "steps": [
@@ -55,7 +54,8 @@
     "sloganBig": "Big possibilities.",
     "sloganSmall": "Small steps.",
     "featuresLabel": "From idea to application",
-    "featuresTitle": "Everything your idea needs, in one calm place",
+    "featuresTitle": "Designed for minds that wander",
+    "featuresTitleItalic": "and ideas that want to fly",
     "featuresBody": "Your story, the funding that could fit, and answers in the funder's own language.",
     "features": [
       {
