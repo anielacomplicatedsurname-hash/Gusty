@@ -1429,7 +1429,7 @@
     "chars": "{n} characters",
     "charsOf": "{n} of {max} characters",
     "charsOver": "{n} of {max} characters: {over} over the limit",
-    "brackets": "Fill in the parts in [brackets] before you send it.",
+    "brackets": "Parts in [brackets] are highlighted: fill them in before you send it.",
     "download": "Download all my answers",
     "downloadHint": "A plain text file you can paste into the funder's form. Nothing is sent to the funder.",
     "fileHeading": "Answers for: {title}",
@@ -1487,7 +1487,18 @@
     "theirWordsIntro": "Words and phrases in this answer that come from the funder's own papers:",
     "theirWordsNone": "None of the funder's words are in this answer yet.",
     "demoDraftFunder": "(Demo: Gusty's draft in the funder's language will go here.) Our project is about reducing loneliness for [who it's for]. Last summer [what happened], and [how many people] took part.",
-    "demoFunderWord": "reducing loneliness"
+    "demoFunderWord": "reducing loneliness",
+    "improve": "Improve it with Gusty",
+    "improving": "Gusty is improving your answer…",
+    "improveHint": "Keeps what you wrote and makes it answer the question and speak to this funder.",
+    "improved": "Gusty's improved version of your answer. Change anything: it becomes yours.",
+    "undoImprove": "Undo",
+    "demoImprovePrefix": "(Demo: Gusty would improve your answer here, in the funder's language. Your words are kept below.)",
+    "fillInTitle": "To fill in",
+    "fillInIntro": "Everything left in [brackets] across your answers, in one place. Type what goes there and it goes straight into your answer.",
+    "fillInQuestion": "Question {n}",
+    "fillInLabel": "What goes in {placeholder}",
+    "fillInButton": "Fill in"
   },
   "account": {
     "title": "Your account",

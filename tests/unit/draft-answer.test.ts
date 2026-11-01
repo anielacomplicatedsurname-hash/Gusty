@@ -56,3 +56,12 @@ describe("drafting answers", () => {
       .toEqual(["reducing social isolation", "participants"]);
   });
 });
+
+describe("parts still to fill in", () => {
+  it("finds every [placeholder], in order, but not empty or runaway brackets", async () => {
+    const { bracketsIn, improvePrompt } = await import("@/ai/tasks/draft-answer");
+    expect(bracketsIn("We started [when] with [how many people] and [] then [\nbroken")).toEqual(["[when]", "[how many people]"]);
+    expect(improvePrompt("funder", "en")).toContain("It must still be recognisably their answer.");
+    expect(improvePrompt("funder", "en")).toContain("Never invent achievements");
+  });
+});

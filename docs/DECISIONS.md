@@ -496,3 +496,15 @@ either. "Big possibilities. Small steps." now uses the same type as the headline
 hero keeps one message: "Good ideas deserve to move.".
 
 **One less font:** there's no hand font any more. Gusty uses just Google Sans Flex and Instrument Serif.
+
+## 2026-11-01 — Answers: [brackets] in pale yellow, one list to fill in, and "Improve it with Gusty"
+- **Highlighting:** anything still [in brackets] is highlighted in a very pale yellow (`--fill-in`, ink on it
+  passes AA) right inside the answer box. The highlight sits behind a transparent textarea and scrolls with
+  it, so typing works as normal.
+- **"To fill in":** a list at the top of Answers gathers every [bracket] from every answer, with one small
+  box each. A filled value goes straight into the answer and is saved. Several quick fills in a row don't
+  clash.
+- **"Improve it with Gusty":** for answers the person wrote themselves. Gusty keeps what they wrote and
+  makes it answer the question and speak to this funder (or to their own voice, with "Sound more like
+  me"), within the limit and without inventing anything. Undo puts their version back. It shares the
+  daily allowance with drafts.

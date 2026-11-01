@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useId, useState, useTransition } from "react";
-import { countWords, parseLimit, type Gap } from "@/ai/tasks/draft-answer";
+import { useId, useRef, useState, useTransition } from "react";
+import { bracketsIn, countWords, parseLimit, type Gap } from "@/ai/tasks/draft-answer";
 import { fill } from "@/i18n/format";
 import type en from "@/i18n/messages/en.json";
-import { draftAnswer, saveAnswer } from "./answers";
+import { draftAnswer, improveAnswer, saveAnswer } from "./answers";
 import type { Answer } from "./data";
 import type { Question } from "./questions";
 
@@ -18,6 +18,15 @@ export function AnswersSection({ appId, title, questions, answers, demo, lang, c
   const byKey = new Map(answers.map((a) => [a.key, a]));
   const written = questions.filter((q) => byKey.get(q.key)?.answer);
   // One question open at a time: the first without an answer, so the next thing to do is right there.
+  // Filling a [placeholder] in from the list saves the answer; its card then starts again from the saved text.
+  const [filled, setFilled] = useState<Record<string, { n: number; text: string; base?: string }>>({});
+  const onFilled = (key: string, text: string) =>
+    setFilled((f) => ({ ...f, [key]: { n: (f[key]?.n ?? 0) + 1, text, base: byKey.get(key)?.updatedAt } }));
+  // Until the page catches up after a fill, the list works from the newest text, so quick fills don't clash.
+  const latest = (key: string) => {
+    const f = filled[key];
+    return f && f.base === byKey.get(key)?.updatedAt ? f.text : byKey.get(key)?.answer ?? "";
+  };
   const [openKey, setOpenKey] = useState<string | null>(() => (questions.find((q) => !byKey.get(q.key)?.answer) ?? questions[0])?.key ?? null);
 
   const download = () => {
@@ -43,10 +52,11 @@ export function AnswersSection({ appId, title, questions, answers, demo, lang, c
         <p className="text-text-muted">{copy.answersNone}</p>
       ) : (
         <>
+          <FillIn appId={appId} questions={questions} answerOf={latest} onFilled={onFilled} copy={copy} />
           <ol className="flex flex-col gap-4">
             {questions.map((q, i) => (
               <li key={q.key}>
-                <AnswerCard number={i + 1} appId={appId} question={q} saved={byKey.get(q.key)} demo={demo} lang={lang} copy={copy}
+                <AnswerCard key={filled[q.key]?.n ?? 0} filledText={filled[q.key]?.text} number={i + 1} appId={appId} question={q} saved={byKey.get(q.key)} demo={demo} lang={lang} copy={copy}
                   expanded={openKey === q.key} onToggle={() => setOpenKey(openKey === q.key ? null : q.key)} />
               </li>
             ))}
@@ -63,14 +73,14 @@ export function AnswersSection({ appId, title, questions, answers, demo, lang, c
   );
 }
 
-function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded, onToggle }: {
+function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded, onToggle, filledText }: {
   number: number; appId: string; question: Question; saved?: Answer; demo: boolean; lang: string; copy: Copy;
-  expanded: boolean; onToggle: () => void;
+  expanded: boolean; onToggle: () => void; filledText?: string;
 }) {
   const id = useId();
   const router = useRouter();
-  const [text, setText] = useState(saved?.answer ?? "");
-  const [source, setSource] = useState<"ai" | "user">(saved?.source ?? "user");
+  const [text, setText] = useState(filledText ?? saved?.answer ?? "");
+  const [source, setSource] = useState<"ai" | "user">(filledText !== undefined ? "user" : saved?.source ?? "user");
   const [gaps, setGaps] = useState<Gap[]>(saved?.gaps ?? []);
   const [style, setStyle] = useState<"funder" | "mine">(saved?.style ?? "funder");
   const [funderWords, setFunderWords] = useState<string[]>(saved?.funderWords ?? []);
@@ -81,6 +91,8 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded
   const [error, setError] = useState<string | null>(null);
   const [drafting, startDraft] = useTransition();
   const [saving, startSave] = useTransition();
+  const [improving, startImprove] = useTransition();
+  const [before, setBefore] = useState<string | null>(null);
 
   const limit = parseLimit(question.limit);
   const words = countWords(text);
@@ -106,6 +118,26 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded
       setOpen(true);
       router.refresh();
     });
+  const improve = () =>
+    startImprove(async () => {
+      setError(null);
+      const previous = text;
+      const result = await improveAnswer(appId, question.key, text, lang, style);
+      if (!result.ok) return setError(copy.draftErrors[result.error]);
+      setBefore(previous);
+      setText(result.answer);
+      setGaps(result.gaps);
+      setFunderWords(result.funderWords);
+      setSource("ai");
+      setDirty(false);
+      router.refresh();
+    });
+  const undoImprove = () => {
+    if (before === null) return;
+    setText(before);
+    setBefore(null);
+    setDirty(true);
+  };
   const save = () =>
     startSave(async () => {
       setError(null);
@@ -133,10 +165,10 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded
       <div id={`${id}-body`} hidden={!expanded} className="flex flex-col gap-3">
       {question.help && <p className="text-sm text-text-muted">{question.help}</p>}
 
-      {drafting && (
+      {(drafting || improving) && (
         <p role="status" className="flex items-center gap-3 text-text-muted">
           <span aria-hidden="true" className="inline-block h-3 w-3 shrink-0 rounded-full bg-lilac motion-safe:animate-pulse" />
-          {copy.drafting}
+          {improving ? copy.improving : copy.drafting}
         </p>
       )}
 
@@ -152,14 +184,13 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded
         <>
           {source === "ai" && demo && <p className="rounded-xl bg-sky p-3 text-sm text-ink">{copy.demoDraftNotice}</p>}
           <label htmlFor={`${id}-a`} className="sr-only">{fill(copy.answerLabel, { question: question.question })}</label>
-          <textarea id={`${id}-a`} value={text} rows={8} disabled={drafting} aria-describedby={`${id}-count`}
-            onChange={(e) => { setText(e.target.value); setDirty(true); setCopied(false); }}
-            className="w-full rounded-xl border border-stone bg-paper p-3 leading-relaxed" />
+          <HighlightedTextarea id={`${id}-a`} value={text} disabled={drafting || improving} describedBy={`${id}-count`}
+            onChange={(v) => { setText(v); setDirty(true); setCopied(false); }} />
           <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
             <p id={`${id}-count`} className={over ? "font-semibold" : "text-text-muted"}>{counter}</p>
-            <p className="text-text-muted">{dirty ? copy.unsaved : source === "ai" ? copy.gustysDraft : text ? copy.yourAnswer : ""}</p>
+            <p className="text-text-muted">{dirty ? copy.unsaved : before !== null ? copy.improved : source === "ai" ? copy.gustysDraft : text ? copy.yourAnswer : ""}</p>
           </div>
-          {/\[[^\]]+\]/.test(text) && <p className="rounded-xl bg-oat p-3 text-sm text-ink">{copy.brackets}</p>}
+          {bracketsIn(text).length > 0 && <p className="rounded-xl bg-fill-in p-3 text-sm text-ink">{copy.brackets}</p>}
           {gaps.length > 0 && (
             <div>
               <h4 className="text-sm font-semibold">{copy.gapsTitle}</h4>
@@ -185,11 +216,21 @@ function AnswerCard({ number, appId, question, saved, demo, lang, copy, expanded
               onClick={() => void navigator.clipboard?.writeText(text).then(() => setCopied(true))}>
               {copied ? copy.copied : copy.copy}
             </button>
-            <button type="button" className="text-sm font-medium underline underline-offset-4" disabled={drafting || saving}
+            {text.trim() && (
+              <button type="button" className="text-sm font-medium underline underline-offset-4" disabled={drafting || saving || improving}
+                aria-describedby={`${id}-improve`} onClick={improve}>
+                {copy.improve}
+              </button>
+            )}
+            {before !== null && (
+              <button type="button" className="text-sm font-medium underline underline-offset-4" onClick={undoImprove}>{copy.undoImprove}</button>
+            )}
+            <button type="button" className="text-sm font-medium underline underline-offset-4" disabled={drafting || saving || improving}
               aria-describedby={`${id}-again`} onClick={draft}>
               {text ? copy.draftAgain : copy.draft}
             </button>
             <span id={`${id}-again`} className="sr-only">{copy.draftAgainHint}</span>
+            <span id={`${id}-improve`} className="sr-only">{copy.improveHint}</span>
           </div>
           <StyleSwitch id={`${id}-style`} mine={style === "mine"} onChange={(mine) => setStyle(mine ? "mine" : "funder")} copy={copy} />
         </>
@@ -235,5 +276,90 @@ function TheirWords({ text, words, copy }: { text: string; words: string[]; copy
           i % 2 === 1 ? <mark key={i} className="rounded bg-signal px-0.5 text-ink">{part}</mark> : <span key={i}>{part}</span>)}
       </p>
     </div>
+  );
+}
+
+/**
+ * The answer box, with anything still [in brackets] highlighted in pale yellow. The highlight sits behind a
+ * transparent textarea and scrolls with it, so typing works exactly as normal.
+ */
+function HighlightedTextarea({ id, value, disabled, describedBy, onChange }: {
+  id: string; value: string; disabled: boolean; describedBy: string; onChange: (value: string) => void;
+}) {
+  const back = useRef<HTMLDivElement>(null);
+  const parts = value.split(/(\[[^\]\n]{1,160}\])/g);
+  const shared = "whitespace-pre-wrap break-words p-3 leading-relaxed [scrollbar-gutter:stable]";
+  return (
+    <div className="relative rounded-xl bg-paper">
+      <div ref={back} aria-hidden="true" className={`pointer-events-none absolute inset-0 overflow-hidden rounded-xl border border-transparent text-transparent ${shared}`}>
+        {parts.map((part, i) => (i % 2 === 1 ? <mark key={i} className="rounded-sm bg-fill-in text-transparent">{part}</mark> : <span key={i}>{part}</span>))}
+        {"\n"}
+      </div>
+      <textarea id={id} value={value} rows={8} disabled={disabled} aria-describedby={describedBy}
+        onChange={(e) => onChange(e.target.value)}
+        onScroll={(e) => { if (back.current) back.current.scrollTop = e.currentTarget.scrollTop; }}
+        className={`relative block w-full resize-y rounded-xl border border-stone bg-transparent ${shared}`} />
+    </div>
+  );
+}
+
+/** Every [placeholder] across the saved answers, in one place, each filled in with one small box. */
+function FillIn({ appId, questions, answerOf, onFilled, copy }: {
+  appId: string; questions: Question[]; answerOf: (key: string) => string; onFilled: (key: string, text: string) => void; copy: Copy;
+}) {
+  const items = questions.flatMap((q, i) =>
+    bracketsIn(answerOf(q.key)).map((placeholder, n) => ({ q, number: i + 1, placeholder, n })));
+  if (items.length === 0) return null;
+  return (
+    <section aria-labelledby="fill-in-title" className="flex flex-col gap-3 rounded-xl bg-fill-in p-4 text-ink">
+      <div>
+        <h3 id="fill-in-title" className="font-semibold">{copy.fillInTitle} ({items.length})</h3>
+        <p className="text-sm">{copy.fillInIntro}</p>
+      </div>
+      <ul className="flex flex-col gap-3">
+        {items.map((item) => (
+          <li key={`${item.q.key}-${item.n}`}>
+            <FillInItem appId={appId} questionKey={item.q.key} number={item.number} placeholder={item.placeholder}
+              answer={answerOf(item.q.key)} onFilled={(text) => onFilled(item.q.key, text)} copy={copy} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function FillInItem({ appId, questionKey, number, placeholder, answer, onFilled, copy }: {
+  appId: string; questionKey: string; number: number; placeholder: string; answer: string; onFilled: (text: string) => void; copy: Copy;
+}) {
+  const id = useId();
+  const router = useRouter();
+  const [value, setValue] = useState("");
+  const [pending, start] = useTransition();
+  const [failed, setFailed] = useState(false);
+  return (
+    <form className="flex flex-col gap-1" onSubmit={(e) => {
+      e.preventDefault();
+      if (!value.trim()) return;
+      start(async () => {
+        const next = answer.replace(placeholder, value.trim());
+        const { ok } = await saveAnswer(appId, questionKey, next);
+        if (!ok) return setFailed(true);
+        setValue("");
+        onFilled(next);
+        router.refresh();
+      });
+    }}>
+      <label htmlFor={id} className="text-sm">
+        <span className="font-semibold">{fill(copy.fillInQuestion, { n: String(number) })}:</span>{" "}
+        <span className="sr-only">{fill(copy.fillInLabel, { placeholder })}</span>
+        <span aria-hidden="true">{placeholder}</span>
+      </label>
+      <div className="flex flex-wrap gap-2">
+        <input id={id} value={value} onChange={(e) => setValue(e.target.value)} maxLength={500}
+          className="h-11 min-w-0 flex-1 rounded-xl border border-stone bg-paper px-3" />
+        <button type="submit" className="btn-secondary min-h-11" disabled={pending || !value.trim()}>{copy.fillInButton}</button>
+      </div>
+      {failed && <p role="alert" className="text-sm font-medium">{copy.saveError}</p>}
+    </form>
   );
 }
