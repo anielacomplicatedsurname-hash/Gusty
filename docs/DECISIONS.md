@@ -634,3 +634,8 @@ The founder found the one tall card too long and busy, with empty space to the r
 - The idea box is always the same element. The returning panel streams in and only hides it with CSS, so
   text typed in the first moment is never lost. Focusing the box keeps it open.
 - On phones the same panels stack.
+
+**Fix (1 November):** after switching it on, the founder's first test got "couldn't finish its quick check".
+One likely cause: pressing the button before Cloudflare's check has finished, which sends the form without a
+token. The form now holds the submit until the token arrives (at most 8 seconds), then sends it. If
+Cloudflare can't load or reports an error, the form isn't held.
