@@ -4,7 +4,7 @@ Things only Aniela can do (accounts, keys, payments, decisions). Claude keeps th
 tick items off by asking Claude, or edit the file.
 
 ## Before public launch
-- [ ] **Switch on bot protection (Cloudflare Turnstile, free plan).** No card needed, no DNS changes.
+- [x] **Switch on bot protection (Cloudflare Turnstile, free plan).** (done 1 November 2026: tested in a private window, saving an idea works) No card needed, no DNS changes.
   1. Sign up at dash.cloudflare.com → **Turnstile** → **Add widget**: name "Gusty", hostnames
      `heygusty.com` and `www.heygusty.com`, **Managed** mode.
   2. **Render** → Gusty's service → Environment → add `TURNSTILE_SITE_KEY` = the **site key** → Save and deploy.
