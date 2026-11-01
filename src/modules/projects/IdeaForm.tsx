@@ -18,8 +18,9 @@ type Copy = {
   errors: Record<NonNullable<CreateProjectState["error"]>, string>;
 };
 
-/** The home page's "What's your idea?" box. Saving creates a private project. */
-/** `captcha`: the bot check for first-time visitors, decided on the server (see GuestCaptcha). */
+/**
+ * The home page's "What's your idea?" box. Saving creates a private project. The page draws the card
+ * around it (shared with "Pick up where you left off"). `captcha`: the bot check for first-time visitors, decided on the server (see GuestCaptcha). */
 export function IdeaForm({ lang, enabled, copy, captcha }: { lang: string; enabled: boolean; copy: Copy; captcha?: ReactNode }) {
   const [state, action, pending] = useActionState(createProject, {});
   const error = state.error ? copy.errors[state.error] : null;
@@ -27,7 +28,7 @@ export function IdeaForm({ lang, enabled, copy, captcha }: { lang: string; enabl
   return (
     <form
       action={action}
-      className="mt-8 max-w-xl rounded-(--radius-card) border border-border bg-surface-raised p-4 shadow-[0_1px_0_rgba(17,17,17,0.04)] sm:p-5"
+      className="p-5 sm:p-6"
     >
       <input type="hidden" name="lang" value={lang} />
       <label htmlFor="idea" className="block text-lg font-semibold">
