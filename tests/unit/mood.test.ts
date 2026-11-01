@@ -12,10 +12,17 @@ describe("choosing a step by how you feel", () => {
   });
 
   it("keeps a kind Gusty gave the step, and admits when nothing fits", () => {
-    expect(moodOf({ title: "Write a list", mood: "making" })).toBe("making");
+    expect(moodOf({ title: "Prepare the hall for Saturday", mood: "making" })).toBe("making");
     expect(moodOf({ title: "Breathe" })).toBeNull();
     expect(moodOf({ title: "Ask for a task" })).toBe("social");
     expect(isMood("writing")).toBe(true);
     expect(isMood("dancing")).toBe(false);
+  });
+
+  it("lets a step's own words win when its saved kind clearly doesn't fit", () => {
+    // The two the founder spotted: writing an invite isn't talking to people; sketching a route is planning.
+    expect(moodOf({ title: "Write a short, friendly invite for the first ride", detail: "Say it is a slow, social ride", mood: "social" })).toBe("writing");
+    expect(moodOf({ title: "Sketch a gentle one-hour route with a coffee stop", detail: "Using a map you like, trace a slow, green loop", mood: "making" })).toBe("planning");
+    expect(moodOf({ title: "Sketch a poster for the first ride" })).toBe("making");
   });
 });

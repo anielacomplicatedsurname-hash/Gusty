@@ -10,17 +10,11 @@ export type Evidence = { id: string; kind: EvidenceKind; text: string; url: stri
 export type Source = {
   id: string; title: string; publisher: string; year: string; url: string; finding: string; relevance: string; foundAt: string;
 };
-export type Voice = { description: string; source: "ai" | "user"; updatedAt: string };
 export type Bank = {
   evidence: Evidence[];
   research: Source[];
-  voice: Voice | null;
   /** How the research search stands: running now, the last one failed, or today's allowance is used. */
   researchState: { running: boolean; failed: boolean; limit: "project" | "person" | null; left: number; max: number; demo: boolean };
-  /** The voice description is a labelled demo example. */
-  voiceDemo: boolean;
-  /** Words the person has written themselves, so Gusty knows if it can describe their voice yet. */
-  ownWords: number;
 };
 
 /** The person's own writing about the project: never Gusty's drafts, tidied copies or helped answers. */
@@ -47,19 +41,15 @@ export async function getBank(projectId: string): Promise<Bank | null> {
   const supabase = await createSupabaseServerClient();
   if (!supabase) return null;
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const [evidence, voice, runs, mine, lastRun, lastVoice, writing] = await Promise.all([
+  const [evidence, runs, mine, lastRun] = await Promise.all([
     supabase.from("project_evidence")
       .select("id, origin, kind, text, title, publisher, year, relevance, url, found_at")
       .eq("project_id", projectId).order("position").order("created_at"),
-    supabase.from("project_voice").select("description, source, updated_at").eq("project_id", projectId).maybeSingle(),
     supabase.from("research_runs").select("status, created_at").eq("project_id", projectId).gte("created_at", since)
       .order("created_at", { ascending: false }),
     supabase.from("research_runs").select("id", { count: "exact", head: true }).neq("status", "failed").gte("created_at", since),
     supabase.from("ai_runs").select("status").eq("project_id", projectId).eq("task", "research")
       .order("created_at", { ascending: false }).limit(1),
-    supabase.from("ai_runs").select("status").eq("project_id", projectId).eq("task", "voice")
-      .order("created_at", { ascending: false }).limit(1),
-    loadOwnWriting(supabase, projectId),
   ]);
   if (evidence.error) return null;
   const rows = evidence.data ?? [];
@@ -73,7 +63,6 @@ export async function getBank(projectId: string): Promise<Bank | null> {
       id: r.id, title: r.title, publisher: r.publisher, year: r.year, url: r.url, finding: r.text, relevance: r.relevance,
       foundAt: r.found_at ?? "",
     })),
-    voice: voice.data ? { description: voice.data.description, source: voice.data.source as Voice["source"], updatedAt: voice.data.updated_at } : null,
     researchState: {
       running,
       failed: !running && latest?.status === "failed",
@@ -82,7 +71,5 @@ export async function getBank(projectId: string): Promise<Bank | null> {
       max: RESEARCH_PER_PERSON_PER_DAY,
       demo: lastRun.data?.[0]?.status === "demo",
     },
-    voiceDemo: lastVoice.data?.[0]?.status === "demo",
-    ownWords: writing.join(" ").split(/\s+/).filter(Boolean).length,
   };
 }

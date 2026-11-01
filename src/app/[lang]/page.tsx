@@ -10,15 +10,6 @@ import { SupportCard } from "@/modules/support/SupportCard";
 
 const stepSymbols: SymbolName[] = ["sprout", "spark", "path"];
 
-function HandUnderline({ className = "" }: { className?: string }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={`block h-[5px] w-16 -rotate-3 rounded-full bg-ink ${className}`}
-    />
-  );
-}
-
 /** A hand-drawn marker swipe behind a few words, in Signal. Decorative: hidden from screen readers. */
 function MarkerSwipe() {
   return (
@@ -105,8 +96,13 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       )}
 
       <section className="mx-auto max-w-(--content-max) px-4 py-16 text-center sm:px-6">
-        <p className="type-display text-5xl sm:text-6xl">{t.home.closing}</p>
-        <HandUnderline className="mx-auto mt-4" />
+        <p className="type-display text-5xl sm:text-6xl">
+          {t.home.closingStart}{" "}
+          <span className="relative inline-block whitespace-nowrap">
+            <MarkerSwipe />
+            <span className="relative">{t.home.closingEnd}</span>
+          </span>
+        </p>
       </section>
     </>
   );

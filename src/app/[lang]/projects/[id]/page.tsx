@@ -30,13 +30,11 @@ import { isMood, moodOf, MOODS, type Mood } from "@/modules/steps/mood";
 import { SuggestMoodStep } from "@/modules/steps/SuggestMoodStep";
 import { getSuggestions } from "@/modules/idea-loop/data";
 import { Suggestions } from "@/modules/idea-loop/Suggestions";
-import { MIN_VOICE_WORDS } from "@/ai/tasks/voice";
 import { getBank } from "@/modules/bank/data";
 import { listApplications } from "@/modules/applications/data";
 import { PrepareButton, StartApplication } from "@/modules/applications/StartApplication";
 import { ExperienceSection } from "@/modules/bank/ExperienceSection";
 import { ResearchSection } from "@/modules/bank/ResearchSection";
-import { VoiceSection } from "@/modules/bank/VoiceSection";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getMessages();
@@ -106,7 +104,6 @@ async function ProjectContent({
         </p>
       </header>
 
-      {overview && <ProgressChips overview={overview} projectPath={projectPath} t={t} />}
       {overview && (
         <NextCard overview={overview} projectId={project.id} projectPath={projectPath} lang={lang} t={t}
           mood={isMood(query.mood) ? query.mood : null} tab={tab} />
@@ -221,31 +218,6 @@ async function SummaryBlock({ projectId, lang, t, original, reading }: {
   );
 }
 
-/** One line of where the project is: its stage, how ready it is for funding, and what's been saved. */
-function ProgressChips({ overview, projectPath, t }: { overview: ProjectOverview; projectPath: string; t: Messages }) {
-  const h = t.projectHome;
-  const chip = "inline-flex min-h-9 items-center rounded-full bg-oat px-3 text-sm text-ink hover:bg-oat/70";
-  return (
-    <ul className="-mt-2 flex flex-wrap gap-2" aria-label={t.readiness.progressLabel}>
-      {overview.stage && (
-        <li><Link href={`${projectPath}?tab=plan`} className={chip}>{fill(h.stageChip, { n: String(overview.stage.number), title: overview.stage.title })}</Link></li>
-      )}
-      <li><Link href={`${projectPath}?tab=funding`} className={chip}>{fill(h.readyChip, { n: String(overview.ready.done), total: String(overview.ready.total) })}</Link></li>
-      {overview.suggestions > 0 && (
-        <li><Link href={`${projectPath}?tab=idea#suggestions-title`} className={chip}>
-          {overview.suggestions === 1 ? t.ideaLoop.chip : fill(t.ideaLoop.chipMany, { n: String(overview.suggestions) })}
-        </Link></li>
-      )}
-      {overview.suggestions === 0 && overview.grew > 0 && (
-        <li><Link href={`${projectPath}?tab=idea#reading-title`} className={chip}>{t.ideaLoop.chipGrew}</Link></li>
-      )}
-      {overview.saved > 0 && (
-        <li><Link href={`${projectPath}?tab=funding`} className={chip}>{overview.saved === 1 ? h.oneSavedChip : fill(h.manySavedChip, { n: String(overview.saved) })}</Link></li>
-      )}
-    </ul>
-  );
-}
-
 /**
  * The single most useful thing to do now, always at the top. Once there are steps, the person can choose by
  * how they feel today (talking to people, writing, planning…), and Gusty shows the first step of that kind.
@@ -304,7 +276,10 @@ async function DocumentsBlock({ projectId, lang, t }: { projectId: string; lang:
   return <DocumentsSection docs={await getDocuments(projectId)} projectId={projectId} lang={lang} copy={t.documents} />;
 }
 
-/** The project bank: the person's experience, research Gusty found, and how they write. */
+/**
+ * The project bank: the person's experience and research Gusty found. How they write is worked out behind
+ * the scenes, when they ask a draft to sound more like them.
+ */
 async function BankBlock({ projectId, lang, t }: { projectId: string; lang: string; t: Messages }) {
   const bank = await getBank(projectId);
   if (!bank) return null;
@@ -312,8 +287,6 @@ async function BankBlock({ projectId, lang, t }: { projectId: string; lang: stri
     <>
       <ExperienceSection items={bank.evidence} projectId={projectId} copy={t.bank} />
       <ResearchSection sources={bank.research} state={bank.researchState} projectId={projectId} lang={lang} copy={t.bank} />
-      <VoiceSection voice={bank.voice} ownWords={bank.ownWords} minWords={MIN_VOICE_WORDS} demo={bank.voiceDemo}
-        projectId={projectId} lang={lang} copy={t.bank} />
     </>
   );
 }

@@ -11,6 +11,7 @@ import { messagesFor } from "@/i18n/messages-for";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isProjectId } from "@/modules/projects/validation";
 import type { Material } from "./data";
+import { describeVoice } from "@/modules/bank/actions";
 import { loadProjectInputs } from "./process";
 import { questionsOf } from "./questions";
 
@@ -82,6 +83,11 @@ export async function draftAnswer(appId: string, key: string, lang: string, rawS
     await logRun(supabase, { projectId: found.app.project_id, task: "draft_answer", promptVersion: DRAFT_PROMPT_VERSION, model: "demo", status: "demo" });
   } else {
     if (!(await withinDailyLimit(supabase))) return { ok: false, error: "limit" };
+    // "Sound more like me" needs a description of how they write: worked out quietly the first time.
+    if (style === "mine") {
+      const { data: voice } = await supabase.from("project_voice").select("project_id").eq("project_id", found.app.project_id).maybeSingle();
+      if (!voice) await describeVoice(found.app.project_id, lang);
+    }
     const inputs = await loadProjectInputs(supabase, found.app.project_id);
     if (!inputs) return { ok: false, error: "error" };
     const result = await provider.generate({
