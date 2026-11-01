@@ -58,7 +58,7 @@ export function StepWorkspace({ work, lang, copy }: { work: StepWork; lang: stri
 
       <section aria-labelledby="questions-title" className="flex flex-col gap-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
-          <h2 id="questions-title" className="text-xl font-semibold">{copy.questionsTitle}</h2>
+          <h2 id="questions-title" className="type-heading">{copy.questionsTitle}</h2>
           {work.questions.length > 0 && (
             <div className="flex flex-col items-start gap-1 sm:items-end">
               <button type="button" className="btn-secondary" disabled={pending} onClick={() => act(() => differentQuestions(work.step.id, lang), "different")}>
@@ -117,7 +117,7 @@ export function StepWorkspace({ work, lang, copy }: { work: StepWork; lang: stri
       </section>
 
       <section aria-labelledby="notes-title" className="rounded-(--radius-card) bg-surface-raised p-5">
-        <h2 id="notes-title" className="text-xl font-semibold">{copy.notesTitle}</h2>
+        <h2 id="notes-title" className="type-heading">{copy.notesTitle}</h2>
         <p id="notes-hint" className="mt-1 text-text-muted">{copy.notesHint}</p>
         <AutosaveText id="notes" label={copy.notesTitle} hideLabel describedBy="notes-hint" initial={work.step.notes} rows={6} maxLength={4000}
           save={(text) => saveNotes(work.step.id, text)} onFinished={() => tidyNotes(work.step.id)} copy={copy} />
@@ -313,7 +313,7 @@ function WriteIt({ stepId, initial, copy }: { stepId: string; initial: string; c
   return (
     <section aria-labelledby="write-title" className="flex flex-col gap-4 rounded-(--radius-card) bg-surface-raised p-5">
       <div>
-        <h2 id="write-title" className="text-xl font-semibold">{t.title}</h2>
+        <h2 id="write-title" className="type-heading">{t.title}</h2>
         <p className="mt-1 text-text-muted">{t.intro}</p>
       </div>
 

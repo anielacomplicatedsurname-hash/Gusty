@@ -47,7 +47,7 @@ type Tab = (typeof TABS)[number];
 export default async function ProjectPage({ params, searchParams }: PageProps<"/[lang]/projects/[id]">) {
   const t = await getMessages();
   return (
-    <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6 md:py-14">
+    <section className="mx-auto max-w-3xl px-4 py-14 sm:px-6 md:py-24">
       <Suspense fallback={<p className="text-text-muted">{t.projects.loading}</p>}>
         <ProjectContent params={params} searchParams={searchParams} t={t} />
       </Suspense>
@@ -90,7 +90,7 @@ async function ProjectContent({
   const tab: Tab = asked ?? (overview && !overview.hasDirection ? "idea" : "plan");
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       {back}
       <header>
         <TitleEditor
@@ -167,7 +167,7 @@ async function ProjectContent({
       )}
 
       <section aria-labelledby="feedback-card-title" className="rounded-(--radius-card) bg-sky/60 p-6 text-ink">
-        <h2 id="feedback-card-title" className="text-lg font-semibold">{t.feedback.cardTitle}</h2>
+        <h2 id="feedback-card-title" className="type-heading">{t.feedback.cardTitle}</h2>
         <p className="mt-1">{t.feedback.cardBody}</p>
         <Link href={`/${lang}/feedback?from=${encodeURIComponent(`/${lang}/projects/${project.id}`)}`} className="btn-secondary mt-4">
           {t.feedback.link}
@@ -313,7 +313,7 @@ async function ApplicationsBlock({ projectId, lang, t }: { projectId: string; la
       <div>
         <div className="flex items-center gap-3">
           <BrandSymbol name="bridge" size={28} />
-          <h2 id="applications-title" className="text-xl font-semibold">{copy.listTitle}</h2>
+          <h2 id="applications-title" className="type-heading">{copy.listTitle}</h2>
         </div>
         <p className="mt-1 text-sm text-text-muted">{copy.listIntro}</p>
       </div>
@@ -346,7 +346,7 @@ async function ExploreSection({ projectId, lang, t }: { projectId: string; lang:
       <div>
         <div className="flex items-center gap-3">
           <BrandSymbol name="horizon-hill" size={28} />
-          <h2 id="explore-card-title" className="text-xl font-semibold">{t.projects.exploreTitle}</h2>
+          <h2 id="explore-card-title" className="type-heading">{t.projects.exploreTitle}</h2>
         </div>
         <p className="mt-1 text-text-muted">{t.projects.exploreBody}</p>
         <Link href={`/${lang}/explore?project=${projectId}`} className="btn-secondary mt-4">{t.projects.exploreLink}</Link>
@@ -385,7 +385,7 @@ async function NextStepsSection({ projectId, lang, t, hideCurrent = false }: {
     <section aria-labelledby="steps-title" className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
       <div className="flex items-center gap-3">
         <BrandSymbol name="path" size={28} />
-        <h2 id="steps-title" className="text-xl font-semibold">
+        <h2 id="steps-title" className="type-heading">
           {t.steps.title}
         </h2>
       </div>
@@ -411,7 +411,7 @@ async function NextStepsSection({ projectId, lang, t, hideCurrent = false }: {
 function ExpertCard({ lang, t }: { lang: string; t: Messages }) {
   return (
     <section aria-labelledby="expert-card-title" className="flex flex-col items-start gap-2 rounded-(--radius-card) border border-border p-5 sm:p-6">
-      <h2 id="expert-card-title" className="text-lg font-semibold">{t.expert.cardTitle}</h2>
+      <h2 id="expert-card-title" className="type-heading">{t.expert.cardTitle}</h2>
       <p className="text-text-muted">{t.expert.cardBody}</p>
       <Link href={`/${lang}/expert`} className="btn-secondary mt-2">{t.expert.cardLink}</Link>
     </section>

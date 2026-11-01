@@ -25,7 +25,7 @@ export function LegalPage({ copy }: { copy: LegalCopy }) {
       <p className="mt-6 text-lg">{copy.intro}</p>
       {copy.sections.map((section) => (
         <section key={section.heading} className="mt-10">
-          <h2 className="text-xl font-semibold">{section.heading}</h2>
+          <h2 className="type-heading">{section.heading}</h2>
           {section.paragraphs?.map((p) => (
             <p key={p} className="mt-3 leading-relaxed">
               {linkify(p)}

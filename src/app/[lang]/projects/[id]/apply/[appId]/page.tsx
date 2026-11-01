@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ApplicationPage({ params, searchParams }: PageProps<"/[lang]/projects/[id]/apply/[appId]">) {
   const t = await getMessages();
   return (
-    <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6 md:py-14">
+    <section className="mx-auto max-w-3xl px-4 py-14 sm:px-6 md:py-24">
       <Suspense fallback={<p className="text-text-muted">{t.projects.loading}</p>}>
         <ApplicationContent params={params} searchParams={searchParams} t={t} />
       </Suspense>
@@ -60,11 +60,11 @@ async function ApplicationContent({ params, searchParams, t }: {
   const view: View = asked ?? (app.materials.length === 0 ? "papers" : "answers");
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       {back}
       <header>
         <p className="type-label text-text-muted">{app.projectTitle}</p>
-        <h1 className="type-display mt-1 text-3xl sm:text-4xl">{app.title}</h1>
+        <h1 className="type-display mt-2 text-balance text-4xl sm:text-5xl">{app.title}</h1>
         {(app.funder || app.url) && (
           <p className="mt-2 text-text-muted">
             {app.funder}
@@ -89,7 +89,7 @@ async function ApplicationContent({ params, searchParams, t }: {
           <p className="-mt-2 text-sm text-text-muted">{copy.pageIntro}</p>
           {app.materials.length > 0 && (
             <section aria-labelledby="papers-title" className="flex flex-col gap-3">
-              <h2 id="papers-title" className="text-lg font-semibold">{copy.papersTitle}</h2>
+              <h2 id="papers-title" className="type-heading">{copy.papersTitle}</h2>
               <ul className="flex flex-col gap-2">
                 {app.materials.map((m) => {
                   const label = m.origin === "paste" ? `${copy.pasted}: ${m.label}` : m.label;
@@ -119,7 +119,7 @@ async function ApplicationContent({ params, searchParams, t }: {
       )}
 
       <section aria-labelledby="expert-card-title" className="flex flex-col items-start gap-2 rounded-(--radius-card) border border-border p-5 sm:p-6">
-        <h2 id="expert-card-title" className="text-lg font-semibold">{t.expert.cardTitle}</h2>
+        <h2 id="expert-card-title" className="type-heading">{t.expert.cardTitle}</h2>
         <p className="text-text-muted">{t.expert.cardBody}</p>
         <Link href={`/${lang}/expert`} className="btn-secondary mt-2">{t.expert.cardLink}</Link>
       </section>

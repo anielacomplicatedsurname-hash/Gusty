@@ -13,7 +13,7 @@ export default async function FeedbackPage({ params, searchParams }: PageProps<"
   const { lang } = await params;
   const t = await getMessages();
   return (
-    <section className="mx-auto max-w-2xl px-4 py-12 sm:px-6 md:py-16">
+    <section className="mx-auto max-w-2xl px-4 py-14 sm:px-6 md:py-24">
       <h1 className="type-display text-5xl">{t.feedback.title}</h1>
       <p className="mt-4 text-lg">{t.feedback.intro}</p>
       <div className="mt-8 rounded-(--radius-card) bg-surface-raised p-6 sm:p-8">

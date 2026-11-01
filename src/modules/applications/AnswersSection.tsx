@@ -46,7 +46,7 @@ export function AnswersSection({ appId, title, questions, answers, demo, lang, c
   return (
     <section aria-labelledby="answers-title" className="flex flex-col gap-5 rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
       <div>
-        <h2 id="answers-title" className="text-xl font-semibold">{copy.answersTitle}</h2>
+        <h2 id="answers-title" className="type-heading">{copy.answersTitle}</h2>
         <p className="mt-1 text-sm text-text-muted">{copy.answersIntro}</p>
       </div>
       {questions.length === 0 ? (

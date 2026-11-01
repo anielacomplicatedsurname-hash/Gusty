@@ -19,7 +19,7 @@ export function SupportHelp({
 
   return (
     <section id="help" aria-labelledby="support-help-title" className="w-full">
-      <h2 id="support-help-title" className="text-2xl font-semibold">
+      <h2 id="support-help-title" className="type-heading">
         {h.title}
       </h2>
       <div className={`mt-5 grid gap-4 ${manageHref && !stacked ? "md:grid-cols-2" : ""}`}>

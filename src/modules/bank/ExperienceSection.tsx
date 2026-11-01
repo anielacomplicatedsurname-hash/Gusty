@@ -34,7 +34,7 @@ export function ExperienceSection({ items, projectId, copy }: { items: Evidence[
       <div>
         <div className="flex items-center gap-3">
           <BrandSymbol name="gathering" size={28} />
-          <h2 id="experience-title" className="text-xl font-semibold">{copy.experienceTitle}</h2>
+          <h2 id="experience-title" className="type-heading">{copy.experienceTitle}</h2>
         </div>
         <p className="mt-1 text-sm text-text-muted">{copy.experienceIntro}</p>
       </div>

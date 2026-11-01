@@ -28,7 +28,7 @@ export function SupportCard({ choices, copy, lang }: { choices: SupportChoices; 
 
   return (
     <section aria-labelledby="support-title" className="rounded-(--radius-card) bg-surface-raised p-6 sm:p-8">
-      <h2 id="support-title" className="text-2xl font-semibold">
+      <h2 id="support-title" className="type-heading">
         {copy.title}
       </h2>
       <p className="mt-2 text-text-muted">{copy.body}</p>

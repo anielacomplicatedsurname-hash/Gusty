@@ -75,7 +75,7 @@ export function AddMaterial({ appId, lang, copy, startOpen, nextHref, papersHref
   return (
     <section aria-labelledby="add-title" className="flex flex-col gap-4 rounded-(--radius-card) bg-surface-raised p-5 sm:p-6" aria-busy={pending}>
       <div>
-        <h2 id="add-title" className="text-xl font-semibold">{copy.addTitle}</h2>
+        <h2 id="add-title" className="type-heading">{copy.addTitle}</h2>
         <p className="mt-1 text-sm text-text-muted">{copy.addIntro}</p>
       </div>
       <div>

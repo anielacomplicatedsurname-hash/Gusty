@@ -14,7 +14,7 @@ export default async function ExpertPage() {
   const t = await getMessages();
   const e = t.expert;
   return (
-    <section className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-12 sm:px-6 md:py-16">
+    <section className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-14 sm:px-6 md:py-24">
       <div>
         <p className="text-sm text-text-muted">{e.label}</p>
         <h1 className="type-display mt-2 text-5xl sm:text-6xl">{e.title}</h1>
@@ -24,7 +24,7 @@ export default async function ExpertPage() {
       <div className="flex flex-col gap-4 rounded-(--radius-card) bg-surface-raised p-6">
         <div className="flex items-center gap-3">
           <BrandSymbol name="open-hands" size={32} />
-          <h2 className="text-xl font-semibold">{e.whatTitle}</h2>
+          <h2 className="type-heading">{e.whatTitle}</h2>
         </div>
         <ul className="flex flex-col gap-2">
           {e.what.map((item) => (

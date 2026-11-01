@@ -11,7 +11,7 @@ export function WorkedOut({ steps, projectId, lang, copy }: { steps: WorkedStep[
     <section aria-labelledby="worked-title" className="rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
       <div className="flex items-center gap-3">
         <BrandSymbol name="sprout" size={28} />
-        <h2 id="worked-title" className="text-xl font-semibold">
+        <h2 id="worked-title" className="type-heading">
           {copy.title}
         </h2>
       </div>

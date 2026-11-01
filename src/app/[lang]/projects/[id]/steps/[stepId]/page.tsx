@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function StepPage({ params }: PageProps<"/[lang]/projects/[id]/steps/[stepId]">) {
   const t = await getMessages();
   return (
-    <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6 md:py-14">
+    <section className="mx-auto max-w-3xl px-4 py-14 sm:px-6 md:py-24">
       <Suspense fallback={<p className="text-text-muted">{t.projects.loading}</p>}>
         <StepContent params={params} t={t} />
       </Suspense>
@@ -44,7 +44,7 @@ async function StepContent({ params, t }: { params: PageProps<"/[lang]/projects/
       <div className="flex flex-col items-start gap-3">
         {back}
         <p className="type-label text-text-muted">{t.stepWork.eyebrow} · {work.projectTitle}</p>
-        <h1 className="type-display text-4xl sm:text-5xl">{work.step.title}</h1>
+        <h1 className="type-display mt-2 text-balance text-4xl sm:text-5xl">{work.step.title}</h1>
         {work.step.detail && <p className="text-lg">{work.step.detail}</p>}
         <p className="text-text-muted">{t.stepWork.intro}</p>
       </div>

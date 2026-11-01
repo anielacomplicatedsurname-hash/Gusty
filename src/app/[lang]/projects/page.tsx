@@ -22,7 +22,7 @@ export default async function ProjectsPage({ params, searchParams }: PageProps<"
   const { lang } = await params;
   const t = await getMessages();
   return (
-    <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
+    <section className="mx-auto max-w-3xl px-4 py-14 sm:px-6 md:py-24">
       <h1 className="type-display text-5xl sm:text-6xl">{t.projects.title}</h1>
       <p className="mt-4 text-lg text-text-muted">{t.projects.intro}</p>
       <Suspense fallback={<p className="mt-10 text-text-muted">{t.projects.loading}</p>}>
@@ -54,7 +54,7 @@ async function ProjectsContent({
       <>
         {signInFailed}
         <div className="mt-10 rounded-(--radius-card) bg-surface-raised p-6">
-          <h2 className="text-xl font-semibold">{t.projects.signedOutTitle}</h2>
+          <h2 className="type-heading">{t.projects.signedOutTitle}</h2>
           <p className="mt-2 text-text-muted">{t.projects.signedOutBody}</p>
           <div className="mt-4">
             <EmailLinkForm lang={lang} copy={emailCopy} />
@@ -62,7 +62,7 @@ async function ProjectsContent({
         </div>
         <EmptyState lang={lang} t={t} />
       <section id="bring-in" aria-labelledby="import-title" className="mt-10 scroll-mt-24 flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-6">
-        <h2 id="import-title" className="text-xl font-semibold">{t.documents.newTitle}</h2>
+        <h2 id="import-title" className="type-heading">{t.documents.newTitle}</h2>
         <p className="text-text-muted">{t.documents.newBody}</p>
         <DocumentUpload lang={lang} copy={t.documents} />
       </section>
@@ -92,7 +92,7 @@ async function ProjectsContent({
       {/* Guests first: adding an email is what keeps their work safe. */}
       {user.isAnonymous && (
         <div className="mt-10 rounded-(--radius-card) bg-surface-raised p-6">
-          <h2 className="text-xl font-semibold">{t.projects.keepTitle}</h2>
+          <h2 className="type-heading">{t.projects.keepTitle}</h2>
           <p className="mt-2 text-text-muted">{t.projects.keepBody}</p>
           <div className="mt-4">
             <EmailLinkForm lang={lang} copy={emailCopy} />
@@ -100,7 +100,7 @@ async function ProjectsContent({
         </div>
       )}
       <section id="bring-in" aria-labelledby="import-title" className="mt-10 scroll-mt-24 flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-6">
-        <h2 id="import-title" className="text-xl font-semibold">{t.documents.newTitle}</h2>
+        <h2 id="import-title" className="type-heading">{t.documents.newTitle}</h2>
         <p className="text-text-muted">{t.documents.newBody}</p>
         <DocumentUpload lang={lang} copy={t.documents} />
       </section>

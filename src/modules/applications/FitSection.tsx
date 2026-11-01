@@ -53,7 +53,7 @@ export function FitSection({ app, lang, copy }: { app: Application; lang: string
   return (
     <section aria-labelledby="fit-title" className="flex flex-col gap-5 rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
       <div>
-        <h2 id="fit-title" className="text-xl font-semibold">{copy.fitTitle}</h2>
+        <h2 id="fit-title" className="type-heading">{copy.fitTitle}</h2>
         <p className="mt-1 text-sm text-text-muted">{copy.fitIntro}</p>
       </div>
       {running && (

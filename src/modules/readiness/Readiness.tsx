@@ -32,7 +32,7 @@ export function ReadinessSection({ readiness, projectId, lang, copy }: {
       <div>
         <div className="flex items-center gap-3">
           <BrandSymbol name="sprout" size={28} />
-          <h2 id="readiness-title" className="text-xl font-semibold">{copy.title}</h2>
+          <h2 id="readiness-title" className="type-heading">{copy.title}</h2>
         </div>
         <p className="mt-1 text-sm text-text-muted">{copy.intro}</p>
       </div>

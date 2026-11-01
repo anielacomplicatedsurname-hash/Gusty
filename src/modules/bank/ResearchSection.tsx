@@ -41,7 +41,7 @@ export function ResearchSection({ sources, state, projectId, lang, copy }: {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-3">
             <BrandSymbol name="spark" size={28} />
-            <h2 id="research-title" className="text-xl font-semibold">{copy.researchTitle}</h2>
+            <h2 id="research-title" className="type-heading">{copy.researchTitle}</h2>
           </div>
           <p className="rounded-full bg-oat px-3 py-0.5 text-sm text-ink">
             {fill(copy.researchAllowance, { n: String(state.left), max: String(state.max) })}
