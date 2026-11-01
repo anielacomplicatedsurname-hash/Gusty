@@ -4,7 +4,7 @@ Things only Aniela can do (accounts, keys, payments, decisions). Claude keeps th
 tick items off by asking Claude, or edit the file.
 
 ## Before public launch
-- [ ] **Switch on bot protection (Cloudflare Turnstile, free plan).** No card needed, no DNS changes.
+- [x] **Switch on bot protection (Cloudflare Turnstile, free plan).** (done 1 November 2026: tested in a private window, saving an idea works) No card needed, no DNS changes.
   1. Sign up at dash.cloudflare.com → **Turnstile** → **Add widget**: name "Gusty", hostnames
      `heygusty.com` and `www.heygusty.com`, **Managed** mode.
   2. **Render** → Gusty's service → Environment → add `TURNSTILE_SITE_KEY` = the **site key** → Save and deploy.
@@ -21,7 +21,7 @@ tick items off by asking Claude, or edit the file.
 - [ ] **Replace the Claude API key before about 24 November**, when the current one expires. Create a new
   key in the Claude Console and put it in Render as `ANTHROPIC_API_KEY`. Keep web search and web fetch
   enabled for the key's workspace in the Console.
-- [ ] **Update the three sign-in email templates in Supabase** (new footer line "People. Ideas.
+- [x] **Update the three sign-in email templates in Supabase** (done 1 November 2026) (new footer line "People. Ideas.
   Opportunities. A little wind beneath your wings."). Supabase → Authentication → Emails → Templates: for
   Confirm signup, Magic Link and Change Email Address, paste the whole of `confirmation.html`,
   `magic-link.html` and `email-change.html` from `supabase/templates/` → Save. Do this after merging.
