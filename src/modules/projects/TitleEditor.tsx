@@ -66,7 +66,7 @@ export function TitleEditor({
   return (
     <div className="flex flex-col gap-1">
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h1 className="text-3xl font-semibold sm:text-4xl">{title}</h1>
+        <h1 className="type-display text-balance text-4xl sm:text-5xl">{title}</h1>
         <button type="button" className="text-sm font-medium underline underline-offset-4"
           onClick={() => setEditing(true)} aria-label={`${copy.rename}: ${title}`}>
           {copy.rename}

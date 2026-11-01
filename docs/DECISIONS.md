@@ -590,3 +590,9 @@ dictate"). Agreeing is remembered in that browser only. The privacy notice has a
 
 **Not now:** recording audio and transcribing it on our side. That needs a paid speech-to-text service
 (Claude doesn't transcribe audio) and new privacy terms.
+
+## 2026-11-01 — The new look on every page
+The home page's type and spacing now carry through the app. Every section and card title (h2) uses
+Newsreader at a reading size (`.type-heading`), project, step and application titles use the large display
+size, and inner pages get more space around and between sections. Sub-headings, forms and buttons stay in
+Google Sans Flex, so the serif marks where a section starts and the sans does the work.

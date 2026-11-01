@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AdminPage({ params }: PageProps<"/[lang]/admin">) {
   const t = await getMessages();
   return (
-    <section className="mx-auto max-w-4xl px-4 py-10 sm:px-6 md:py-14">
+    <section className="mx-auto max-w-4xl px-4 py-14 sm:px-6 md:py-24">
       <Suspense fallback={<p className="text-text-muted">{t.admin.loading}</p>}>
         <AdminContent params={params} t={t} />
       </Suspense>
@@ -94,7 +94,7 @@ function Feedback({ items, t, lang }: { items: FeedbackItem[]; t: Messages; lang
   const a = t.admin;
   return (
     <section>
-      <h2 className="text-xl font-semibold">{a.feedback}</h2>
+      <h2 className="type-heading">{a.feedback}</h2>
       {items.length === 0 ? (
         <p className="mt-3 text-text-muted">{a.noFeedback}</p>
       ) : (
@@ -126,7 +126,7 @@ function Feedback({ items, t, lang }: { items: FeedbackItem[]; t: Messages; lang
 function Card({ title, rows }: { title: string; rows: [string, string | number][] }) {
   return (
     <section className="rounded-(--radius-card) bg-surface-raised p-5">
-      <h2 className="text-lg font-semibold">{title}</h2>
+      <h2 className="type-heading">{title}</h2>
       <dl className="mt-3 flex flex-col gap-2">
         {rows.map(([label, value]) => (
           <div key={label} className="flex items-baseline justify-between gap-4">
@@ -142,7 +142,7 @@ function Card({ title, rows }: { title: string; rows: [string, string | number][
 function Table({ caption, head, rows, empty }: { caption: string; head: string[]; rows: (string | number)[][]; empty: string | null }) {
   return (
     <section>
-      <h2 className="text-xl font-semibold">{caption}</h2>
+      <h2 className="type-heading">{caption}</h2>
       {empty ? (
         <p className="mt-3 text-text-muted">{empty}</p>
       ) : (

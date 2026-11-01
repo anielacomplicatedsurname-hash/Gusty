@@ -17,7 +17,7 @@ export default async function AccountPage({ params }: PageProps<"/[lang]/account
   const { lang } = await params;
   const t = await getMessages();
   return (
-    <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
+    <section className="mx-auto max-w-3xl px-4 py-14 sm:px-6 md:py-24">
       <h1 className="type-display text-5xl sm:text-6xl">{t.account.title}</h1>
       <Suspense fallback={<p className="mt-10 text-text-muted">{t.projects.loading}</p>}>
         <AccountContent lang={lang} t={t} />
@@ -41,7 +41,7 @@ async function AccountContent({ lang, t }: { lang: string; t: Messages }) {
   return (
     <div className="mt-10 flex flex-col gap-6">
       <section aria-labelledby="you-title" className="flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-6">
-        <h2 id="you-title" className="text-xl font-semibold">{a.youTitle}</h2>
+        <h2 id="you-title" className="type-heading">{a.youTitle}</h2>
         {user.isAnonymous ? (
           <>
             <p className="text-text-muted">{a.guest}</p>
@@ -57,7 +57,7 @@ async function AccountContent({ lang, t }: { lang: string; t: Messages }) {
       </section>
 
       <section aria-labelledby="data-title" className="flex flex-col items-start gap-3 rounded-(--radius-card) bg-surface-raised p-6">
-        <h2 id="data-title" className="text-xl font-semibold">{t.projects.yourData}</h2>
+        <h2 id="data-title" className="type-heading">{t.projects.yourData}</h2>
         <p className="text-text-muted">{t.projects.yourDataBody}</p>
         <a href={`/api/export?lang=${lang}`} download className="btn-secondary">{a.download}</a>
         <p className="text-sm text-text-muted">{a.downloadHint}</p>
@@ -65,7 +65,7 @@ async function AccountContent({ lang, t }: { lang: string; t: Messages }) {
       </section>
 
       <section aria-labelledby="leave-title" className="flex flex-col items-start gap-3 rounded-(--radius-card) border border-border p-6">
-        <h2 id="leave-title" className="text-xl font-semibold">{a.leaveTitle}</h2>
+        <h2 id="leave-title" className="type-heading">{a.leaveTitle}</h2>
         <p className="text-text-muted">{a.leaveBody}</p>
         <form action={deleteAccount}>
           <input type="hidden" name="lang" value={lang} />

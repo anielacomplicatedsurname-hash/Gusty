@@ -14,7 +14,7 @@ export function DocumentsSection({ docs, projectId, lang, copy }: {
       <div>
         <div className="flex items-center gap-3">
           <BrandSymbol name="leaf-cluster" size={28} />
-          <h2 id="documents-title" className="text-xl font-semibold">{copy.addTitle}</h2>
+          <h2 id="documents-title" className="type-heading">{copy.addTitle}</h2>
         </div>
         <p className="mt-1 text-sm text-text-muted">{copy.addBody}</p>
       </div>

@@ -19,11 +19,11 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ExplorePage({ params, searchParams }: PageProps<"/[lang]/explore">) {
   const t = await getMessages();
   return (
-    <section className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 md:py-14">
+    <section className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-14 sm:px-6 md:py-24">
       <header className="flex flex-col items-start gap-4">
         <BrandSymbol name="horizon-hill" size={56} />
         <h1 className="type-display text-5xl sm:text-6xl">{t.explore.title}</h1>
-        <p className="text-lg">{t.explore.intro}</p>
+        <p className="max-w-3xl text-lg text-text-muted">{t.explore.intro}</p>
       </header>
       <Suspense fallback={<p className="text-text-muted">…</p>}>
         <ExploreContent params={params} searchParams={searchParams} t={t} />
@@ -70,7 +70,7 @@ async function ExploreContent({ params, searchParams, t }: {
         <ProjectList projects={projects} last={last} chosenId={chosen.id} lang={lang} copy={e} />
       </div>
       <div className="flex min-w-0 flex-col gap-6">
-        <h2 className="text-2xl font-semibold">{fill(e.forProject, { title: chosen.title })}</h2>
+        <h2 className="type-heading">{fill(e.forProject, { title: chosen.title })}</h2>
         <SearchPanel
           key={chosen.id}
           projectId={chosen.id}

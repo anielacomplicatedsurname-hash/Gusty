@@ -65,7 +65,7 @@ export function Brief({ materials, copy }: { materials: Material[]; copy: Copy }
   return (
     <section aria-labelledby="brief-title" className="flex flex-col gap-5 rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
       <div>
-        <h2 id="brief-title" className="text-xl font-semibold">{copy.briefTitle}</h2>
+        <h2 id="brief-title" className="type-heading">{copy.briefTitle}</h2>
         <p className="mt-1 text-sm text-text-muted">{copy.briefIntro}</p>
       </div>
       {materials.length === 0 ? (

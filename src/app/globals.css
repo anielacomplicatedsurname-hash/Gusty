@@ -113,6 +113,17 @@ body {
     letter-spacing: -0.02em;
   }
 
+  /* Section and card headings: the display serif at a reading size, so every section opens the same
+     calm way. Sub-headings inside a section (h3) stay in the UI sans. */
+  .type-heading {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.625rem, 1.35rem + 0.9vw, 2rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
   /* Small section labels in the UI sans, in plain sentence case: calmer and easier to read than
      spaced capitals. */
   .type-label {

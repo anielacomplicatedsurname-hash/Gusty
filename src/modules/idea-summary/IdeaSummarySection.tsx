@@ -19,7 +19,7 @@ export function IdeaSummarySection({ summary, projectId, lang, copy, original, s
     <section aria-labelledby="summary-title" className="flex flex-col gap-4 rounded-(--radius-card) bg-surface-raised p-5 sm:p-6">
       <div className="flex items-center gap-3">
         <BrandSymbol name="sprout" size={28} />
-        <h2 id="summary-title" className="text-xl font-semibold">{copy.title}</h2>
+        <h2 id="summary-title" className="type-heading">{copy.title}</h2>
       </div>
 
       {has ? (
