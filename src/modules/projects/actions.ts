@@ -1,6 +1,6 @@
 "use server";
 
-import { captchaTokenFrom, isCaptchaError } from "@/lib/captcha";
+import { captchaTokenFrom, isCaptchaError, logCaptchaRefusal } from "@/lib/captcha";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { brand } from "@/config/brand";
@@ -36,7 +36,10 @@ export async function createProject(
   if (!userData.user) {
     const { error } = await supabase.auth.signInAnonymously({ options: { captchaToken: captchaTokenFrom(formData) } });
     if (error) {
-      if (isCaptchaError(error)) return back("captcha");
+      if (isCaptchaError(error)) {
+        logCaptchaRefusal("idea", formData, error);
+        return back("captcha");
+      }
       console.error("Guest sign-in failed:", error.message);
       return back("failed");
     }
@@ -132,7 +135,10 @@ export async function requestEmailLink(
     ? await supabase.auth.updateUser({ email }, { emailRedirectTo })
     : await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo, captchaToken: captchaTokenFrom(formData) } });
   if (error?.code === "email_exists") return { error: "exists", email };
-  if (isCaptchaError(error)) return { error: "captcha", email };
+  if (error && isCaptchaError(error)) {
+    logCaptchaRefusal("email link", formData, error);
+    return { error: "captcha", email };
+  }
   if (error) {
     console.error("Sending the email link failed:", error.message);
     return { error: "failed" };

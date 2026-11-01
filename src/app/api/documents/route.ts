@@ -1,5 +1,5 @@
 import { aiProvider } from "@/ai";
-import { captchaTokenFrom, isCaptchaError } from "@/lib/captcha";
+import { captchaTokenFrom, isCaptchaError, logCaptchaRefusal } from "@/lib/captcha";
 import {
   DocumentSchema, DOCUMENTS_PER_PERSON_PER_DAY, estimatePages, looksLikePdf, MAX_PDF_BYTES, MAX_PDF_PAGES, normaliseReading,
   READ_DOCUMENT_PROMPT, READ_DOCUMENT_PROMPT_VERSION, readDocumentMessage, type DocumentReading,
@@ -48,7 +48,11 @@ export async function POST(request: Request) {
   if (!userData.user) {
     if (projectId) return fail("error", 401);
     const { error } = await supabase.auth.signInAnonymously({ options: { captchaToken: captchaTokenFrom(form) } });
-    if (error) return isCaptchaError(error) ? fail("captcha", 400) : fail("error", 500);
+    if (error && isCaptchaError(error)) {
+      logCaptchaRefusal("document", form, error);
+      return fail("captcha", 400);
+    }
+    if (error) return fail("error", 500);
   }
   if (projectId) {
     const { data: owned } = await supabase.from("projects").select("id").eq("id", projectId).maybeSingle();
