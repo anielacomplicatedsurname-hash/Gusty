@@ -23,7 +23,10 @@
     "ideaLabel": "What's your idea?",
     "ideaHint": "Write it however it comes to you. A few words is enough.",
     "ideaSubmit": "Start with my idea",
+    "ideaPdf": "Bring in a PDF",
     "howTitle": "How it works",
+    "howMore": "Everything you start lives in",
+    "howLink": "My Projects",
     "steps": [
       {
         "title": "Describe it",
@@ -50,6 +53,24 @@
     },
     "sloganBig": "Big possibilities.",
     "sloganSmall": "Small steps.",
+    "featuresLabel": "From idea to application",
+    "featuresTitle": "Designed for minds that wander",
+    "featuresTitleItalic": "and ideas that want to fly",
+    "featuresBody": "Your story, the funding that could fit, and answers in the funder's own language.",
+    "features": [
+      {
+        "title": "Shape your idea",
+        "body": "A living picture of your idea that grows with every step you take."
+      },
+      {
+        "title": "Find funding that fits",
+        "body": "Deep searches from your neighbourhood to international funds, each with its source."
+      },
+      {
+        "title": "Apply with confidence",
+        "body": "Drafts in the funder's language, from your own story. Nothing made up."
+      }
+    ],
     "closingStart": "Less searching.",
     "closingEnd": "More happening."
   },

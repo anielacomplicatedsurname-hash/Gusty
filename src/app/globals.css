@@ -104,21 +104,20 @@ body {
 }
 
 @layer components {
-  /* Display serif: page titles and key brand moments only. Instrument Serif; the home headline
-     sets its second line in italic. Not for body copy, forms or navigation. */
+  /* Display serif: page titles and key brand moments only. Newsreader, with italic for the
+     second half of a brand line. Not for body copy, forms or navigation. */
   .type-display {
     font-family: var(--font-display);
     font-weight: 400;
-    line-height: 1;
-    letter-spacing: -0.015em;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
   }
 
-  /* Spaced uppercase labels in the UI sans. */
+  /* Small section labels in the UI sans, in plain sentence case: calmer and easier to read than
+     spaced capitals. */
   .type-label {
     font-family: var(--font-sans);
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-size: 0.75rem;
+    font-size: 0.9375rem;
     font-weight: 500;
   }
 

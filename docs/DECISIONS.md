@@ -556,3 +556,22 @@ applies there.
 
 **Where it's linked:** the footer, the Funding tab and each application space ("Want a second pair of eyes?").
 The link and fee live in `src/config/expert.ts`.
+
+## 2026-11-01 — Design refresh: Newsreader, more space, a new hero line
+**Inspiration:** the founder liked stellar.org's type proportions, background colour and spaciousness. We
+took those qualities, not their brand.
+
+**What changed:**
+- The display serif is now Newsreader instead of Instrument Serif. It's wider and calmer, and easier to read
+  at large sizes. Italic stays for the second half of brand lines.
+- The home headline stays "Good ideas / *deserve to move.*". The feature section's title is "Designed for
+  minds that wander / *and ideas that want to fly*", each half balanced so no word sits alone on a line.
+- Section labels are plain sentence case instead of spaced capitals.
+- Home has more space and three clear sections: How it works (three plain ruled rows next to the path
+  symbol, with no numbers or arrows so they don't look clickable, then a single text link to My Projects), a feature section on a soft Signal glow with three rounded cards, and the
+  closing line.
+- The idea box gets a "Bring in a PDF" button that goes to the PDF import in My Projects.
+
+**What we kept, from the founder's feedback on the mockup:** rounded corners on cards, the existing plain
+buttons (the pill with a circle arrow felt too heavy), the nav without a call-to-action button, and
+"Pick up where you left off" at the top of the home page for returning visitors.

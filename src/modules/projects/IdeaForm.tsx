@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { createProject, type CreateProjectState } from "./actions";
 import { IDEA_MAX_LENGTH } from "./validation";
@@ -8,6 +9,7 @@ type Copy = {
   label: string;
   hint: string;
   submit: string;
+  pdf: string;
   saving: string;
   privacy: string;
   unavailable: string;
@@ -58,10 +60,18 @@ export function IdeaForm({ lang, enabled, copy }: { lang: string; enabled: boole
           )}
           <span>{enabled ? copy.privacy : copy.unavailable}</span>
         </p>
-        <button type="submit" className="btn-primary sm:self-end" disabled={!enabled || pending}>
-          {pending ? copy.saving : copy.submit}
-          {!pending && <span aria-hidden="true">→</span>}
-        </button>
+        <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+          {/* Already working on something? The PDF import lives in My Projects. */}
+          {enabled && (
+            <Link href={`/${lang}/projects#bring-in`} className="btn-secondary">
+              {copy.pdf}
+            </Link>
+          )}
+          <button type="submit" className="btn-primary" disabled={!enabled || pending}>
+            {pending ? copy.saving : copy.submit}
+            {!pending && <span aria-hidden="true">→</span>}
+          </button>
+        </div>
       </div>
     </form>
   );
