@@ -1509,5 +1509,28 @@
       "documents": "From your documents",
       "foundBy": "Found by Gusty on {date}"
     }
+  },
+  "expert": {
+    "label": "Speak to an expert",
+    "title": "Talk it through with a person",
+    "description": "Book a 1:1 call with Aniela, Gusty's founder, about shaping your idea or finding funding for it.",
+    "lead": "Sometimes it helps to talk it through. Book a 1:1 call with Aniela, Gusty's founder, who helps people shape ideas and find funding for them.",
+    "whatTitle": "What you could bring",
+    "what": [
+      "An idea you're still shaping",
+      "Which funding might suit your project",
+      "An application you're working on in Gusty"
+    ],
+    "fee": "{fee} an hour",
+    "feeNote": "An accessible rate, in line with access support worker fees. You choose a time that suits you on Calendly.",
+    "book": "Book a call",
+    "opensCalendly": "(opens Calendly in a new tab)",
+    "about": "More about Aniela",
+    "opensNewTab": "(opens in a new tab)",
+    "privacy": "Booking happens on Calendly, so Calendly's own privacy policy applies there. Gusty doesn't share your projects with anyone.",
+    "cardTitle": "Want a second pair of eyes?",
+    "cardBody": "Book a 1:1 call with Aniela, Gusty's founder, about your idea or its funding.",
+    "cardLink": "Speak to an expert",
+    "footerLink": "Speak to an expert"
   }
 }

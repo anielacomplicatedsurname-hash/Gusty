@@ -118,6 +118,12 @@ async function ApplicationContent({ params, searchParams, t }: {
           demo={aiProvider() === null} lang={lang} copy={copy} />
       )}
 
+      <section aria-labelledby="expert-card-title" className="flex flex-col items-start gap-2 rounded-(--radius-card) border border-border p-5 sm:p-6">
+        <h2 id="expert-card-title" className="text-lg font-semibold">{t.expert.cardTitle}</h2>
+        <p className="text-text-muted">{t.expert.cardBody}</p>
+        <Link href={`/${lang}/expert`} className="btn-secondary mt-2">{t.expert.cardLink}</Link>
+      </section>
+
       <form action={deleteApplication} className="self-start">
         <input type="hidden" name="applicationId" value={app.id} />
         <input type="hidden" name="projectId" value={id} />

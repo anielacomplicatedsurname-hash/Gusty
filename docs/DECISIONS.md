@@ -545,3 +545,14 @@ the old per-day limits.
 **Exemptions:** admins (the founder) aren't limited. Research searches keep their own small daily allowance.
 
 Paid plans (credit packs, supporter allowances) come later, priced from real costs.
+
+## 2026-11-01 — Speak to an expert
+**The page:** a public page, `/expert`, for a 1:1 call with the founder about shaping an idea or finding funding.
+It shows her fee as she set it: £37 an hour, an accessible rate in line with access support worker fees.
+
+**Booking:** happens on her Calendly page, opened in a new tab rather than embedded. That way no third-party
+script runs inside Gusty and the security policy is unchanged. The page says Calendly's own privacy policy
+applies there.
+
+**Where it's linked:** the footer, the Funding tab and each application space ("Want a second pair of eyes?").
+The link and fee live in `src/config/expert.ts`.
