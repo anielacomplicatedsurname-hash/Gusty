@@ -88,3 +88,11 @@ test("browsers without speech recognition don't show the button", async ({ page 
   await expect(page.getByLabel("What's your idea?")).toBeVisible();
   await expect(page.getByRole("button", { name: "Dictate" })).toHaveCount(0);
 });
+
+test("the site's own pages may use the microphone, so real dictation isn't blocked", async ({ page }) => {
+  const response = await page.goto("/en");
+  expect(response?.headers()["permissions-policy"]).toContain("microphone=(self)");
+  const allowed = await page.evaluate(() =>
+    (document as unknown as { featurePolicy?: { allowsFeature(f: string): boolean } }).featurePolicy?.allowsFeature("microphone"));
+  expect(allowed).toBe(true);
+});
