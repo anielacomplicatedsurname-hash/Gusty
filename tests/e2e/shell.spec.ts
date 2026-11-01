@@ -53,7 +53,7 @@ test("bottom bar never covers the last content on mobile", async ({ page }, test
   await page.waitForLoadState("networkidle");
   await page.keyboard.press("End");
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-  const footerText = page.getByText("People, ideas, places for a brighter tomorrow.");
+  const footerText = page.getByText("People. Ideas. Opportunities. A little wind beneath your wings.");
   const navBox = await page.getByTestId("bottom-nav").boundingBox();
   const textBox = await footerText.boundingBox();
   expect(textBox!.y + textBox!.height).toBeLessThanOrEqual(navBox!.y);

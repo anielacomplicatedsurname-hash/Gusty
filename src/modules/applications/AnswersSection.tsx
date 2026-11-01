@@ -28,6 +28,19 @@ export function AnswersSection({ appId, title, questions, answers, demo, lang, c
     const f = filled[key];
     return f && f.base === byKey.get(key)?.updatedAt ? f.text : byKey.get(key)?.answer ?? "";
   };
+  // Fills for the same answer build on each other and save in order, even if the person presses "Fill in"
+  // again before the last one has saved: otherwise the second save would start from the old text.
+  const inFlight = useRef<Record<string, { text: string; chain: Promise<unknown> }>>({});
+  const fillIn = async (key: string, placeholder: string, value: string): Promise<boolean> => {
+    const current = inFlight.current[key];
+    const next = (current?.text ?? latest(key)).replace(placeholder, value);
+    const save = (current?.chain ?? Promise.resolve()).catch(() => undefined).then(() => saveAnswer(appId, key, next));
+    inFlight.current[key] = { text: next, chain: save };
+    const { ok } = await save;
+    if (inFlight.current[key]?.text === next) delete inFlight.current[key];
+    if (ok) onFilled(key, next);
+    return ok;
+  };
   const [openKey, setOpenKey] = useState<string | null>(() => (questions.find((q) => !byKey.get(q.key)?.answer) ?? questions[0])?.key ?? null);
 
   const download = () => {
@@ -53,7 +66,7 @@ export function AnswersSection({ appId, title, questions, answers, demo, lang, c
         <p className="text-text-muted">{copy.answersNone}</p>
       ) : (
         <>
-          <FillIn appId={appId} questions={questions} answerOf={latest} onFilled={onFilled} copy={copy} />
+          <FillIn questions={questions} answerOf={latest} fillIn={fillIn} copy={copy} />
           <ol className="flex flex-col gap-4">
             {questions.map((q, i) => (
               <li key={q.key}>
@@ -306,8 +319,9 @@ function HighlightedTextarea({ id, value, disabled, describedBy, onChange }: {
 }
 
 /** Every [placeholder] across the saved answers, in one place, each filled in with one small box. */
-function FillIn({ appId, questions, answerOf, onFilled, copy }: {
-  appId: string; questions: Question[]; answerOf: (key: string) => string; onFilled: (key: string, text: string) => void; copy: Copy;
+function FillIn({ questions, answerOf, fillIn, copy }: {
+  questions: Question[]; answerOf: (key: string) => string;
+  fillIn: (key: string, placeholder: string, value: string) => Promise<boolean>; copy: Copy;
 }) {
   const items = questions.flatMap((q, i) =>
     bracketsIn(answerOf(q.key)).map((placeholder, n) => ({ q, number: i + 1, placeholder, n })));
@@ -321,8 +335,8 @@ function FillIn({ appId, questions, answerOf, onFilled, copy }: {
       <ul className="flex flex-col gap-3">
         {items.map((item) => (
           <li key={`${item.q.key}-${item.n}`}>
-            <FillInItem appId={appId} questionKey={item.q.key} number={item.number} placeholder={item.placeholder}
-              answer={answerOf(item.q.key)} onFilled={(text) => onFilled(item.q.key, text)} copy={copy} />
+            <FillInItem number={item.number} placeholder={item.placeholder}
+              fill={(value) => fillIn(item.q.key, item.placeholder, value)} copy={copy} />
           </li>
         ))}
       </ul>
@@ -330,8 +344,8 @@ function FillIn({ appId, questions, answerOf, onFilled, copy }: {
   );
 }
 
-function FillInItem({ appId, questionKey, number, placeholder, answer, onFilled, copy }: {
-  appId: string; questionKey: string; number: number; placeholder: string; answer: string; onFilled: (text: string) => void; copy: Copy;
+function FillInItem({ number, placeholder, fill: fillPlaceholder, copy }: {
+  number: number; placeholder: string; fill: (value: string) => Promise<boolean>; copy: Copy;
 }) {
   const id = useId();
   const router = useRouter();
@@ -343,11 +357,8 @@ function FillInItem({ appId, questionKey, number, placeholder, answer, onFilled,
       e.preventDefault();
       if (!value.trim()) return;
       start(async () => {
-        const next = answer.replace(placeholder, value.trim());
-        const { ok } = await saveAnswer(appId, questionKey, next);
-        if (!ok) return setFailed(true);
+        if (!(await fillPlaceholder(value.trim()))) return setFailed(true);
         setValue("");
-        onFilled(next);
         router.refresh();
       });
     }}>
