@@ -7,10 +7,10 @@ import { logRun, withinDailyLimit } from "@/ai/usage";
 import { hasLocale, defaultLocale } from "@/i18n/config";
 import { messagesFor } from "@/i18n/messages-for";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { isProjectId } from "@/modules/projects/validation";
+import { isProjectId, MAX_PROJECTS } from "@/modules/projects/validation";
 
 export type DocumentError =
-  | "tooBig" | "notPdf" | "tooManyPages" | "limit" | "unreadable" | "notProject" | "unavailable" | "busy" | "error";
+  | "tooBig" | "notPdf" | "tooManyPages" | "limit" | "unreadable" | "notProject" | "unavailable" | "busy" | "error" | "projectLimit";
 
 const fail = (error: DocumentError, status = 400) => Response.json({ ok: false, error }, { status });
 
@@ -52,6 +52,14 @@ export async function POST(request: Request) {
   if (projectId) {
     const { data: owned } = await supabase.from("projects").select("id").eq("id", projectId).maybeSingle();
     if (!owned) return fail("error", 404);
+  }
+
+  if (!projectId) {
+    const [{ count: projects }, { data: admin }] = await Promise.all([
+      supabase.from("projects").select("id", { count: "exact", head: true }),
+      supabase.rpc("is_admin"),
+    ]);
+    if ((projects ?? 0) >= MAX_PROJECTS && admin !== true) return fail("projectLimit", 403);
   }
 
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -102,6 +110,7 @@ export async function POST(request: Request) {
     const { data: created, error } = await supabase
       .from("projects").insert({ title: doc.title || file.name.slice(0, 80), idea: doc.idea || doc.summary || doc.title })
       .select("id").single();
+    if (error?.hint === "project_limit") return (await logRun(supabase, run), fail("projectLimit", 403));
     if (error || !created) return (await logRun(supabase, run), fail("error", 500));
     id = created.id;
     await supabase.from("projects").update({ title_source: "ai" }).eq("id", id);

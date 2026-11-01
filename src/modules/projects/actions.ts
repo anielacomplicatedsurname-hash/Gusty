@@ -10,7 +10,8 @@ import {
 } from "./transfer";
 import { checkEmail, checkIdea, isProjectId, titleFromIdea } from "./validation";
 
-export type CreateProjectState = { error?: "empty" | "tooLong" | "unavailable" | "failed" };
+/** On an error the idea comes back too, so the box can show it again (forms clear themselves after an action). */
+export type CreateProjectState = { error?: "empty" | "tooLong" | "unavailable" | "failed" | "projectLimit"; idea?: string; attempt?: number };
 
 /**
  * Saves a new idea. Visitors without an account get a private guest session first,
@@ -21,18 +22,21 @@ export async function createProject(
   formData: FormData,
 ): Promise<CreateProjectState> {
   const lang = localeFrom(formData);
+  const typed = String(formData.get("idea") ?? "").slice(0, 20_000);
+  const back = (error: NonNullable<CreateProjectState["error"]>): CreateProjectState =>
+    ({ error, idea: typed, attempt: (_prev.attempt ?? 0) + 1 });
   const check = checkIdea(formData.get("idea"));
-  if (!check.ok) return { error: check.error };
+  if (!check.ok) return back(check.error);
 
   const supabase = await createSupabaseServerClient();
-  if (!supabase) return { error: "unavailable" };
+  if (!supabase) return back("unavailable");
 
   const { data: userData } = await supabase.auth.getUser();
   if (!userData.user) {
     const { error } = await supabase.auth.signInAnonymously();
     if (error) {
       console.error("Guest sign-in failed:", error.message);
-      return { error: "failed" };
+      return back("failed");
     }
   }
 
@@ -42,8 +46,10 @@ export async function createProject(
     .select("id")
     .single();
   if (error) {
+    // The free plan holds 3 projects at a time; the database enforces it.
+    if (error.hint === "project_limit") return back("projectLimit");
     console.error("Creating a project failed:", error.message);
-    return { error: "failed" };
+    return back("failed");
   }
 
   redirect(`/${lang}/projects/${data.id}`);

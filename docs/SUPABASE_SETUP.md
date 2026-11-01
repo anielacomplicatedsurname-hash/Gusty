@@ -38,6 +38,7 @@ Project: `https://xxordvjyxfjkidfenqla.supabase.co`. Do these in the Supabase da
 24. `20261101160000_application_answers.sql` (Answers to each question, drafted with Gusty)
 25. `20261101180000_answer_funder_words.sql` (Funder-language drafts: style and the funder's words used)
 26. `20261101200000_step_mood.sql` (Choosing a next step by how you feel)
+27. `20261101220000_free_plan.sql` (Free plan: 3 projects at a time; feedback check for the extra deep search)
 
 ## Making yourself an admin
 Sign in to Gusty with your email first, then in the SQL Editor run (with your own email):

@@ -526,3 +526,22 @@ hero keeps one message: "Good ideas deserve to move.".
     fit, the step is filed under the kind it really is, and the person is told where to find it.
 - **Home page:** the closing line's black underline is replaced by the same green swipe as "Small steps.",
   so the page uses one mark.
+
+## 2026-11-01 — The free plan: 3 projects at a time, 1 deep search a month (+1 after feedback)
+The founder set the free plan's limits.
+
+**Projects:** up to 3 at a time. The database enforces it with a trigger, so no route can get round it.
+- People who already have more than 3 keep them, but can't start another until they're under 3.
+- Starting a fourth, from an idea or a PDF, explains this and keeps their text. My Projects shows a calm note
+  at the limit.
+
+**Deep searches:** 1 per calendar month (UTC), plus 1 more that month after sharing feedback. This replaces
+the old per-day limits.
+- The allowance is shown in Explore ("left this month: n of max"). When it's used up, the page says when it
+  comes back and links to the feedback form for the extra search.
+- Whether someone has sent feedback is checked by a small function that returns a count only, never what
+  they wrote.
+
+**Exemptions:** admins (the founder) aren't limited. Research searches keep their own small daily allowance.
+
+Paid plans (credit packs, supporter allowances) come later, priced from real costs.

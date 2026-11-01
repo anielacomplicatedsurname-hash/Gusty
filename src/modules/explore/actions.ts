@@ -12,14 +12,14 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isProjectId } from "@/modules/projects/validation";
 import { loadDocuments } from "@/modules/documents/data";
 import { loadWorkedOut } from "@/modules/step-work/data";
-import { SEARCHES_PER_PERSON_PER_DAY, SEARCHES_PER_PROJECT_PER_DAY } from "./limits";
+import { searchAllowance } from "./limits";
 
-export type SearchResult = { ok: true } | { ok: false; error: "limitProject" | "limitPerson" | "limit" | "unavailable" | "error" };
+export type SearchResult = { ok: true } | { ok: false; error: "limitMonth" | "limit" | "unavailable" | "error" };
 type Supabase = NonNullable<Awaited<ReturnType<typeof createSupabaseServerClient>>>;
 
 /**
  * Starts a deep online search for one project. It runs after the response (a minute or two), and the
- * Explore page shows the results when they're saved. Limited per project and per person each day.
+ * Explore page shows the results when they're saved. The free plan allows one a month, plus one after feedback.
  */
 export async function startSearch(projectId: string, rawPlace: string, lang: string): Promise<SearchResult> {
   if (!isProjectId(projectId)) return { ok: false, error: "error" };
@@ -27,16 +27,12 @@ export async function startSearch(projectId: string, rawPlace: string, lang: str
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { ok: false, error: "unavailable" };
 
-  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const [{ data: project }, forProject, forPerson] = await Promise.all([
+  const [{ data: project }, allowance] = await Promise.all([
     supabase.from("projects").select("id, title, idea").eq("id", projectId).maybeSingle(),
-    supabase.from("opportunity_searches").select("id", { count: "exact", head: true })
-      .eq("project_id", projectId).neq("status", "failed").gte("created_at", since),
-    supabase.from("opportunity_searches").select("id", { count: "exact", head: true }).neq("status", "failed").gte("created_at", since),
+    searchAllowance(supabase),
   ]);
   if (!project) return { ok: false, error: "error" };
-  if ((forProject.count ?? 0) >= SEARCHES_PER_PROJECT_PER_DAY) return { ok: false, error: "limitProject" };
-  if ((forPerson.count ?? 0) >= SEARCHES_PER_PERSON_PER_DAY) return { ok: false, error: "limitPerson" };
+  if (allowance.left <= 0) return { ok: false, error: "limitMonth" };
   const provider = aiProvider();
   if (provider && !(await withinDailyLimit(supabase))) return { ok: false, error: "limit" };
 

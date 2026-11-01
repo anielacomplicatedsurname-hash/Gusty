@@ -45,7 +45,8 @@
       "empty": "Write a few words about your idea first.",
       "tooLong": "That's a lot of words! Please keep it under 5,000 characters for now.",
       "unavailable": "Saving isn't available right now. Your text is still here; please try again later.",
-      "failed": "Something went wrong while saving. Your text is still here; please try again."
+      "failed": "Something went wrong while saving. Your text is still here; please try again.",
+      "projectLimit": "You have 3 projects, the most the free plan holds at once. Delete one in My Projects to start another. Your text is still here."
     },
     "sloganBig": "Big possibilities.",
     "sloganSmall": "Small steps.",
@@ -127,7 +128,8 @@
     "deleteWarning": "This deletes “{title}” and everything in it: steps, notes, your story and applications. It can't be brought back.",
     "deleteTypeName": "To be sure, type the project's name: {title}",
     "deleteForever": "Delete it for ever",
-    "deleteFailed": "That didn't work. Please check the name and try again."
+    "deleteFailed": "That didn't work. Please check the name and try again.",
+    "atLimit": "The free plan holds 3 projects at a time. To start a new one, delete one you've finished with."
   },
   "emailLink": {
     "label": "Email address",
@@ -555,7 +557,7 @@
       "empty": "Write a few words in any of the boxes, then send.",
       "failed": "That didn't send. Please try again in a moment."
     },
-    "privacy": "Your feedback is read only by the person who runs Gusty and is never shown publicly.",
+    "privacy": "Your feedback is read only by the person who runs Gusty and is never shown publicly. Sharing feedback also gives you one more deep search that month.",
     "privacyLink": "Read our privacy notice",
     "banner": "Gusty is in early testing. Your thoughts shape what we build next.",
     "bannerLink": "Tell us what you think",
@@ -823,8 +825,6 @@
     "starting": "Starting the search…",
     "running": "Gusty is doing a deep search. This can take a couple of minutes, and you can leave this page: the results will be here when you come back.",
     "failed": "The last search didn't finish. Please try again.",
-    "limitProject": "You've already run today's deep search for this project. You can run another tomorrow, and your results are kept here.",
-    "limitPerson": "You've used today's {max} deep searches. They reset within a day, and your results are kept.",
     "foundOn": "Found by Gusty on {date}{place}. Details can change, so confirm with the funder before you apply.",
     "around": " around {place}",
     "none": "Gusty didn't find anything that clearly fits this time. Try a wider area, or add more about your idea in “Here's what I understood” and search again tomorrow.",
@@ -929,9 +929,8 @@
       "other": "Other support"
     },
     "deepSearchTitle": "Deep search",
-    "deepSearchWhat": "A deep search reads dozens of web pages, from your neighbourhood to international funds. Each one costs Gusty about £0.50 to £1 to run, so there's a daily allowance.",
-    "allowance": "Deep searches left today: {n} of {max}",
-    "allowanceProject": "One deep search per project each day.",
+    "deepSearchWhat": "A deep search reads dozens of web pages, from your neighbourhood to international funds. Each one costs Gusty about £0.50 to £1 to run, so the free plan includes one a month, and one more when you share feedback.",
+    "allowance": "Deep searches left this month: {n} of {max}",
     "sideTitle": "Your projects",
     "fresh": {
       "fresh": "Up to date",
@@ -943,7 +942,10 @@
     "lastSearched": "Last deep search {date}",
     "save": "Save to my project",
     "saved": "Saved to your project",
-    "unsave": "Remove from saved"
+    "unsave": "Remove from saved",
+    "limitMonth": "You've used this month's deep searches. They come back on {date}, and your results are kept here.",
+    "limitBonus": "Want one more this month?",
+    "limitBonusLink": "Tell us what you think of Gusty"
   },
   "readiness": {
     "title": "Ready for funding",
@@ -1068,7 +1070,8 @@
       "notProject": "That document doesn't seem to be about a project or idea.",
       "unavailable": "Gusty can't read documents right now. Please try again later.",
       "busy": "Gusty is a little busy right now. Please try again in a minute.",
-      "error": "Something went wrong. Please try again."
+      "error": "Something went wrong. Please try again.",
+      "projectLimit": "You have 3 projects, the most the free plan holds at once. Delete one in My Projects to bring in another."
     }
   },
   "projectHome": {

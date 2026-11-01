@@ -429,3 +429,27 @@ describe("application answers", () => {
     expect(changed ?? []).toEqual([]);
   });
 });
+
+describe("the free plan", () => {
+  it("holds 3 projects at a time, enforced by the database", async () => {
+    const person = client();
+    expect((await person.auth.signInAnonymously()).error).toBeNull();
+    for (const title of ["One", "Two", "Three"]) {
+      expect((await person.from("projects").insert({ title, idea: "An idea" })).error).toBeNull();
+    }
+    const fourth = await person.from("projects").insert({ title: "Four", idea: "An idea" });
+    expect(fourth.error?.hint).toBe("project_limit");
+  });
+
+  it("says whether someone has shared feedback, without revealing what they wrote", async () => {
+    const person = client();
+    expect((await person.auth.signInAnonymously()).error).toBeNull();
+    const since = new Date(Date.now() - 60_000).toISOString();
+    expect((await person.rpc("my_feedback_since", { since })).data).toBe(0);
+    expect((await person.from("feedback").insert({ worked: "Lovely" })).error).toBeNull();
+    expect((await person.rpc("my_feedback_since", { since })).data).toBe(1);
+    const other = client();
+    expect((await other.auth.signInAnonymously()).error).toBeNull();
+    expect((await other.rpc("my_feedback_since", { since })).data).toBe(0);
+  });
+});
