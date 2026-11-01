@@ -102,13 +102,25 @@ test("sharing feedback gives one more deep search that month", async ({ page }) 
 });
 
 test("the free plan holds 3 projects at a time", async ({ page }) => {
+  // Coming back, the idea box is folded away behind "Start something new", with one main action on screen.
+  const startNew = async () => {
+    await page.waitForLoadState("networkidle");
+    const more = page.getByRole("button", { name: "Start something new" });
+    if (await more.isVisible()) {
+      await expect(page.getByLabel("What's your idea?")).toBeHidden();
+      await more.click();
+      await expect(more).toHaveAttribute("aria-expanded", "true");
+    }
+  };
   for (const idea of ["First idea for the street", "Second idea for the street", "Third idea for the street"]) {
     await page.goto("/en");
+    await startNew();
     await page.getByLabel("What's your idea?").fill(idea);
     await page.getByRole("button", { name: "Start with my idea" }).click();
     await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/);
   }
   await page.goto("/en");
+  await startNew();
   await page.getByLabel("What's your idea?").fill("A fourth idea");
   await page.getByRole("button", { name: "Start with my idea" }).click();
   await expect(page.getByRole("alert").filter({ hasText: "You have 3 projects" })).toBeVisible();

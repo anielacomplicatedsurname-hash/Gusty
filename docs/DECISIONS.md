@@ -623,3 +623,14 @@ heavy black border, which crowded the first view. Now the headline and line unde
 everyone, then one card at one width: returning visitors see "Pick up where you left off" at its top (on a
 quiet paper tint), then the idea box; first-time visitors see just the idea box. The Hey Gusty logo sits
 beside the headline. On phones the headline is sized so "deserve to move." stays on one line.
+
+## 2026-11-01 — Home start area: two clear states, wide panels
+The founder found the one tall card too long and busy, with empty space to the right. Now:
+- **First time:** one wide panel with just the idea box. Dictate sits on the left, "Bring in a PDF" and
+  "Start with my idea" on the right, and the privacy line below, so it's two rows instead of a tall stack.
+- **Coming back:** one wide panel, "Pick up where you left off", with the project, its next step and a single
+  Continue button on the right. Starting something new is folded behind one "+ Start something new" line,
+  so there's one main action on screen. The "Welcome back" label was dropped: less to read.
+- The idea box is always the same element. The returning panel streams in and only hides it with CSS, so
+  text typed in the first moment is never lost. Focusing the box keeps it open.
+- On phones the same panels stack.
