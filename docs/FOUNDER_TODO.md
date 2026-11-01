@@ -21,7 +21,7 @@ tick items off by asking Claude, or edit the file.
 - [ ] **Replace the Claude API key before about 24 November**, when the current one expires. Create a new
   key in the Claude Console and put it in Render as `ANTHROPIC_API_KEY`. Keep web search and web fetch
   enabled for the key's workspace in the Console.
-- [ ] **Update the three sign-in email templates in Supabase** (new footer line "People. Ideas.
+- [x] **Update the three sign-in email templates in Supabase** (done 1 November 2026) (new footer line "People. Ideas.
   Opportunities. A little wind beneath your wings."). Supabase → Authentication → Emails → Templates: for
   Confirm signup, Magic Link and Change Email Address, paste the whole of `confirmation.html`,
   `magic-link.html` and `email-change.html` from `supabase/templates/` → Save. Do this after merging.
