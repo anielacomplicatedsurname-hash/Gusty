@@ -40,6 +40,10 @@ test("a calm project home: one next step, a line of progress, four areas, and a 
   const welcome = page.locator("section[aria-labelledby=welcome-title]");
   await expect(welcome.getByRole("heading", { name: "Pick up where you left off" })).toBeVisible();
   await expect(welcome.getByText("Next: Write your idea in three sentences")).toBeVisible();
+  // One main action: the idea box waits behind "Start something new".
+  await expect(page.getByLabel("What's your idea?")).toBeHidden();
+  await page.getByRole("button", { name: "Start something new" }).click();
+  await expect(page.getByLabel("What's your idea?")).toBeVisible();
   const homeScan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(homeScan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
   await welcome.getByRole("link", { name: "Continue" }).click();

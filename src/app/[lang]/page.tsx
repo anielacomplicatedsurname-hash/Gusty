@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { BrandSymbol, type SymbolName } from "@/components/BrandSymbol";
 import { Logo } from "@/components/Logo";
 import { getMessages } from "@/i18n/dictionaries";
+import { StartArea } from "@/modules/projects/StartArea";
 import { WelcomeBack } from "@/modules/projects/WelcomeBack";
 import { supportChoices } from "@/config/support";
 import { supabaseConfig } from "@/lib/supabase/config";
@@ -26,46 +27,50 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   const t = await getMessages();
   const support = supportChoices();
+  const ideaForm = (
+    <IdeaForm
+      lang={lang}
+      enabled={supabaseConfig() !== null}
+      copy={{
+        label: t.home.ideaLabel,
+        hint: t.home.ideaHint,
+        submit: t.home.ideaSubmit,
+        pdf: t.home.ideaPdf,
+        saving: t.home.ideaSaving,
+        privacy: t.home.ideaPrivacy,
+        unavailable: t.home.ideaUnavailable,
+        previewBadge: t.common.previewBadge,
+        errors: t.home.ideaErrors,
+      }}
+      captcha={<Suspense fallback={null}><GuestCaptcha lang={lang} /></Suspense>}
+    />
+  );
 
   return (
     <>
       <section className="bg-linear-to-b from-surface-raised/60 to-surface">
-        <div className="mx-auto grid max-w-(--content-max) gap-10 px-4 pb-24 pt-12 sm:px-6 md:pb-32 md:pt-20 lg:grid-cols-[1.35fr_0.65fr] lg:items-start lg:pt-28">
-          <div>
-            <h1 className="type-display text-[3rem] min-[400px]:text-[3.5rem] sm:text-8xl lg:text-[6.5rem]">
-              <span className="block text-balance">{t.home.headline}</span>{" "}
-              <em className="block text-balance italic">{t.home.headlineItalic}</em>
-            </h1>
-            <p className="mt-8 max-w-xl text-lg leading-relaxed text-text-muted sm:text-xl">{t.home.lead}</p>
-
-            {/* One card, one width: people coming back see "Pick up where you left off" at the top of it, then
-                the idea box for something new. First-time visitors see just the idea box. */}
-            <div className="mt-10 max-w-xl overflow-hidden rounded-(--radius-card) border border-border bg-surface-raised shadow-[0_1px_0_rgba(17,17,17,0.04)]">
-              <Suspense fallback={null}>
-                <WelcomeBack lang={lang} t={t} />
-              </Suspense>
-              <IdeaForm
-                lang={lang}
-                enabled={supabaseConfig() !== null}
-                copy={{
-                  label: t.home.ideaLabel,
-                  hint: t.home.ideaHint,
-                  submit: t.home.ideaSubmit,
-                  pdf: t.home.ideaPdf,
-                  saving: t.home.ideaSaving,
-                  privacy: t.home.ideaPrivacy,
-                  unavailable: t.home.ideaUnavailable,
-                  previewBadge: t.common.previewBadge,
-                  errors: t.home.ideaErrors,
-                }}
-                captcha={<Suspense fallback={null}><GuestCaptcha lang={lang} /></Suspense>}
-              />
+        <div className="mx-auto max-w-(--content-max) px-4 pb-24 pt-12 sm:px-6 md:pb-32 md:pt-20 lg:pt-24">
+          <div className="grid gap-10 lg:grid-cols-[1.35fr_0.65fr] lg:items-center">
+            <div>
+              <h1 className="type-display text-[3rem] min-[400px]:text-[3.5rem] sm:text-8xl lg:text-[6.5rem]">
+                <span className="block text-balance">{t.home.headline}</span>{" "}
+                <em className="block text-balance italic">{t.home.headlineItalic}</em>
+              </h1>
+              <p className="mt-8 max-w-xl text-lg leading-relaxed text-text-muted sm:text-xl">{t.home.lead}</p>
+            </div>
+            <div className="hidden lg:flex lg:justify-end" aria-hidden="true">
+              <Logo variant="hey" height={300} alt="" priority />
             </div>
           </div>
 
-          {/* Sits beside the headline, like a stamp, whatever the length of the card below. */}
-          <div className="hidden lg:flex lg:justify-end lg:pt-6" aria-hidden="true">
-            <Logo variant="hey" height={380} alt="" priority />
+          {/* The start area, full width: the idea box for first-time visitors; "Pick up where you left off"
+              (with the idea box folded away) for people coming back. */}
+          <div className="mt-12 md:mt-16">
+            <StartArea
+              welcome={<Suspense fallback={null}><WelcomeBack lang={lang} t={t} /></Suspense>}
+              form={ideaForm}
+              startNew={t.projectHome.welcome.startNew}
+            />
           </div>
         </div>
       </section>

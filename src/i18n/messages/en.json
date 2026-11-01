@@ -1164,7 +1164,8 @@
       "title": "Pick up where you left off",
       "next": "Next: {step}",
       "continue": "Continue",
-      "all": "All my projects"
+      "all": "All my projects",
+      "startNew": "Start something new"
     },
     "cardNext": "Next: {step}",
     "searched": {
