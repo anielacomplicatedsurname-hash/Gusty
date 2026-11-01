@@ -17,13 +17,17 @@
     "connections": "Connections"
   },
   "home": {
-    "headline": "Good ideas",
-    "headlineItalic": "deserve to move.",
+    "headline": "Designed for minds that wander",
+    "headlineItalic": "and ideas that want to fly",
     "lead": "Tell Gusty about your idea. Gusty helps you understand it, shape it and take the next small step towards the funding, people and tools that make it happen.",
     "ideaLabel": "What's your idea?",
     "ideaHint": "Write it however it comes to you. A few words is enough.",
     "ideaSubmit": "Start with my idea",
+    "ideaPdf": "Bring in a PDF",
     "howTitle": "How it works",
+    "stepsLabel": "Three small steps",
+    "howMore": "Everything you start lives in",
+    "howLink": "My Projects",
     "steps": [
       {
         "title": "Describe it",
@@ -50,6 +54,23 @@
     },
     "sloganBig": "Big possibilities.",
     "sloganSmall": "Small steps.",
+    "featuresLabel": "From idea to application",
+    "featuresTitle": "Everything your idea needs, in one calm place",
+    "featuresBody": "Your story, the funding that could fit, and answers in the funder's own language.",
+    "features": [
+      {
+        "title": "Shape your idea",
+        "body": "A living picture of your idea that grows with every step you take."
+      },
+      {
+        "title": "Find funding that fits",
+        "body": "Deep searches from your neighbourhood to international funds, each with its source."
+      },
+      {
+        "title": "Apply with confidence",
+        "body": "Drafts in the funder's language, from your own story. Nothing made up."
+      }
+    ],
     "closingStart": "Less searching.",
     "closingEnd": "More happening."
   },

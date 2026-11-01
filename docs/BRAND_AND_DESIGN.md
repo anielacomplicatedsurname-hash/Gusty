@@ -26,17 +26,25 @@ All SVGs use `fill="currentColor"`. Logos are shown as images (always Ink). Symb
 `<BrandSymbol>` (a CSS mask), so they take the surrounding text colour.
 
 ## Typography
-Free fonts (all SIL Open Font License, self-hosted at build time via `next/font`). The display serif was
-chosen by the founder on 2026-10-29; the others are the closest matches to the original reference sheet:
+Free fonts (all SIL Open Font License, self-hosted at build time via `next/font`). The founder chose the
+display serif on 2026-11-01 (Newsreader, replacing Instrument Serif); the UI sans is the closest match to the
+original reference sheet:
 
 | Role | Font | Usage |
 |---|---|---|
-| Display serif | **Instrument Serif**, regular, slightly tight tracking (`.type-display`). The home headline sets its second line in italic ("Good ideas / *deserve to move.*") | Page titles and key brand moments only |
+| Display serif | **Newsreader** (variable, optical sizes), regular, tight tracking (`.type-display`). Brand lines set their second half in italic ("Designed for minds that wander / *and ideas that want to fly*", "Big possibilities. *Small steps.*") | Page titles and key brand moments only |
 | UI sans | **Google Sans Flex** | Everything functional: body, forms, navigation |
-| Label | Google Sans Flex, uppercase, 0.2em tracking (`.type-label`) | Section labels, metadata |
+| Label | Google Sans Flex, medium, plain sentence case (`.type-label`) | Section labels, metadata |
 
 All three fonts cover Latin and Latin Extended (most European languages). None covers Cyrillic, Greek,
 Arabic or Hebrew: when such a language is added, choose fallbacks then.
+
+## Layout
+Generous space: big sections get 6–9rem of padding top and bottom, each section does one job. Section
+headings follow one pattern: a small label, a large serif title, then a short muted line. Cards keep their
+rounded corners. Buttons stay the plain pills (`.btn-primary`, `.btn-secondary`). A soft Signal glow
+(radial gradient from the bottom) can mark one feature section per page. Lists of instructions are
+numbered, never arrowed, so they don't look clickable.
 
 ## Colour
 Functional status colours (not brand colours): small dots for Explore's freshness lights, always shown with a

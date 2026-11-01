@@ -61,7 +61,7 @@ async function ProjectsContent({
           </div>
         </div>
         <EmptyState lang={lang} t={t} />
-      <section aria-labelledby="import-title" className="mt-10 flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-6">
+      <section id="bring-in" aria-labelledby="import-title" className="mt-10 scroll-mt-24 flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-6">
         <h2 id="import-title" className="text-xl font-semibold">{t.documents.newTitle}</h2>
         <p className="text-text-muted">{t.documents.newBody}</p>
         <DocumentUpload lang={lang} copy={t.documents} />
@@ -99,7 +99,7 @@ async function ProjectsContent({
           </div>
         </div>
       )}
-      <section aria-labelledby="import-title" className="mt-10 flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-6">
+      <section id="bring-in" aria-labelledby="import-title" className="mt-10 scroll-mt-24 flex flex-col gap-3 rounded-(--radius-card) bg-surface-raised p-6">
         <h2 id="import-title" className="text-xl font-semibold">{t.documents.newTitle}</h2>
         <p className="text-text-muted">{t.documents.newBody}</p>
         <DocumentUpload lang={lang} copy={t.documents} />

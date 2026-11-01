@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Google_Sans_Flex, Instrument_Serif } from "next/font/google";
+import { Google_Sans_Flex, Newsreader } from "next/font/google";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { ServiceWorker } from "@/components/ServiceWorker";
@@ -17,9 +17,11 @@ const uiSans = Google_Sans_Flex({
   adjustFontFallback: false,
   fallback: ["system-ui", "sans-serif"],
 });
-const displaySerif = Instrument_Serif({
-  weight: "400",
+// Newsreader: a wide, calm book serif with an optical-size axis, so big headlines stay crisp.
+const displaySerif = Newsreader({
+  weight: "variable",
   style: ["normal", "italic"],
+  axes: ["opsz"],
   subsets: ["latin", "latin-ext"],
   variable: "--font-serif",
   display: "swap",
