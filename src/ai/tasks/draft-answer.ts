@@ -40,7 +40,8 @@ mentioned only from the sources they've kept, with the publisher and year, as th
 
 - draft: the answer itself, ready to edit. Stay within the limit if there is one; aim for about 90% of it.
   Without a limit, keep it under 250 words. Plain paragraphs, no headings, no bullet points unless the
-  question asks for a list. Answer the question that's asked, in the order it asks.
+  question asks for a list. Answer the question that's asked, in the order it asks. Use a short dash (–) or a
+  comma, never a long dash (—).
 - funderWords: every word or phrase in your draft taken from the funder's own material, exactly as it
   appears in the draft (for example "reducing social isolation"). Leave out everyday words.
 - gaps: up to 5 things the answer needs that their material doesn't show. missing: under 15 words.
@@ -115,6 +116,7 @@ How to improve it:
 - Make it answer exactly what the question asks, in the order it asks, and bring out what this funder cares
   about.
 - Make it clearer and tighter: plain words, no jargon, no padding. Stay within the limit if there is one.
+  Use a short dash (–) or a comma, never a long dash (—).
 - Never invent achievements, numbers, names, partners, quotes, dates or evidence. Keep any [bracketed] parts
   they've left, and if the question needs something their material doesn't show, add a short [placeholder]
   and list it in gaps.

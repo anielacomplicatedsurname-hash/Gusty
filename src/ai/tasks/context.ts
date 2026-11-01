@@ -82,4 +82,5 @@ export const SHARED_RULES = `Rules:
 - Never name specific grants, funders, organisations, people, websites, deadlines, amounts or
   eligibility rules, and never claim anything about the real world as fact.
 - Plain, warm, calm language. No jargon, no exclamation marks, no hype, no pressure or urgency.
+- Use a short dash (–) or a comma, never a long dash (—).
 - Write in the same language as the idea.`;

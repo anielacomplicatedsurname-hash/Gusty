@@ -1,8 +1,8 @@
 {
   "meta": {
-    "title": "Gusty — Good ideas deserve to move",
+    "title": "Gusty – Good ideas deserve to move",
     "titleTemplate": "%s · Gusty",
-    "description": "Gusty helps you turn an idea into a real project, one small step at a time — with the funding, people and tools to make it happen."
+    "description": "Gusty helps you turn an idea into a real project, one small step at a time – with the funding, people and tools to make it happen."
   },
   "common": {
     "skipToContent": "Skip to content",
@@ -57,11 +57,11 @@
     "featuresLabel": "From idea to application",
     "featuresTitle": "Designed for minds that wander",
     "featuresTitleItalic": "and ideas that want to fly",
-    "featuresBody": "Your story, the funding that could fit, and answers in the funder's own language.",
+    "featuresBody": "There's no one right way to think, dream or get things done. Gusty helps you find your own way forward.",
     "features": [
       {
         "title": "Shape your idea",
-        "body": "A living picture of your idea that grows with every step you take."
+        "body": "Your idea doesn't need to be fully formed. Watch it grow with every step you take."
       },
       {
         "title": "Find funding that fits",
