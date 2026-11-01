@@ -1,5 +1,6 @@
 "use client";
 
+import { Dictate } from "@/components/Dictate";
 import { useEffect, useRef, useState } from "react";
 import { saveIdea } from "./actions";
 import { IDEA_MAX_LENGTH } from "./validation";
@@ -80,6 +81,7 @@ export function IdeaEditor({
         aria-describedby="project-idea-hint project-idea-status"
         className="mt-3 w-full resize-y rounded-xl border border-stone bg-paper p-3 text-base leading-relaxed"
       />
+      <Dictate target="project-idea" />
       <p
         id="project-idea-status"
         role="status"

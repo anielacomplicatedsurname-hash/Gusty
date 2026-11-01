@@ -74,6 +74,20 @@
     "closingStart": "Less searching.",
     "closingEnd": "More happening."
   },
+  "dictation": {
+    "start": "Dictate",
+    "stop": "Stop dictating",
+    "listening": "Listening. Speak in your own words; they appear in the box. Press “Stop dictating” when you're done.",
+    "consentTitle": "Before you dictate",
+    "consentBody": "Your browser turns your voice into text with its own speech service (for example Google's in Chrome, Apple's in Safari). Gusty never receives the recording, only the words that appear in the box. You can always type instead.",
+    "consentOk": "Start dictating",
+    "consentCancel": "Not now",
+    "errors": {
+      "blocked": "Gusty can't use your microphone. You can allow it in your browser's settings, or type instead.",
+      "noSpeech": "Gusty didn't hear anything. Try again whenever you're ready.",
+      "failed": "Dictation stopped. Anything already in the box is kept: try again, or type instead."
+    }
+  },
   "comingNext": {
     "label": "Coming next",
     "back": "Back to home",
@@ -589,7 +603,7 @@
     "privacy": {
       "title": "Privacy notice",
       "description": "What Gusty collects, why, who helps us run it, and your rights.",
-      "updated": "Last updated: 31 October 2026",
+      "updated": "Last updated: 1 November 2026",
       "intro": "This notice explains, in plain language, what happens to your information when you use Gusty at heygusty.com.",
       "sections": [
         {
@@ -629,6 +643,12 @@
             "If you bring in a PDF, it's sent to Anthropic for Claude to read, then discarded: Gusty doesn't keep the file. It keeps only its notes (a short summary and what the document says you've done), which you can read and delete on the project page.",
             "Your projects are private to you. We never show them to other people who use Gusty, and we never use one person's ideas to make suggestions for someone else: each request only includes the project you're working on.",
             "AI suggestions can be wrong. Please avoid including sensitive details, such as health information, about yourself or other people in your ideas."
+          ]
+        },
+        {
+          "heading": "Dictation",
+          "paragraphs": [
+            "If you press “Dictate”, your browser's own speech service turns your voice into text: for example Google's in Chrome and Apple's in Safari, under their own privacy terms. Gusty never receives or keeps the recording, only the words that appear in the box, which are saved like anything you type. Gusty asks before the microphone is used for the first time, and you can always type instead."
           ]
         },
         {

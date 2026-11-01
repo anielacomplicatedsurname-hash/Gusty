@@ -1,5 +1,6 @@
 "use client";
 
+import { Dictate } from "@/components/Dictate";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import type en from "@/i18n/messages/en.json";
@@ -199,6 +200,7 @@ function AutosaveText({
         onBlur={() => void finish(value)}
         className="mt-1 w-full rounded-xl border border-stone bg-paper p-3 text-base"
       />
+      <Dictate target={id} />
       <p id={`${id}-status`} data-status={status} aria-live="polite" className="mt-1 h-5 text-sm text-text-muted">
         {status === "saving" ? copy.saving : status === "saved" ? copy.saved : status === "failed" ? copy.errors.failed : ""}
       </p>
