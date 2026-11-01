@@ -30,37 +30,41 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   return (
     <>
       <section className="bg-linear-to-b from-surface-raised/60 to-surface">
-        <div className="mx-auto grid max-w-(--content-max) gap-10 px-4 pb-24 pt-12 sm:px-6 md:pb-32 md:pt-20 lg:grid-cols-[1.35fr_0.65fr] lg:items-center lg:pt-28">
+        <div className="mx-auto grid max-w-(--content-max) gap-10 px-4 pb-24 pt-12 sm:px-6 md:pb-32 md:pt-20 lg:grid-cols-[1.35fr_0.65fr] lg:items-start lg:pt-28">
           <div>
-            {/* For people coming back: "Pick up where you left off" comes first. */}
-            <Suspense fallback={null}>
-              <WelcomeBack lang={lang} t={t} />
-            </Suspense>
-            <h1 className="type-display text-[3.75rem] sm:text-8xl lg:text-[6.5rem]">
+            <h1 className="type-display text-[3rem] min-[400px]:text-[3.5rem] sm:text-8xl lg:text-[6.5rem]">
               <span className="block text-balance">{t.home.headline}</span>{" "}
               <em className="block text-balance italic">{t.home.headlineItalic}</em>
             </h1>
             <p className="mt-8 max-w-xl text-lg leading-relaxed text-text-muted sm:text-xl">{t.home.lead}</p>
 
-            <IdeaForm
-              lang={lang}
-              enabled={supabaseConfig() !== null}
-              copy={{
-                label: t.home.ideaLabel,
-                hint: t.home.ideaHint,
-                submit: t.home.ideaSubmit,
-                pdf: t.home.ideaPdf,
-                saving: t.home.ideaSaving,
-                privacy: t.home.ideaPrivacy,
-                unavailable: t.home.ideaUnavailable,
-                previewBadge: t.common.previewBadge,
-                errors: t.home.ideaErrors,
-              }}
-              captcha={<Suspense fallback={null}><GuestCaptcha lang={lang} /></Suspense>}
-            />
+            {/* One card, one width: people coming back see "Pick up where you left off" at the top of it, then
+                the idea box for something new. First-time visitors see just the idea box. */}
+            <div className="mt-10 max-w-xl overflow-hidden rounded-(--radius-card) border border-border bg-surface-raised shadow-[0_1px_0_rgba(17,17,17,0.04)]">
+              <Suspense fallback={null}>
+                <WelcomeBack lang={lang} t={t} />
+              </Suspense>
+              <IdeaForm
+                lang={lang}
+                enabled={supabaseConfig() !== null}
+                copy={{
+                  label: t.home.ideaLabel,
+                  hint: t.home.ideaHint,
+                  submit: t.home.ideaSubmit,
+                  pdf: t.home.ideaPdf,
+                  saving: t.home.ideaSaving,
+                  privacy: t.home.ideaPrivacy,
+                  unavailable: t.home.ideaUnavailable,
+                  previewBadge: t.common.previewBadge,
+                  errors: t.home.ideaErrors,
+                }}
+                captcha={<Suspense fallback={null}><GuestCaptcha lang={lang} /></Suspense>}
+              />
+            </div>
           </div>
 
-          <div className="hidden lg:flex lg:justify-end" aria-hidden="true">
+          {/* Sits beside the headline, like a stamp, whatever the length of the card below. */}
+          <div className="hidden lg:flex lg:justify-end lg:pt-6" aria-hidden="true">
             <Logo variant="hey" height={380} alt="" priority />
           </div>
         </div>

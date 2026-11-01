@@ -616,3 +616,10 @@ A short line under the form says Cloudflare checks the browser; the privacy noti
 **Switching it on:** the code reads `TURNSTILE_SITE_KEY` (Render) at request time; enforcement is a switch in
 Supabase with the secret key, so it can be turned off at once if anything goes wrong. With no key, nothing
 loads. The CSP allows `challenges.cloudflare.com` for the script and its frame.
+
+## 2026-11-01 — One card on the home page
+For people coming back, "Pick up where you left off" sat above the headline as a separate, wider box with a
+heavy black border, which crowded the first view. Now the headline and line under it come first for
+everyone, then one card at one width: returning visitors see "Pick up where you left off" at its top (on a
+quiet paper tint), then the idea box; first-time visitors see just the idea box. The Hey Gusty logo sits
+beside the headline. On phones the headline is sized so "deserve to move." stays on one line.
