@@ -181,16 +181,6 @@ export async function describeVoice(projectId: string, lang: string): Promise<Vo
   return (await writeVoice(supabase, projectId, description, "ai")) ? { ok: true } : { ok: false, error: "error" };
 }
 
-/** The person writes or changes the description of their voice: it becomes theirs. */
-export async function saveVoice(projectId: string, raw: string): Promise<{ ok: boolean }> {
-  if (!isProjectId(projectId)) return { ok: false };
-  const description = clean(raw, 1200);
-  if (!description) return { ok: false };
-  const supabase = await createSupabaseServerClient();
-  if (!supabase) return { ok: false };
-  return { ok: await writeVoice(supabase, projectId, description, "user") };
-}
-
 /** Insert or update, without letting the app change which project a description belongs to. */
 async function writeVoice(supabase: Supabase, projectId: string, description: string, source: "ai" | "user"): Promise<boolean> {
   const row = { description, source, updated_at: new Date().toISOString() };

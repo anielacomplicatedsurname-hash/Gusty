@@ -88,8 +88,8 @@ export function ReadingView({
     });
   }
 
+  // Questions a step has answered simply leave the list: the answer lives in that step's notes.
   const questions = facts.filter((f) => f.kind === "question" && !f.answered);
-  const answered = facts.filter((f) => f.kind === "question" && f.answered);
 
   return (
     <div className="flex flex-col gap-6" aria-busy={pending}>
@@ -123,54 +123,26 @@ export function ReadingView({
         })}
       </dl>
 
-      {(questions.length > 0 || answered.length > 0) && (
+      {questions.length > 0 && (
         <section aria-labelledby="open-questions" className="rounded-xl bg-paper p-4">
           <h3 id="open-questions" className="type-label text-text-muted">{copy.sections.question}</h3>
-          {questions.length > 0 ? (
-            <>
-              <p className="mt-1 text-sm text-text-muted">{copy.questionsNote}</p>
-              <ul className="mt-3 flex flex-col gap-2">
-                {questions.map((q) => (
-                  <li key={q.id} className="flex items-start justify-between gap-3">
-                    <span>{q.value}</span>
-                    <button
-                      type="button"
-                      className="shrink-0 text-sm font-medium underline underline-offset-4"
-                      disabled={pending}
-                      onClick={() => act(() => removeFact(q.id))}
-                      aria-label={`${copy.actions.remove}: ${q.value}`}
-                    >
-                      {copy.actions.remove}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : (
-            <p className="mt-1 text-sm text-text-muted">{copy.allAnswered}</p>
-          )}
-          {answered.length > 0 && (
-            <details className="mt-3 border-t border-border pt-3">
-              <summary className="min-h-11 cursor-pointer text-sm font-medium">
-                {answered.length === 1 ? copy.answeredOne : fill(copy.answeredMany, { n: String(answered.length) })}
-              </summary>
-              <ul className="mt-2 flex flex-col gap-3">
-                {answered.map((q) => (
-                  <li key={q.id} className="flex flex-col gap-1">
-                    <span className="text-text-muted line-through decoration-1">{q.value}</span>
-                    <span>{q.answered!.answer}</span>
-                    <span className="flex flex-wrap items-center gap-x-3 text-sm text-text-muted">
-                      {q.answered!.stepTitle && <span>{fill(copy.answeredIn, { step: q.answered!.stepTitle })}</span>}
-                      <button type="button" className="min-h-6 font-medium text-ink underline underline-offset-4" disabled={pending}
-                        onClick={() => act(() => undoChange(q.answered!.id))} aria-label={`${copy.bringBack}: ${q.value}`}>
-                        {copy.bringBack}
-                      </button>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </details>
-          )}
+          <p className="mt-1 text-sm text-text-muted">{copy.questionsNote}</p>
+          <ul className="mt-3 flex flex-col gap-2">
+            {questions.map((q) => (
+              <li key={q.id} className="flex items-start justify-between gap-3">
+                <span>{q.value}</span>
+                <button
+                  type="button"
+                  className="shrink-0 text-sm font-medium underline underline-offset-4"
+                  disabled={pending}
+                  onClick={() => act(() => removeFact(q.id))}
+                  aria-label={`${copy.actions.remove}: ${q.value}`}
+                >
+                  {copy.actions.remove}
+                </button>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 

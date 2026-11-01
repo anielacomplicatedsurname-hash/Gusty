@@ -336,7 +336,7 @@ test("choosing the next step by how you feel today", async ({ page }) => {
   // Planning: the first planning step in the stage, not the first step overall.
   await moods.getByRole("link", { name: "Planning" }).click();
   await expect(moods.getByRole("link", { name: "Planning" })).toHaveAttribute("aria-current", "page");
-  await expect(card.getByRole("heading", { name: "Choose one small thing to try this week" })).toBeVisible();
+  await expect(card.getByRole("heading", { name: "List three people you could tell about it" })).toBeVisible();
   const scan = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
   expect(scan.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
 

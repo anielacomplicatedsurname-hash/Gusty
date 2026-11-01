@@ -508,3 +508,21 @@ hero keeps one message: "Good ideas deserve to move.".
   makes it answer the question and speak to this funder (or to their own voice, with "Sound more like
   me"), within the limit and without inventing anything. Undo puts their version back. It shares the
   daily allowance with drafts.
+## 2026-11-01 — Founder feedback, round 2: less on screen, moods that make sense
+- **Answered questions** simply leave "Still open". There's no more "1 answered in your steps" list, because
+  the answer already lives in that step's notes.
+- **"How you write"** is no longer a card. Gusty works it out behind the scenes the first time someone asks a
+  draft to "Sound more like me".
+- **The row of chips** above the next step is gone ("Stage 2", "Ready for funding: 3 of 7", "Your idea grew
+  from your steps"). The stage is shown in the plan, readiness is explained on the Funding tab, and a bare
+  "3 of 7" sounded more certain than it is.
+- **Moods:**
+  - Talking to people now means an actual conversation, call, visit or message. Writing something for
+    people (like an invite) is writing.
+  - Sketching or mapping a route, map or timeline is planning, not making.
+  - A step's own words now win when they clearly contradict its saved mood. This fixes the two mislabelled
+    steps the founder saw.
+  - Gusty checks each step it suggests for a mood and asks once more if it doesn't fit. If it still doesn't
+    fit, the step is filed under the kind it really is, and the person is told where to find it.
+- **Home page:** the closing line's black underline is replaced by the same green swipe as "Small steps.",
+  so the page uses one mark.

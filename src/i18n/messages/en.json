@@ -38,7 +38,6 @@
         "body": "Up to three next steps, with the most useful one first. Never a wall of tasks."
       }
     ],
-    "closing": "Less searching. More happening.",
     "ideaSaving": "Saving your idea…",
     "ideaPrivacy": "Your idea is saved privately. No account needed: you can add your email later to keep it on any device.",
     "ideaUnavailable": "Saving ideas isn't switched on in this version yet, so nothing you type here is stored.",
@@ -49,7 +48,9 @@
       "failed": "Something went wrong while saving. Your text is still here; please try again."
     },
     "sloganBig": "Big possibilities.",
-    "sloganSmall": "Small steps."
+    "sloganSmall": "Small steps.",
+    "closingStart": "Less searching.",
+    "closingEnd": "More happening."
   },
   "comingNext": {
     "label": "Coming next",
@@ -211,11 +212,6 @@
     "updatedFrom": "Updated from: {step}",
     "updatedFromSteps": "Updated from one of your steps",
     "undo": "Undo",
-    "allAnswered": "Your steps have answered these. Nice work.",
-    "answeredOne": "1 answered in your steps",
-    "answeredMany": "{n} answered in your steps",
-    "answeredIn": "Answered in: {step}",
-    "bringBack": "Bring it back",
     "guessHint": "Edit to make it yours"
   },
   "workedOut": {
@@ -234,7 +230,7 @@
     "assisted": "Gusty added ideas",
     "draft": "Summary (started by Gusty)",
     "draftCount": "summary",
-    "explainer": "Everything about your project in one place: your experience, research that backs it, how you write, and your documents. Your notes from steps are with your plan. Gusty uses all of it to keep your idea up to date and to help with applications."
+    "explainer": "Everything about your project in one place: your experience, research that backs it, and your documents. Your notes from steps are with your plan. Gusty uses all of it to keep your idea up to date and to help with applications."
   },
   "errorPage": {
     "title": "Something went wrong on our side.",
@@ -441,7 +437,8 @@
         "detail": "Demo mode: Gusty would suggest a real step for your project here.",
         "minutes": 15
       }
-    }
+    },
+    "moodFiledUnder": "Gusty's idea turned out to be more {mood}, so you'll find it there."
   },
   "offline": {
     "title": "You're offline right now.",
@@ -1155,10 +1152,7 @@
     "label": "Gusty's suggestion, from your own words",
     "use": "Use this",
     "notNow": "Not now",
-    "error": "That didn't work. Please try again.",
-    "chip": "Gusty has an update for your idea",
-    "chipMany": "Gusty has {n} updates for your idea",
-    "chipGrew": "Your idea grew from your steps"
+    "error": "That didn't work. Please try again."
   },
   "bank": {
     "experienceTitle": "Your experience",
@@ -1226,27 +1220,8 @@
         "relevance": "Here Gusty would link the figures to your project."
       }
     ],
-    "voiceTitle": "How you write",
-    "voiceIntro": "So anything Gusty helps you write, like an application, sounds like you and not like a template.",
-    "voiceFromGusty": "Gusty's description, from your own words only. Change anything.",
-    "voiceYours": "Your words",
-    "voiceDescribe": "Describe how I write",
-    "voiceDescribeAgain": "Describe it again",
-    "voiceDescribing": "Reading your words…",
-    "voiceEdit": "Edit",
-    "voiceLabel": "How you write",
-    "voiceTooShort": "Gusty needs a little more of your own writing first ({n} of about {min} words). Answer a step's questions or add to your experience, then come back.",
     "voiceExampleLabel": "Something you might write:",
-    "voiceErrors": {
-      "tooShort": "Gusty needs a little more of your own writing first.",
-      "limit": "Gusty is resting for today. Please try again tomorrow.",
-      "busy": "Gusty is a little busy right now. Please try again in a minute.",
-      "declined": "Gusty couldn't describe this one.",
-      "unavailable": "Gusty can't do this right now. Please try again later.",
-      "error": "That didn't work. Please try again."
-    },
-    "demoVoice": "- Demo: Gusty's description of how you write will go here\n- For example: short sentences, warm, uses “we”\nSomething you might write: (Demo: an example sentence in your voice will go here.)",
-    "voiceDemoNotice": "Demo mode: this is an example. Gusty's real description appears once the AI key is set up."
+    "demoVoice": "- Demo: Gusty's description of how you write will go here\n- For example: short sentences, warm, uses “we”\nSomething you might write: (Demo: an example sentence in your voice will go here.)"
   },
   "applications": {
     "listTitle": "Your applications",

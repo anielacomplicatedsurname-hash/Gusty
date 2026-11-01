@@ -14,17 +14,20 @@ export function SuggestMoodStep({ projectId, mood, lang, copy }: { projectId: st
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [note, setNote] = useState<string | null>(null);
   return (
     <>
       <button type="button" className="btn-secondary" disabled={pending}
         onClick={() => start(async () => {
           setError(null);
           const result = await suggestMoodStep(projectId, mood, lang);
-          if (result.ok) router.refresh();
-          else setError(copy.errors[result.error] ?? copy.errors.error);
+          if (!result.ok) return setError(copy.errors[result.error] ?? copy.errors.error);
+          if (result.filedUnder) setNote(fill(copy.moodFiledUnder, { mood: copy.moods[result.filedUnder] }));
+          router.refresh();
         })}>
         {pending ? copy.moodSuggesting : fill(copy.moodSuggest, { mood: copy.moods[mood].toLowerCase() })}
       </button>
+      {note && <p role="status" className="text-sm">{note}</p>}
       {error && <p role="alert" className="font-medium">{error}</p>}
     </>
   );

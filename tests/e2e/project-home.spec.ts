@@ -21,14 +21,13 @@ test("a calm project home: one next step, a line of progress, four areas, and a 
   await expect(tabs.getByRole("link", { name: "Idea" })).toHaveAttribute("aria-current", "page");
   const next = page.locator("section[aria-labelledby=next-title]");
   await expect(next.getByText("Choose where your idea could go next")).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByRole("link", { name: "Ready for funding: 1 of 7" })).toBeVisible();
+  // No row of chips above the next step: stage lives in the plan, readiness in Funding.
+  await expect(page.getByRole("list", { name: "Ready for funding" })).toHaveCount(0);
 
   await next.getByRole("link", { name: "See directions" }).click();
   await page.getByRole("button", { name: "Show me where I could go next" }).click();
   await page.getByRole("button", { name: "Choose this: Shape the idea" }).click();
   await expect(next.getByRole("heading", { name: "Write your idea in three sentences" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Stage 1 · Getting clear on the idea" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Ready for funding: 2 of 7" })).toBeVisible();
 
   // Once there's a plan, the project opens on Plan.
   await page.goto(projectUrl);

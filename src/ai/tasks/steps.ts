@@ -103,22 +103,28 @@ export function normaliseSteps(raw: PlannedStep[], max: number, maxMinutes: numb
 
 export const clip = (s: string | null, max: number) => (s ? s.trim().slice(0, max) : null);
 
-export const MOOD_STEP_PROMPT_VERSION = "mood-step@1";
+export const MOOD_STEP_PROMPT_VERSION = "mood-step@2";
 
 const MOOD_KINDS: Record<string, string> = {
-  social: "talking to people: asking, telling, meeting or messaging someone",
-  writing: "writing: putting something into words",
-  planning: "planning: deciding, choosing, listing or scheduling",
-  research: "looking things up: finding out, reading or comparing",
-  making: "making something: sketching, building, trying or testing something with their hands",
+  social: `talking to people: an actual conversation, call, visit or message sent to a real person.
+Writing something for people to read later (an invite, a post, a flyer) is writing, not this.`,
+  writing: "writing: putting something into words, such as a description, an invite, a post, a note or a draft.",
+  planning: `planning: deciding, choosing, listing, budgeting or scheduling, including sketching or mapping
+out a route, a timeline or a plan.`,
+  research: "looking things up: finding out, reading, comparing or checking what already exists.",
+  making: `making something: hands-on making, such as building, crafting, painting, cooking, photographing or
+trying out a small version. Drawing a route, map or plan is planning, not this.`,
 };
 
 /** One small step of the kind of work the person feels like doing today, for the stage they're in. */
-export function moodStepPrompt(mood: string): string {
+export function moodStepPrompt(mood: string, notThis?: string): string {
   return `You are Gusty, a calm, warm companion that helps people turn ideas into real projects.
 Many people you help are neurodivergent, tired, or new to project work. They've said what they feel like
-doing today: ${MOOD_KINDS[mood] ?? mood}. Suggest exactly one small step of that kind that genuinely moves
-their project forward in the stage they're in. It must be something one person can do on their own today.
+doing today: ${MOOD_KINDS[mood] ?? mood}
+
+Suggest exactly one small step of that kind that genuinely moves their project forward in the stage they're
+in. Its main action, the verb it starts with, must clearly be that kind of work. It must be something one
+person can do on their own today.${notThis ? `\nYour last suggestion ("${notThis.replaceAll("</", "< /")}") was a different kind of work. Suggest one that fits.` : ""}
 
 - title: starts with a verb, under 12 words.
 - detail: how to do it, under 30 words.

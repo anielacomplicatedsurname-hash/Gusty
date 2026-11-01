@@ -69,27 +69,8 @@ test("research comes with its source and date, within a small daily allowance", 
   await expect(section.getByText("Example: a study about your kind of project")).toHaveCount(0);
 });
 
-test("Gusty describes how someone writes once there's enough of their own writing, and they can change it", async ({ page }) => {
+test("how someone writes is worked out behind the scenes, not shown as its own card", async ({ page }) => {
   await storyTab(page);
-  const voice = page.locator("section[aria-labelledby=voice-title]");
-  await expect(voice.getByText(/Gusty needs a little more of your own writing first/)).toBeVisible();
-
-  const experience = page.locator("section[aria-labelledby=experience-title]");
-  await experience.getByRole("button", { name: "Add something" }).click();
-  await experience.getByLabel("Tell it in your own words").fill(
-    "Last summer we ran a small bike club from the community centre. Twelve women came most weeks, and some " +
-    "hadn't ridden since they were girls. We started slow, on the park paths, and finished with a ride to the " +
-    "canal and back. People said it was the best part of their week, and three of them now ride to the shops.",
-  );
-  await experience.getByRole("button", { name: "Add to your story" }).click();
-  await expect(voice.getByRole("button", { name: "Describe how I write" })).toBeVisible();
-  await voice.getByRole("button", { name: "Describe how I write" }).click();
-  await expect(voice.getByText("Demo mode: this is an example.")).toBeVisible();
-  await expect(voice.getByText("Gusty's description, from your own words only. Change anything.")).toBeVisible();
-
-  await voice.getByRole("button", { name: "Edit" }).click();
-  await voice.getByLabel("How you write").fill("Warm, plain, uses “we”. Tells small true stories.");
-  await voice.getByRole("button", { name: "Save" }).click();
-  await expect(voice.getByText("Warm, plain, uses “we”. Tells small true stories.")).toBeVisible();
-  await expect(voice.getByText("Your words")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "How you write" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Research that backs your idea" })).toBeVisible();
 });

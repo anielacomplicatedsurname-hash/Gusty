@@ -12,7 +12,7 @@ import {
   STEPS_SYSTEM_PROMPT, StepsSchema, stepUserMessage, UNSTICK_PROMPT_VERSION, UNSTICK_PROMPTS, unstickUserMessage,
   type UnstickKind, MOOD_STEP_PROMPT_VERSION, moodStepMessage, moodStepPrompt,
 } from "@/ai/tasks/steps";
-import { isMood } from "./mood";
+import { guessMood, isMood, moodOf, type Mood } from "./mood";
 import { logRun, withinDailyLimit } from "@/ai/usage";
 import { messagesFor } from "@/i18n/messages-for";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -317,7 +317,9 @@ export async function setMode(mode: string): Promise<SimpleResult> {
  * "Suggest a small … step": when nothing in the current stage matches how the person feels today, Gusty
  * adds one step of that kind to the stage. It keeps its kind, so it's found the next time.
  */
-export async function suggestMoodStep(projectId: string, mood: string, lang: string): Promise<StepsResult> {
+export async function suggestMoodStep(
+  projectId: string, mood: string, lang: string,
+): Promise<{ ok: true; filedUnder?: Mood } | Exclude<StepsResult, { ok: true }>> {
   if (!isProjectId(projectId) || !isMood(mood)) return { ok: false, error: "error" };
   const supabase = await createSupabaseServerClient();
   if (!supabase) return { ok: false, error: "unavailable" };
@@ -334,25 +336,37 @@ export async function suggestMoodStep(projectId: string, mood: string, lang: str
     step = { ...messagesFor(lang).steps.moodDemo[mood] };
     await logRun(supabase, { projectId, task: "mood_step", promptVersion: MOOD_STEP_PROMPT_VERSION, model: "demo", status: "demo" });
   } else {
-    if (!(await withinDailyLimit(supabase))) return { ok: false, error: "limit" };
-    const result = await provider.generate({
-      system: moodStepPrompt(mood),
-      user: moodStepMessage(project.context, stage.title, (steps ?? []).map((s) => s.title)),
-      schema: SmallerSchema,
-      effort: "low",
-    });
-    await logRun(supabase, {
-      projectId, task: "mood_step", promptVersion: MOOD_STEP_PROMPT_VERSION, model: result.model,
-      status: result.ok ? "ok" : result.reason === "declined" ? "declined" : "error",
-      inputTokens: result.inputTokens, outputTokens: result.outputTokens, failure: result.ok ? undefined : result.reason,
-    });
-    if (!result.ok) return failed(result.reason);
-    step = normaliseSteps(result.data.steps, 1, 45)[0];
+    // Gusty's suggestion is checked against the kind asked for; one more try if it doesn't fit.
+    let notThis: string | undefined;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      if (!(await withinDailyLimit(supabase))) return { ok: false, error: "limit" };
+      const prompt: string = moodStepPrompt(mood, notThis);
+      const result = await provider.generate({
+        system: prompt,
+        user: moodStepMessage(project.context, stage.title, (steps ?? []).map((s) => s.title)),
+        schema: SmallerSchema,
+        effort: "low",
+      });
+      await logRun(supabase, {
+        projectId, task: "mood_step", promptVersion: MOOD_STEP_PROMPT_VERSION, model: result.model,
+        status: result.ok ? "ok" : result.reason === "declined" ? "declined" : "error",
+        inputTokens: result.inputTokens, outputTokens: result.outputTokens, failure: result.ok ? undefined : result.reason,
+      });
+      if (!result.ok) return failed(result.reason);
+      const suggested: typeof step = normaliseSteps(result.data.steps, 1, 45)[0];
+      step = suggested;
+      const guess: Mood | null = suggested ? guessMood(suggested) : null;
+      if (!suggested || !guess || guess === mood) break;
+      notThis = suggested.title;
+    }
   }
   if (!step?.title) return { ok: false, error: "invalid" };
+  // If it still reads as another kind of work, it's filed under that kind, so it's never in the wrong place.
+  const kind = moodOf({ ...step, mood });
   const { error } = await supabase.from("next_steps").insert({
-    project_id: projectId, direction_id: stage.direction_id, stage_id: stage.id, ...step, source: "ai", mood,
+    project_id: projectId, direction_id: stage.direction_id, stage_id: stage.id, ...step, source: "ai", mood: kind ?? mood,
     position: Math.max(0, ...(steps ?? []).map((s) => s.position + 1)),
   });
-  return error ? { ok: false, error: "error" } : { ok: true };
+  if (error) return { ok: false, error: "error" };
+  return kind && kind !== mood ? { ok: true, filedUnder: kind } : { ok: true };
 }
