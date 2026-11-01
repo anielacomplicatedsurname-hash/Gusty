@@ -23,6 +23,8 @@ The founder leads vision, brand and priorities; Claude leads technical implement
 - Ask before adding a dependency. Prefer the platform (Next.js, Postgres) over new libraries.
 - Before saying something works: `pnpm check` and `pnpm build && pnpm test:e2e`, and report real output.
 - Record significant decisions in `docs/DECISIONS.md`; record known limitations in `docs/ROADMAP.md`.
+- Keep `docs/FOUNDER_TODO.md` current: add anything only the founder can do (keys, accounts, payments,
+  SQL to run), and tick items off when she says they're done.
 - Explain trade-offs to the founder in plain language, with one recommendation and at most three decisions.
 
 ## Commands

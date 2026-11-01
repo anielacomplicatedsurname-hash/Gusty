@@ -57,3 +57,4 @@
 - Render plan is set to `free` (sleeps when idle) until the founder decides to upgrade.
 - Dictation depends on the browser: it isn't available in Firefox, and Safari on iPhone needs Siri switched on.
   Quality and languages follow the browser's speech service.
+- Things only the founder can do (keys, accounts, payments) are listed in `docs/FOUNDER_TODO.md`.
