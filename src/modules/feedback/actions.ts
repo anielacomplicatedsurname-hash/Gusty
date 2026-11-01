@@ -1,6 +1,6 @@
 "use server";
 
-import { captchaTokenFrom, isCaptchaError } from "@/lib/captcha";
+import { captchaTokenFrom, isCaptchaError, logCaptchaRefusal } from "@/lib/captcha";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { cleanAnswer, cleanPage } from "./validation";
 
@@ -21,7 +21,11 @@ export async function sendFeedback(_prev: FeedbackState, formData: FormData): Pr
   const { data } = await supabase.auth.getUser();
   if (!data.user) {
     const { error } = await supabase.auth.signInAnonymously({ options: { captchaToken: captchaTokenFrom(formData) } });
-    if (error) return { error: isCaptchaError(error) ? "captcha" : "failed" };
+    if (error && isCaptchaError(error)) {
+      logCaptchaRefusal("feedback", formData, error);
+      return { error: "captcha" };
+    }
+    if (error) return { error: "failed" };
   }
 
   const { error } = await supabase

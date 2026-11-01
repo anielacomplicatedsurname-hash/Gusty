@@ -23,3 +23,14 @@ export function isCaptchaError(error: { code?: string; message?: string } | null
   if (!error) return false;
   return error.code === "captcha_failed" || /captcha/i.test(error.message ?? "");
 }
+
+/**
+ * One line in the server log when Supabase refuses the check, saying why (Supabase's own message) and
+ * whether the browser sent a token at all. Never logs the token or anything the person wrote.
+ */
+export function logCaptchaRefusal(where: string, form: FormData | null | undefined, error: { code?: string; message?: string }) {
+  const token = captchaTokenFrom(form);
+  console.warn(
+    `Bot check refused (${where}): ${error.code ?? "no code"}: ${error.message ?? ""} · token ${token ? `sent (${token.length} characters)` : "missing"}`,
+  );
+}

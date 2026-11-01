@@ -31,3 +31,23 @@ describe("bot check helpers", () => {
     expect(isCaptchaError(null)).toBe(false);
   });
 });
+
+describe("logging a refused check", () => {
+  it("says why and whether a token was sent, never the token itself", async () => {
+    const { logCaptchaRefusal } = await import("@/lib/captcha");
+    const lines: string[] = [];
+    const warn = console.warn;
+    console.warn = (line: string) => lines.push(line);
+    try {
+      const form = new FormData();
+      logCaptchaRefusal("idea", form, { code: "captcha_failed", message: "captcha protection: request disallowed (no captcha response)" });
+      form.set(CAPTCHA_FIELD, "secret.one.time.token");
+      logCaptchaRefusal("idea", form, { code: "captcha_failed", message: "captcha protection: request disallowed (invalid-input-response)" });
+    } finally {
+      console.warn = warn;
+    }
+    expect(lines[0]).toBe("Bot check refused (idea): captcha_failed: captcha protection: request disallowed (no captcha response) · token missing");
+    expect(lines[1]).toContain("token sent (21 characters)");
+    expect(lines.join(" ")).not.toContain("secret.one.time.token");
+  });
+});

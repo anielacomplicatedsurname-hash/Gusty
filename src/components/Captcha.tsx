@@ -43,8 +43,34 @@ export function Captcha({ siteKey, lang, note }: { siteKey: string; lang: string
   useEffect(() => {
     let id: string | undefined;
     let cancelled = false;
+    let token: string | undefined;
+    let failed = false;
+    let waiters: (() => void)[] = [];
+    const ready = () => {
+      waiters.forEach((w) => w());
+      waiters = [];
+    };
     const form = box.current?.closest("form");
-    const onSubmit = () => setTimeout(() => id && window.turnstile?.reset(id), 0);
+    // Pressing the button before Cloudflare's check has finished (it takes a second or two) would send the
+    // form without a token. Hold the submit until the token arrives (at most 8 seconds), then send it.
+    const onSubmit = (event: SubmitEvent) => {
+      if (!token && !failed && id) {
+        event.preventDefault();
+        event.stopPropagation();
+        const submitter = event.submitter;
+        const timer = setTimeout(ready, 8000);
+        waiters.push(() => {
+          clearTimeout(timer);
+          if (!cancelled) form?.requestSubmit(submitter instanceof HTMLButtonElement ? submitter : undefined);
+        });
+        return;
+      }
+      // The token works once: fetch a fresh one for a second try, after the form has read this one.
+      setTimeout(() => {
+        token = undefined;
+        if (id) window.turnstile?.reset(id);
+      }, 0);
+    };
     form?.addEventListener("submit", onSubmit);
     loadTurnstile()
       .then((turnstile) => {
@@ -54,10 +80,23 @@ export function Captcha({ siteKey, lang, note }: { siteKey: string; lang: string
           language: lang,
           appearance: "interaction-only",
           "refresh-expired": "auto",
+          callback: (t: string) => {
+            token = t;
+            ready();
+          },
+          "expired-callback": () => {
+            token = undefined;
+          },
+          "error-callback": () => {
+            failed = true;
+            ready();
+          },
         });
       })
       .catch(() => {
         // Blocked or offline: the form still sends, and the server explains if the check is required.
+        failed = true;
+        ready();
       });
     return () => {
       cancelled = true;

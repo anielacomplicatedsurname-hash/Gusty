@@ -18,9 +18,11 @@ async function fakeTurnstile(page: Page) {
       body: `window.turnstile = {
         render(el, options) {
           window.turnstileOptions = options;
+          // Like Cloudflare: the field is there at once, the token arrives a moment later.
           const input = document.createElement("input");
-          input.type = "hidden"; input.name = "cf-turnstile-response"; input.value = "test-token-" + Math.random();
+          input.type = "hidden"; input.name = "cf-turnstile-response"; input.value = "";
           el.appendChild(input);
+          setTimeout(() => { input.value = "test-token-" + Math.random(); options.callback?.(input.value); }, window.turnstileDelay ?? 0);
           return "w" + Math.random();
         },
         reset() {}, remove() {},
@@ -47,6 +49,8 @@ test("first-time visitors get the bot check on the idea box; once they have a se
 
   const before = loads();
   await page.goto("/en");
+  await expect(page.getByRole("heading", { name: "Pick up where you left off" })).toBeVisible();
+  await page.getByRole("button", { name: "Start something new" }).click();
   await expect(page.getByLabel("What's your idea?")).toBeVisible();
   await expect(page.getByText("Cloudflare checks this browser isn't a bot")).toHaveCount(0);
   await page.goto("/en/feedback");
@@ -65,4 +69,15 @@ test("if Cloudflare can't be reached, the forms still work", async ({ page }) =>
   await page.getByLabel("What worked well?").fill("Calm and clear.");
   await page.getByRole("button", { name: "Send my thoughts" }).click();
   await expect(page.getByText("Thank you", { exact: false }).first()).toBeVisible();
+});
+
+test("pressing the button before the check has finished waits for it, then sends the token", async ({ page }) => {
+  await page.addInitScript(() => { (window as unknown as { turnstileDelay: number }).turnstileDelay = 2500; });
+  await fakeTurnstile(page);
+  await page.goto("/en");
+  await page.getByLabel("What's your idea?").fill("A reading circle at the launderette.");
+  const sent = page.waitForRequest((r) => r.method() === "POST" && new URL(r.url()).pathname === "/en");
+  await page.getByRole("button", { name: "Start with my idea" }).click();
+  expect((await sent).postData() ?? "").toMatch(/cf-turnstile-response[\s\S]*test-token-/);
+  await expect(page).toHaveURL(/\/en\/projects\/[0-9a-f-]{36}$/);
 });
